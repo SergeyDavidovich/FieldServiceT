@@ -1,0 +1,70 @@
+﻿@page "/"
+
+@using FieldServiceT.Helpers
+@using Microsoft.IdentityModel.Clients.ActiveDirectory;
+@using System.Net.Http.Headers;
+
+<div class="container">
+    <h1>Hello!</h1>
+    <button class="btn btn-primary" @onclick="@GetToken">Get token</button>
+    <button class="btn btn-primary" @onclick="@GetRecourses">Get bokable resourses</button>
+
+    <div>Current token is: @CurrentToken</div>
+    <div>ERROR - @Error</div>
+    <div>@Brb</div>
+</div>
+@code
+{
+    string CurrentToken { get; set; }
+    string Error { get; set; }
+    string Brb { get; set; }
+
+    AuthenticationResult token;
+
+    protected override async Task OnInitializedAsync()
+    {}
+
+    private async Task GetToken(MouseEventArgs args)
+    {
+        try
+        {
+            token = await TokenService.GetAuthenticationResult();
+            CurrentToken = token.AccessToken;
+        }
+        catch (Exception e)
+        {
+            CurrentToken = $"ERROR! - {e.Message}";
+        }
+    }
+    private async Task GetRecourses(MouseEventArgs args)
+    {
+        using (var client = new System.Net.Http.HttpClient())
+        {
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
+            try
+            {
+                var response = await client.GetAsync("https://eg8pfua3iofsrjt3zb.crm.dynamics.com/api/data/v9.0/bookableresourcebookings");
+                var contacts = await response.Content.ReadAsStringAsync();
+                Brb = contacts;
+            }
+            catch (Exception e) { Error = e.Message; }
+        }
+    }
+}
+<style>
+    .container
+    {
+        display:grid;
+        grid-template-rows:auto auto auto;
+        grid-template-columns:.7fr;
+        text-align:left;
+        grid-gap:20px;
+    }
+      .container > div{
+            padding:20px;
+            width:800px;
+            height:auto;
+            overflow:auto;
+            }
+      button{width:250px;}
+</style>
