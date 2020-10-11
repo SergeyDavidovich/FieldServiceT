@@ -1,0 +1,64 @@
+﻿@page "/BookableResourcePage/{ResourceId}/{Token}"
+@page "/BookableResourcePage"
+
+@using System.Text.Json
+@using Microsoft.OData
+@using Microsoft.OData.Client
+@using Newtonsoft.Json.Serialization
+@using Newtonsoft.Json
+@using System.Net.Http.Headers
+@using FieldServiceT.Models
+
+
+<h3>BookableResource: @ResourceId</h3>
+<div>
+    @Result
+</div>
+
+@code {
+
+    [Parameter]
+    public string ResourceId { get; set; }
+
+    [Parameter]
+    public string Token { get; set; }
+
+    [CascadingParameter]
+    RouteData RouteData { get; set; }
+
+    string url = "https://eg8pfua3iofsrjt3zb.crm.dynamics.com/api/data/v9.0/bookableresources/";
+
+    public string Result { get; set; }
+
+    protected async override void OnInitialized()
+    {
+        //await GetResourse();
+    }
+    private async Task GetResourse()
+    {
+        {
+            string resourceuri = url + ResourceId;
+
+            using (var client = new System.Net.Http.HttpClient())
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
+
+                var response = await client.GetAsync(new Uri(resourceuri));
+                var strjson = await response.Content.ReadAsStringAsync();
+
+                var result = JsonConvert.DeserializeObject<ODataResponse<BookableResource>>(strjson);
+
+                Result = $"{result.Value.BookableResourceId} {result.Value.Name }";
+
+            }
+        }
+    }
+    internal class ODataResponse<T>
+    {
+        public T Value
+        {
+            get;
+            set;
+        }
+    }
+}

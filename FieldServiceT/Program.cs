@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Syncfusion.Blazor;
+
 
 namespace FieldServiceT
 {
@@ -15,6 +17,10 @@ namespace FieldServiceT
     {
         public static void Main(string[] args)
         {
+            //Register Syncfusion license 
+            Syncfusion.Licensing.SyncfusionLicenseProvider
+                .RegisterLicense("MzMyMzY5QDMxMzgyZTMzMmUzMFhXa3BYRWZjOUI2YVBVSXl1bzlvQ28vQVloZm4wODEweDdMMUlORHAvczA9");
+
             CreateHostBuilder(args).Build().Run();
         }
 
