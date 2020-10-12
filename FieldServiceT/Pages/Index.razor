@@ -20,13 +20,13 @@
 <div class="container">
     <h2>Bookable resourses</h2>
     @*<button class="btn btn-primary" @onclick="@GetTokenAsync">Get token</button>*@
-    <button class="btn btn-primary" style="width:auto" @onclick="@GetResourses">Get bookable resourses</button>
-    <div style="font-size:9px;">
+    @*<button class="btn btn-primary" style="width:auto" @onclick="@GetResources">Get bookable resourses</button>*@
+    <div style="font-size:10px;">
         <p style="font-size:12px; font-weight:bolder">Current token is:</p>
         <p> @CurrentToken></p>
     </div>
-    <div class="shadow">
-        <SfGrid DataSource="@ResourceList" AllowPaging="true" AllowPdfExport="true" AllowExcelExport="true" AllowFiltering="true">
+    <div class="shadow" style="cursor:pointer">
+        <SfGrid DataSource="@ResourceList" AllowPaging="true" AllowPdfExport="true" AllowExcelExport="true" AllowFiltering="true" AllowSorting="true">
             <GridPageSettings PageCount="12" PageSizes="true"></GridPageSettings>
             <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
             <GridEvents OnRecordDoubleClick="RecordDoubleClickHandler" TValue="BookableResource"></GridEvents>
@@ -60,6 +60,7 @@
     {
         ResourceList = new List<BookableResource>();
         await GetTokenAsync(null);
+        await GetResources(null);
     }
 
     private async Task GetTokenAsync(MouseEventArgs args)
@@ -74,7 +75,7 @@
             CurrentToken = $"ERROR! - {e.Message}";
         }
     }
-    private async Task GetResourses(MouseEventArgs args)
+    private async Task GetResources(MouseEventArgs args)
     {
         {
             using (var client = new System.Net.Http.HttpClient())

@@ -10,10 +10,8 @@
 @using FieldServiceT.Models
 
 
-<h3>BookableResource: @ResourceId</h3>
-<div>
-    @Result
-</div>
+<h4>BookableResourceId: @ResourceId</h4>
+<h4>Name: @Result</h4>
 
 @code {
 
@@ -30,14 +28,16 @@
 
     public string Result { get; set; }
 
-    protected async override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        //await GetResourse();
+        await GetResourse();
     }
     private async Task GetResourse()
     {
         {
-            string resourceuri = url + ResourceId;
+            string query = $"?$filter=bookableresourceid eq '{ResourceId}'";
+
+            string resourceuri = url + query;
 
             using (var client = new System.Net.Http.HttpClient())
             {
@@ -48,14 +48,15 @@
 
                 var result = JsonConvert.DeserializeObject<ODataResponse<BookableResource>>(strjson);
 
-                Result = $"{result.Value.BookableResourceId} {result.Value.Name }";
+                var resource = result.Value.First<BookableResource>();
 
+                Result = resource.Name;
             }
         }
     }
     internal class ODataResponse<T>
     {
-        public T Value
+        public List<T> Value
         {
             get;
             set;
