@@ -1,5 +1,7 @@
 ﻿@page "/"
 
+@attribute [Authorize]
+
 @using System.Collections.ObjectModel
 @using System.ComponentModel
 @using Syncfusion.Blazor.Grids
@@ -18,35 +20,45 @@
 @inject NavigationManager navigationManager
 
 <div class="container">
-    <h2>Bookable resourses</h2>
-    @*<button class="btn btn-primary" @onclick="@GetTokenAsync">Get token</button>*@
-    @*<button class="btn btn-primary" style="width:auto" @onclick="@GetResources">Get bookable resourses</button>*@
-    <div style="font-size:10px;">
-        <p style="font-size:12px; font-weight:bolder">Current token is:</p>
-        <p> @CurrentToken></p>
-    </div>
+    <h4>Bookable resourses</h4>
     <div class="shadow" style="cursor:pointer">
-        <SfGrid DataSource="@ResourceList" AllowPaging="true" AllowPdfExport="true" AllowExcelExport="true" AllowFiltering="true" AllowSorting="true">
+        <SfGrid @ref="DGrid" DataSource="@ResourceList" AllowPaging="true" AllowPdfExport="true" AllowExcelExport="true" AllowFiltering="true" AllowSorting="true" Toolbar=@Tool>
             <GridPageSettings PageCount="12" PageSizes="true"></GridPageSettings>
             <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
             <GridEvents OnRecordDoubleClick="RecordDoubleClickHandler" TValue="BookableResource"></GridEvents>
+            @*<GridTemplates>
+                    <RowTemplate>
+                        @{
+                            if (int.Parse(this.DGrid.Width) <= 500)
+                            {
+                                <h4>less then 500</h4>
+                            }
+                            else
+                            {
+                                <h4>more than 500</h4>
+                            }
+                        }
+                    </RowTemplate>
+                </GridTemplates>*@
             <GridColumns>
                 <GridColumn Field=@nameof(BookableResource.BookableResourceId) HeaderText="Id"
-                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" AutoFit="false" Width="150"></GridColumn>
+                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" AutoFit="false" Width="160"></GridColumn>
                 <GridColumn Field=@nameof(BookableResource.ResourceType) HeaderText="Type"
-                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" AutoFit="false" Width="50"></GridColumn>
+                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" AutoFit="false" Width="150"></GridColumn>
                 <GridColumn Field=@nameof(BookableResource.Name) HeaderText="Name"
                             HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" AutoFit="false" Width="260"></GridColumn>
                 <GridColumn Field=@nameof(BookableResource.CreatedOn) HeaderText="Created on"
-                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Left" AutoFit="false" Width="260"></GridColumn>
+                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" AutoFit="false" Width="260"></GridColumn>
                 <GridColumn Field=@nameof(BookableResource.TimeZone) HeaderText="Time zone"
-                            HeaderTextAlign="TextAlign.Left" Format="N2" TextAlign="TextAlign.Center" AutoFit="false" Width="80"></GridColumn>
+                            HeaderTextAlign="TextAlign.Left" Format="N2" TextAlign="TextAlign.Center" AutoFit="false" Width="100"></GridColumn>
             </GridColumns>
         </SfGrid>
     </div>
 </div>
 @code
 {
+    #region
+
     string CurrentToken { get; set; }
     string Error { get; set; }
 
@@ -55,6 +67,8 @@
 
     AuthenticationResult token;
     List<BookableResource> ResourceList { get; set; }
+    List<string> Tool = (new List<string>() { "Search", "Print" });
+    SfGrid<BookableResource> DGrid;
 
     protected override async Task OnInitializedAsync()
     {
@@ -75,6 +89,7 @@
             CurrentToken = $"ERROR! - {e.Message}";
         }
     }
+
     private async Task GetResources(MouseEventArgs args)
     {
         {
@@ -95,28 +110,28 @@
     public void RecordDoubleClickHandler(RecordDoubleClickEventArgs<BookableResource> args)
     {
         var id = args.RowData.BookableResourceId;
-        var url = "/BookableResourcePage/" + id + "/" +token.AccessToken;
+        var url = "/BookableResourcePage/" + id + "/" + token.AccessToken;
         navigationManager.NavigateTo(url);
     }
 
     internal class ODataResponse<T>
     { public List<T> Value { get; set; } }
-
-
+    #endregion
 }
 <style>
     .container {
         display: grid;
         grid-template-rows: auto auto auto;
-        grid-template-columns: .9fr;
         text-align: left;
         grid-gap: 10px;
+        width: 100%;
     }
 
         .container > div {
             padding: 20px;
             width: auto;
-            height: auto;
+            height: 760px;
             overflow: auto;
+            background-color: white;
         }
 </style>

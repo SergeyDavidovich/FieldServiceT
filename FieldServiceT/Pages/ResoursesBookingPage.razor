@@ -1,0 +1,122 @@
+﻿@page "/ResoursesBookingPage"
+@attribute [Authorize]
+
+@using System.Collections.ObjectModel
+@using System.ComponentModel
+@using Syncfusion.Blazor.Grids
+@using FieldServiceT.Models
+@using Newtonsoft.Json.Serialization
+@using Newtonsoft.Json
+
+
+@using FieldServiceT.Helpers
+@using Microsoft.IdentityModel.Clients.ActiveDirectory
+@using System.Net.Http.Headers
+@using System.Text.Json
+@using Microsoft.OData
+@using Microsoft.OData.Client
+
+@inject NavigationManager navigationManager
+
+<div class="container">
+    
+    <h4>Bookable Resources Booking</h4>
+    <div class="shadow" style="cursor:pointer">
+        <SfGrid DataSource="@ResourceList" AllowPaging="true" AllowPdfExport="true" AllowExcelExport="true" AllowFiltering="true" AllowSorting="true">
+            <GridPageSettings PageCount="12" PageSizes="true"></GridPageSettings>
+            <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
+            <GridEvents OnRecordDoubleClick="RecordDoubleClickHandler" TValue="BookableResourceBooking"></GridEvents>
+            <GridColumns>
+                <GridColumn Field=@nameof(BookableResourceBooking.BookableBesourceBookingId) HeaderText="Id"
+                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="150"></GridColumn>
+                <GridColumn Field=@nameof(BookableResourceBooking.CreatedOn) HeaderText="Created on"
+                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="150"></GridColumn>
+                <GridColumn Field=@nameof(BookableResourceBooking.Duration) HeaderText="Duration"
+                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left"  Width="60"></GridColumn>
+                <GridColumn Field=@nameof(BookableResourceBooking.EndTime) HeaderText="End time"
+                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Left" Width="150"></GridColumn>
+                <GridColumn Field=@nameof(BookableResourceBooking.ModifiedOn) HeaderText="Modified on"
+                            HeaderTextAlign="TextAlign.Left" Format="N2" TextAlign="TextAlign.Center" Width="150"></GridColumn>
+            </GridColumns>
+        </SfGrid>
+    </div>
+</div>
+@code
+{
+    #region Code
+
+    string CurrentToken { get; set; }
+    string Error { get; set; }
+
+    string selectedId;
+    string url = "https://eg8pfua3iofsrjt3zb.crm.dynamics.com/api/data/v9.0/bookableresourcebookings";
+
+    AuthenticationResult token;
+    List<BookableResourceBooking> ResourceList { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        ResourceList = new List<BookableResourceBooking>();
+        await GetTokenAsync(null);
+        await GetResources(null);
+    }
+
+    private async Task GetTokenAsync(MouseEventArgs args)
+    {
+        try
+        {
+            token = await TokenService.GetAuthenticationResult();
+            CurrentToken = token.AccessToken;
+        }
+        catch (Exception e)
+        {
+            CurrentToken = $"ERROR! - {e.Message}";
+        }
+    }
+    private async Task GetResources(MouseEventArgs args)
+    {
+        {
+            using (var client = new System.Net.Http.HttpClient())
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
+
+                var response = await client.GetAsync(new Uri(url));
+                var strjson = await response.Content.ReadAsStringAsync();
+
+                var result = JsonConvert.DeserializeObject<ODataResponse<BookableResourceBooking>>(strjson);
+
+                ResourceList = result.Value;
+            }
+        }
+    }
+
+    public void RecordDoubleClickHandler(RecordDoubleClickEventArgs<BookableResourceBooking> args)
+    {
+        var id = args.RowData.BookableBesourceBookingId;
+        var url = "/ResoursesBookingPage/" + id + "/" + token.AccessToken;
+        navigationManager.NavigateTo(url);
+    }
+
+    internal class ODataResponse<T>
+    { public List<T> Value { get; set; } }
+
+    #endregion
+}
+<style>
+    .container {
+        display: grid;
+        grid-template-rows: auto auto auto;
+        grid-template-columns: 1fr;
+        text-align: left;
+        grid-gap: 10px;
+    }
+
+        .container > div {
+            padding: 20px;
+            width: auto;
+            height: 760px;
+            overflow: auto;
+            background-color: white;
+        }
+</style>
+
