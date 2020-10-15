@@ -26,20 +26,6 @@
             <GridPageSettings PageCount="12" PageSizes="true"></GridPageSettings>
             <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
             <GridEvents OnRecordDoubleClick="RecordDoubleClickHandler" TValue="BookableResource"></GridEvents>
-            @*<GridTemplates>
-                    <RowTemplate>
-                        @{
-                            if (int.Parse(this.DGrid.Width) <= 500)
-                            {
-                                <h4>less then 500</h4>
-                            }
-                            else
-                            {
-                                <h4>more than 500</h4>
-                            }
-                        }
-                    </RowTemplate>
-                </GridTemplates>*@
             <GridColumns>
                 <GridColumn Field=@nameof(BookableResource.BookableResourceId) HeaderText="Id"
                             HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" AutoFit="false" Width="160"></GridColumn>

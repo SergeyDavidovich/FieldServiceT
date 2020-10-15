@@ -46,6 +46,7 @@ namespace FieldServiceT
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
             services.AddSyncfusionBlazor();
+            services.AddScoped<Helpers.BrowserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
