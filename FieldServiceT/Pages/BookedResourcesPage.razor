@@ -1,4 +1,5 @@
-﻿@page "/ResourсesBookingPage"
+﻿@page "/BookedResourcesPage"
+
 @attribute [Authorize]
 
 @using System.Collections.ObjectModel
@@ -20,29 +21,28 @@
 @inject NavigationManager navigationManager
 @inject BrowserService browserService
 
-<div class="container">
-
-    <h4>Bookable Resources Booking</h4>
-    <div class="shadow" style="cursor:pointer;">
+<div style="background-color:dodgerblue; width:auto; font-size:9px">
+    <h6 style="color:white; padding:4px;">Booked Resources</h6>
+    <div class="shadow" style="cursor:pointer; width:auto; padding:0px;">
         <SfGrid DataSource="@ResourceList" AllowFiltering="true" AllowSorting="true">
-            <GridFilterSettings Type="FilterType.FilterBar" Mode="FilterBarMode.Immediate"></GridFilterSettings>
-            <GridEvents OnRecordDoubleClick="RecordDoubleClickHandler" TValue="BookableResourceBooking"></GridEvents>
+            <GridFilterSettings Type="FilterType.CheckBox" Mode="FilterBarMode.Immediate"></GridFilterSettings>
+            @*<GridEvents OnRecordDoubleClick="RecordDoubleClickHandler" TValue="BookableResourceBooking"></GridEvents>*@
+            <GridEvents RowSelected="RowSelectedHandler" TValue="BookableResourceBooking"></GridEvents>
             <GridColumns>
                 <GridColumn Field=@nameof(BookableResourceBooking.BookableResourceBookingId) HeaderText="Id"
                             HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="0"></GridColumn>
                 <GridColumn Field=@nameof(BookableResourceBooking.Name) HeaderText="Name"
-                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="80"></GridColumn>
-                <GridColumn Field=@nameof(BookableResourceBooking.CreatedOn) HeaderText=""
-                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="80"></GridColumn>
+                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="60"></GridColumn>
+                <GridColumn Field=@nameof(BookableResourceBooking.CreatedOn) HeaderText="Created on"
+                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Format="D" Width="80"></GridColumn>
                 <GridColumn Field=@nameof(BookableResourceBooking.Duration) HeaderText="Duration"
-                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Center" Width="60"></GridColumn>
+                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="60"></GridColumn>
                 <GridColumn Field=@nameof(BookableResourceBooking.EndTime) HeaderText="End time"
-                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Left" Width="80"></GridColumn>
+                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Left" Width="80" HideAtMedia="(min-width: 700px)"></GridColumn>
                 <GridColumn Field=@nameof(BookableResourceBooking.ModifiedOn) HeaderText="Modified on"
-                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Center" Width="80"></GridColumn>
-                <GridColumn Field=@nameof(BookableResourceBooking.StatusCode) HeaderText="Status"
-                            HeaderTextAlign="TextAlign.Left" Format="N2" TextAlign="TextAlign.Center" Width="50"></GridColumn>
-
+                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="80" HideAtMedia="(min-width: 700px)"></GridColumn>
+                <GridColumn Field=@nameof(BookableResourceBooking.StatusName) HeaderText="Status"
+                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Left" Width="60"></GridColumn>
             </GridColumns>
         </SfGrid>
     </div>
@@ -50,6 +50,8 @@
 @code
 {
     // https://docs.microsoft.com/en-us/dynamics365/customer-engagement/web-api/bookableresourcebooking?view=dynamics-ce-odata-9
+    //https://docs.microsoft.com/en-us/dynamics365/customer-engagement/web-api/bookableresourcebooking?view=dynamics-ce-odata-9#single-valued-navigation-properties
+    //https://42clouds.com/ru-ru/techdocs/interfeys-odata-vozmozhnosti-i-nastroyka.html#link10
 
     #region Code
 
@@ -86,21 +88,15 @@
     private async Task GetResources()
     {
         {
-            var qBuilder = new StringBuilder(baseUrl)
-                .Append("?$select=")
-                .Append("name")
-                .Append(",")
-                .Append("createdon")
-                .Append(",")
-                .Append("duration")
-                .Append(",")
-                .Append("endtime")
-                .Append(",")
-                .Append("modifiedon")
-                .Append(",")
-                .Append("statuscode");
+            //GET serviceRoot/ Me / Friends ?$filter = Friends / any(f: f / FirstName eq 'Scott')
+            // baseUrl qBuilder ?$filter = bookingstatuses/any(s:s/bookingstatusid eq _bookingstatus_value
 
-            queryUri = new Uri(qBuilder.ToString());
+            //$select = Id,Name &$expand = RelatedObj($select = PropertyName)
+            //EntitySet ?$select = Id,Name,RelatedObj / PropertyName &$expand = RelatedObj
+
+            string tempQuery = baseUrl + "?$select=name,createdon,duration&$expand=BookingStatus($select=name)";
+
+            queryUri = new Uri(tempQuery);
 
             using (var client = new System.Net.Http.HttpClient())
             {
@@ -116,9 +112,15 @@
         }
     }
 
-    public void RecordDoubleClickHandler(RecordDoubleClickEventArgs<BookableResourceBooking> args)
+    //public void RecordDoubleClickHandler(RecordDoubleClickEventArgs<BookableResourceBooking> args)
+    //{
+    //    var id = args.RowData.BookableResourceBookingId;
+    //    var url = "/ResoursesBookingPage/" + id + "/" + token.AccessToken;
+    //    navigationManager.NavigateTo(url);
+    //}
+    public void RowSelectedHandler(RowSelectEventArgs<BookableResourceBooking> args)
     {
-        var id = args.RowData.BookableResourceBookingId;
+        var id = args.Data.BookableResourceBookingId;
         var url = "/BookedResourcePage/" + id + "/" + token.AccessToken;
         navigationManager.NavigateTo(url);
     }
@@ -131,18 +133,9 @@
 <style>
     .container {
         display: grid;
-        grid-template-rows: auto auto auto;
-        grid-template-columns: 1fr;
-        text-align: left;
-        grid-gap: 10px;
-        min-width:1000px;
     }
         .container > div {
-            padding: 20px;
-            width: auto;
-            height: 760px;
-            overflow: auto;
-            background-color: white;
+            background-color: brown;
         }
 </style>
 
