@@ -27,22 +27,22 @@
         <SfGrid DataSource="@ResourceList" AllowFiltering="true" AllowSorting="true">
             <GridFilterSettings Type="FilterType.CheckBox" Mode="FilterBarMode.Immediate"></GridFilterSettings>
             @*<GridEvents OnRecordDoubleClick="RecordDoubleClickHandler" TValue="BookableResourceBooking"></GridEvents>*@
-            <GridEvents RowSelected="RowSelectedHandler" TValue="BookableResourceBooking"></GridEvents>
+            <GridEvents RowSelected="RowSelectedHandler" TValue="BookedResource"></GridEvents>
             <GridColumns>
-                <GridColumn Field=@nameof(BookableResourceBooking.BookableResourceBookingId) HeaderText="Id"
+                <GridColumn Field=@nameof(BookedResource.BookableResourceBookingId) HeaderText="Id"
                             HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="0"></GridColumn>
-                <GridColumn Field=@nameof(BookableResourceBooking.Name) HeaderText="Name"
+                <GridColumn Field=@nameof(BookedResource.Name) HeaderText="Name"
                             HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="60"></GridColumn>
-                <GridColumn Field=@nameof(BookableResourceBooking.CreatedOn) HeaderText="Created on"
+                <GridColumn Field=@nameof(BookedResource.CreatedOn) HeaderText="Created on"
                             HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Format="D" Width="80"></GridColumn>
-                <GridColumn Field=@nameof(BookableResourceBooking.Duration) HeaderText="Duration"
+                <GridColumn Field=@nameof(BookedResource.CreatedOn) HeaderText="Duration"
                             HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="60"></GridColumn>
-                <GridColumn Field=@nameof(BookableResourceBooking.EndTime) HeaderText="End time"
-                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Left" Width="80" HideAtMedia="(min-width: 700px)"></GridColumn>
-                <GridColumn Field=@nameof(BookableResourceBooking.ModifiedOn) HeaderText="Modified on"
+                <GridColumn Field=@nameof(BookedResource.Duration) HeaderText="End time"
                             HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="80" HideAtMedia="(min-width: 700px)"></GridColumn>
-                <GridColumn Field=@nameof(BookableResourceBooking.StatusName) HeaderText="Status"
-                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Left" Width="60"></GridColumn>
+                <GridColumn Field=@nameof(BookedResource.EndTime) HeaderText="Modified on"
+                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Left" Width="80" HideAtMedia="(min-width: 700px)"></GridColumn>
+                <GridColumn Field=@nameof(BookedResource.ModifiedOn) HeaderText="Status"
+                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="60"></GridColumn>
             </GridColumns>
         </SfGrid>
     </div>
@@ -63,12 +63,12 @@
     private Uri queryUri;
 
     private AuthenticationResult token;
-    private List<BookableResourceBooking> ResourceList { get; set; }
+    private List<BookedResource> ResourceList { get; set; }
     private (string, string) MyTuple;
 
     protected override async Task OnInitializedAsync()
     {
-        ResourceList = new List<BookableResourceBooking>();
+        ResourceList = new List<BookedResource>();
         await GetTokenAsync();
         await GetResources();
     }
@@ -105,7 +105,7 @@
                 var response = await client.GetAsync(queryUri);
                 var strjson = await response.Content.ReadAsStringAsync();
 
-                var result = JsonConvert.DeserializeObject<ODataResponse<BookableResourceBooking>>(strjson);
+                var result = JsonConvert.DeserializeObject<ODataResponse<BookedResource>>(strjson);
 
                 ResourceList = result.Value;
             }
@@ -118,7 +118,7 @@
     //    var url = "/ResoursesBookingPage/" + id + "/" + token.AccessToken;
     //    navigationManager.NavigateTo(url);
     //}
-    public void RowSelectedHandler(RowSelectEventArgs<BookableResourceBooking> args)
+    public void RowSelectedHandler(RowSelectEventArgs<BookedResource> args)
     {
         var id = args.Data.BookableResourceBookingId;
         var url = "/BookedResourcePage/" + id + "/" + token.AccessToken;

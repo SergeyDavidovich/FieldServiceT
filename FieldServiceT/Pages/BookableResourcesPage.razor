@@ -25,7 +25,8 @@
         <SfGrid @ref="DGrid" DataSource="@ResourceList" AllowPaging="true" AllowPdfExport="true" AllowExcelExport="true" AllowFiltering="true" AllowSorting="true" Toolbar=@Tool>
             <GridPageSettings PageCount="12" PageSizes="true"></GridPageSettings>
             <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
-            <GridEvents OnRecordDoubleClick="RecordDoubleClickHandler" TValue="BookableResource"></GridEvents>
+            @*<GridEvents OnRecordDoubleClick="RecordDoubleClickHandler" TValue="BookableResource"></GridEvents>*@
+            <GridEvents RowSelected="RowSelectedHandler" TValue="BookableResource"></GridEvents>
             <GridColumns>
                 <GridColumn Field=@nameof(BookableResource.BookableResourceId) HeaderText="Id"
                             HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" AutoFit="false" Width="160"></GridColumn>
@@ -93,10 +94,10 @@
         }
     }
 
-    public void RecordDoubleClickHandler(RecordDoubleClickEventArgs<BookableResource> args)
+    public void RowSelectedHandler(RowSelectEventArgs<BookableResource> args)
     {
-        var id = args.RowData.BookableResourceId;
-        var url = "/BookedResourcePage/" + id + "/" + token.AccessToken;
+        var id = args.Data.BookableResourceId;
+        var url = "/BookableResourcePage/" + id + "/" + token.AccessToken;
         navigationManager.NavigateTo(url);
     }
 

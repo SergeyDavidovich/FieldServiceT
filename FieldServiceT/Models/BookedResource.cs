@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FieldServiceT.Models
 {
-    public class BookableResourceBooking
+    public class BookedResource
     {
         [Key]
         public string BookableResourceBookingId { get; set; }

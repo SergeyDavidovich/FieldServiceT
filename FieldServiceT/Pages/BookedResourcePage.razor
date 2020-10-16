@@ -8,11 +8,12 @@
 @using System.Net.Http.Headers
 @using FieldServiceT.Models
 
-
-<h3>Booked Resource Page</h3>
-<h5>Resource ID: @ResourceId</h5>
-<h6>@Result</h6>
-<div style="visibility:collapse">Token: @Token</div>
+<div>
+    <h3>Booked Resource Page</h3>
+    <h5>Resource ID: @ResourceId</h5>
+    <h6>@Result</h6>
+    <div style="visibility:collapse">Token: @Token</div>
+</div>
 
 @code {
     [Parameter]
@@ -48,9 +49,9 @@
                 var response = await client.GetAsync(new Uri(resourceuri));
                 var strjson = await response.Content.ReadAsStringAsync();
 
-                var result = JsonConvert.DeserializeObject<ODataResponse<BookableResourceBooking>>(strjson);
+                var result = JsonConvert.DeserializeObject<ODataResponse<BookedResource>>(strjson);
 
-                var resource = result.Value.First<BookableResourceBooking>();
+                var resource = result.Value.First<BookedResource>();
 
                 Result = resource.Name;
             }
