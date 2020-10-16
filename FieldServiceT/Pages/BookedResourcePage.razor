@@ -7,12 +7,29 @@
 @using Newtonsoft.Json
 @using System.Net.Http.Headers
 @using FieldServiceT.Models
+@using Syncfusion.Blazor.Maps
+@using Syncfusion.Blazor.Cards
 
     <h3>Booked Resource Page</h3>
     <h5>Resource ID: @ResourceId</h5>
-    <h6>@Result</h6>
+<SfCard>
+    <CardHeader>
+        <p style="text-align:left">@Result</p>
+    </CardHeader>
+    <CardContent>
+        <SfMaps>
+            <MapsZoomSettings Enable="true"
+                Toolbars='new string[]{"Zoom", "ZoomIn", "ZoomOut", "Pan", "Reset" }'>
+            </MapsZoomSettings>
+            <MapsLayers>
+                <MapsLayer LayerType="ShapeLayerType.OSM"></MapsLayer>
+            </MapsLayers>
+        </SfMaps>
+    </CardContent>
+</SfCard>
 
 @code {
+    #region
     [Parameter]
     public string ResourceId { get; set; }
 
@@ -62,4 +79,5 @@
             set;
         }
     }
+    #endregion
 }

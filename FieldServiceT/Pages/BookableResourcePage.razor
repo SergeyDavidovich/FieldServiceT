@@ -7,10 +7,18 @@
 @using Newtonsoft.Json
 @using System.Net.Http.Headers
 @using FieldServiceT.Models
-
+@using Syncfusion.Blazor.Maps
 
 <h5>BookableResourceId: @ResourceId</h5>
 <h5>Name: @Result</h5>
+<SfMaps>
+    <MapsZoomSettings Enable="true"
+        Toolbars='new string[]{"Zoom", "ZoomIn", "ZoomOut", "Pan", "Reset" }'>
+    </MapsZoomSettings>
+    <MapsLayers>
+        <MapsLayer LayerType="ShapeLayerType.OSM"></MapsLayer>
+    </MapsLayers>
+</SfMaps>
 
 @code {
 
