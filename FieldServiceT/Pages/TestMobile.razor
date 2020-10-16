@@ -25,23 +25,24 @@
     <h6 style="color:white; padding:4px;">Bookable Resources Booking</h6>
     <div class="shadow" style="cursor:pointer; width:auto; padding:0px;">
         <SfGrid DataSource="@ResourceList" AllowFiltering="true" AllowSorting="true">
-            <GridFilterSettings Type="FilterType.FilterBar" Mode="FilterBarMode.Immediate"></GridFilterSettings>
-            <GridEvents OnRecordDoubleClick="RecordDoubleClickHandler" TValue="BookableResourceBooking"></GridEvents>
+            <GridFilterSettings Type="FilterType.CheckBox" Mode="FilterBarMode.Immediate"></GridFilterSettings>
+            @*<GridEvents OnRecordDoubleClick="RecordDoubleClickHandler" TValue="BookableResourceBooking"></GridEvents>*@
+            <GridEvents RowSelected="RowSelectedHandler" TValue="BookableResourceBooking"></GridEvents>
             <GridColumns>
                 <GridColumn Field=@nameof(BookableResourceBooking.BookableResourceBookingId) HeaderText="Id"
                             HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="0"></GridColumn>
                 <GridColumn Field=@nameof(BookableResourceBooking.Name) HeaderText="Name"
-                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="80"></GridColumn>
-                <GridColumn Field=@nameof(BookableResourceBooking.CreatedOn) HeaderText=""
-                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="80"></GridColumn>
+                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="60"></GridColumn>
+                <GridColumn Field=@nameof(BookableResourceBooking.CreatedOn) HeaderText="Created on"
+                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Format="D" Width="80"></GridColumn>
                 <GridColumn Field=@nameof(BookableResourceBooking.Duration) HeaderText="Duration"
-                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Center" Width="60"></GridColumn>
+                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="60"></GridColumn>
                 <GridColumn Field=@nameof(BookableResourceBooking.EndTime) HeaderText="End time"
-                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Left" Width="80"></GridColumn>
+                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Left" Width="80" HideAtMedia="(min-width: 700px)"></GridColumn>
                 <GridColumn Field=@nameof(BookableResourceBooking.ModifiedOn) HeaderText="Modified on"
-                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Center" Width="80"></GridColumn>
+                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="80" HideAtMedia="(min-width: 700px)"></GridColumn>
                 <GridColumn Field=@nameof(BookableResourceBooking.StatusName) HeaderText="Status"
-                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="50"></GridColumn>
+                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Left" Width="60"></GridColumn>
             </GridColumns>
         </SfGrid>
     </div>
@@ -111,10 +112,16 @@
         }
     }
 
-    public void RecordDoubleClickHandler(RecordDoubleClickEventArgs<BookableResourceBooking> args)
+    //public void RecordDoubleClickHandler(RecordDoubleClickEventArgs<BookableResourceBooking> args)
+    //{
+    //    var id = args.RowData.BookableResourceBookingId;
+    //    var url = "/ResoursesBookingPage/" + id + "/" + token.AccessToken;
+    //    navigationManager.NavigateTo(url);
+    //}
+    public void RowSelectedHandler(RowSelectEventArgs<BookableResourceBooking> args)
     {
-        var id = args.RowData.BookableResourceBookingId;
-        var url = "/ResoursesBookingPage/" + id + "/" + token.AccessToken;
+        var id = args.Data.BookableResourceBookingId;
+        var url = "/BookedResourcePage/" + id + "/" + token.AccessToken;
         navigationManager.NavigateTo(url);
     }
 
@@ -127,7 +134,6 @@
     .container {
         display: grid;
     }
-
         .container > div {
             background-color: brown;
         }

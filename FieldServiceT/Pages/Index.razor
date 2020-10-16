@@ -96,7 +96,7 @@
     public void RecordDoubleClickHandler(RecordDoubleClickEventArgs<BookableResource> args)
     {
         var id = args.RowData.BookableResourceId;
-        var url = "/BookableResourcePage/" + id + "/" + token.AccessToken;
+        var url = "/BookedResourcePage/" + id + "/" + token.AccessToken;
         navigationManager.NavigateTo(url);
     }
 

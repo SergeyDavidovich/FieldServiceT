@@ -1,0 +1,16 @@
+﻿@page "/BookedResourcePage/{ResourceId}/{Token}"
+
+<h3>Booked Resource Page</h3>
+<h5>Resource ID: @ResourceId</h5>
+<div style="visibility:collapse">Token: @Token</div>
+
+@code {
+    [Parameter]
+    public string ResourceId { get; set; }
+
+    [Parameter]
+    public string Token { get; set; }
+
+    [CascadingParameter]
+    RouteData RouteData { get; set; }
+}

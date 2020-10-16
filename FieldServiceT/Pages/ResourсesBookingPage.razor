@@ -1,4 +1,4 @@
-﻿@page "/ResoursesBookingPage"
+﻿@page "/ResourсesBookingPage"
 @attribute [Authorize]
 
 @using System.Collections.ObjectModel
@@ -119,7 +119,7 @@
     public void RecordDoubleClickHandler(RecordDoubleClickEventArgs<BookableResourceBooking> args)
     {
         var id = args.RowData.BookableResourceBookingId;
-        var url = "/ResoursesBookingPage/" + id + "/" + token.AccessToken;
+        var url = "/BookedResourcePage/" + id + "/" + token.AccessToken;
         navigationManager.NavigateTo(url);
     }
 
