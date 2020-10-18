@@ -1,0 +1,53 @@
+﻿@page "/MapPage"
+
+@using Syncfusion.Blazor.Maps
+@using Syncfusion.Blazor.Buttons
+@using FieldServiceT.Helpers
+@using AspNetMonsters.Blazor.Geolocation
+
+
+@inject LocationService  locationService
+
+<h3>Map Page</h3>
+
+<SfMaps>
+    <MapsLayers>
+        <MapsLayer LayerType="ShapeLayerType.OSM">
+            <MapsMarkerSettings>
+                <MapsMarker Visible="true" DataSource="Cities" Shape="MarkerType.Balloon" Height="35" Width="35" AnimationDuration="700">
+                    <MapsMarkerTooltipSettings ValuePath="Name" Visible="true">
+                    </MapsMarkerTooltipSettings>
+                </MapsMarker>
+            </MapsMarkerSettings>
+            <MapsShapeSettings Fill="lightgray"></MapsShapeSettings>
+        </MapsLayer>
+        <MapsZoomSettings Enable="true"></MapsZoomSettings>
+    </MapsLayers>
+</SfMaps>
+
+@code {
+
+    private List<City> Cities = new List<City>
+    {
+        new City {Latitude=50.5716595,Longitude=19.3219768, Name= "Żory"}
+        //new City { Latitude=40.724546, Longitude=-73.850344, Name="New York"},
+        //new City {Latitude= 41.657782, Longitude=-91.533857, Name="Iowa"}
+    };
+
+    public class City
+    {
+        public double Latitude;
+        public double Longitude;
+        public string Name;
+    };
+
+    public void OnMarkerClick(MouseEventArgs args)
+    {
+
+    }
+
+    //    Lat: 50.5716595
+    //    Long: 19.3219768
+}
+
+

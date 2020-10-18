@@ -1,32 +1,66 @@
 ﻿@page "/BookedResourcePage/{ResourceId}/{Token}"
+@*@attribute [Authorize]*@
+
+@inject LocationService  locationService
+
+@using AspNetMonsters.Blazor.Geolocation
 
 @using System.Text.Json
 @using Microsoft.OData
 @using Microsoft.OData.Client
 @using Newtonsoft.Json.Serialization
+@using System.Collections.ObjectModel
 @using Newtonsoft.Json
 @using System.Net.Http.Headers
 @using FieldServiceT.Models
 @using Syncfusion.Blazor.Maps
 @using Syncfusion.Blazor.Cards
+@using Syncfusion.Blazor.Buttons
 
-    <h3>Booked Resource Page</h3>
-    <h5>Resource ID: @ResourceId</h5>
-<SfCard>
-    <CardHeader>
-        <p style="text-align:left">@Result</p>
-    </CardHeader>
-    <CardContent>
-        <SfMaps>
-            <MapsZoomSettings Enable="true"
-                Toolbars='new string[]{"Zoom", "ZoomIn", "ZoomOut", "Pan", "Reset" }'>
-            </MapsZoomSettings>
-            <MapsLayers>
-                <MapsLayer LayerType="ShapeLayerType.OSM"></MapsLayer>
-            </MapsLayers>
-        </SfMaps>
-    </CardContent>
-</SfCard>
+<div>
+    <div id="top" style="margin-bottom:10px; padding:10px; margin:4px; border: solid 1px lightgray; font-size:smaller" class="card">
+        <button style="float:right" class="btn btn-primary btn-sm" type="button" @onclick="GetLocation">Get Location</button>
+        <p>Lat: @location?.Latitude</p>
+        <p>Long: @location?.Longitude</p>
+        <p>Accuracy: @location?.Accuracy</p>
+    </div>
+    <div id="grid">
+        <div>
+            <SfCard>
+                <CardHeader Title="Resource data:" SubTitle="@ResourceId"></CardHeader>
+                <CardContent>
+                    <div>Content</div>
+                </CardContent>
+                <CardContent EnableSeperator="true"></CardContent>
+                <CardFooter>
+                    <CardFooterContent>
+                        <div>
+                            <SfButton type="button" class="btn btn-success btn-sm">Button 1</SfButton>
+                            <SfButton type="button" class="btn btn-success btn-sm">Button 2</SfButton>
+                            <SfButton type="button" class="btn btn-success btn-sm">Button 3</SfButton>
+                            <SfButton type="button" class="btn btn-success btn-sm">Button 4</SfButton>
+                        </div>
+                    </CardFooterContent>
+                </CardFooter>
+            </SfCard>
+        </div>
+        <div>
+            <SfCard>
+                <CardHeader Title="Work order data:" SubTitle="@ResourceId"></CardHeader>
+                <CardContent>
+                    <div>Content</div>
+                </CardContent>
+                <CardContent EnableSeperator="true"></CardContent>
+                <CardFooter>
+                    <CardFooterContent>
+                        <div>
+                        </div>
+                    </CardFooterContent>
+                </CardFooter>
+            </SfCard>
+        </div>
+    </div>
+</div>
 
 @code {
     #region
@@ -39,14 +73,30 @@
     [CascadingParameter]
     RouteData RouteData { get; set; }
 
-
     string url = "https://eg8pfua3iofsrjt3zb.crm.dynamics.com/api/data/v9.0/bookableresourcebookings/";
 
     public string Result { get; set; }
 
+    Location location;
+    double Latitude;
+    double Longitude;
+    SfMaps CurrentMap { get; set; }
+
+
     protected override async Task OnInitializedAsync()
     {
         await GetResource();
+    }
+
+    private async Task GetLocation()
+    {
+        location = await locationService.GetLocationAsync();
+        Latitude = (double)location.Latitude;
+        Longitude = (double)location.Longitude;
+
+        var md = new MarkerData();
+
+        MarkerDataSource = md.GetData();
     }
 
     private async Task GetResource()
@@ -71,6 +121,7 @@
             }
         }
     }
+
     internal class ODataResponse<T>
     {
         public List<T> Value
@@ -79,5 +130,32 @@
             set;
         }
     }
+    public ObservableCollection<MarkerData> MarkerDataSource { get; set; }
+
+    public class MarkerData
+    {
+        public double latitude { get; set; }
+        public double longitude { get; set; }
+        public string name { get; set; }
+
+        public ObservableCollection<MarkerData> GetData()
+        {
+            ObservableCollection<MarkerData> MarkerDataSource = new ObservableCollection<MarkerData>() {
+                new MarkerData{ latitude= 50.5716595, longitude= 19.3219768, name= "Zory" }
+            };
+            return MarkerDataSource;
+        }
+    }
     #endregion
 }
+
+<style>
+    #grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, 1fr);
+        grid-template-rows: repeat(2, 300px);
+        grid-gap: 6px;
+    }
+</style>
+@*Lat: 50,5716595
+    Long: 19,3219768*@

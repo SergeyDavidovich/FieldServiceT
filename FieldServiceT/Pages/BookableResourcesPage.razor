@@ -1,6 +1,5 @@
 ﻿@page "/BookableResourcesPage"
-
-@attribute [Authorize]
+@*@attribute [Authorize]*@
 
 @using System.Collections.ObjectModel
 @using System.ComponentModel
@@ -8,7 +7,7 @@
 @using FieldServiceT.Models
 @using Newtonsoft.Json.Serialization
 @using Newtonsoft.Json
-
+@using Microsoft.Extensions.Configuration;
 
 @using FieldServiceT.Helpers
 @using Microsoft.IdentityModel.Clients.ActiveDirectory
@@ -50,7 +49,12 @@
     string Error { get; set; }
 
     string selectedId;
+
     string url = "https://eg8pfua3iofsrjt3zb.crm.dynamics.com/api/data/v9.0/bookableresources";
+
+    //string url =""
+
+
 
     AuthenticationResult token;
     List<BookableResource> ResourceList { get; set; }

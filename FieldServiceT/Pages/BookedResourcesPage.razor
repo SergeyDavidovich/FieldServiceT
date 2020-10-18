@@ -1,7 +1,8 @@
 ﻿@page "/"
 
-@attribute [Authorize]
+@*@attribute [Authorize]*@
 
+@using AspNetMonsters.Blazor.Geolocation
 @using System.Collections.ObjectModel
 @using System.ComponentModel
 @using Syncfusion.Blazor.Grids
@@ -23,6 +24,7 @@
 
 <div style="background-color:dodgerblue; width:auto; font-size:9px">
     <h6 style="color:white; padding:4px;">Booked Resources</h6>
+  
     <div class="shadow" style="cursor:pointer; width:auto; padding:0px;">
         <SfGrid DataSource="@ResourceList" AllowFiltering="true" AllowSorting="true">
             <GridFilterSettings Type="FilterType.CheckBox" Mode="FilterBarMode.Immediate"></GridFilterSettings>
@@ -66,12 +68,15 @@
     private List<BookedResource> ResourceList { get; set; }
     private (string, string) MyTuple;
 
+
     protected override async Task OnInitializedAsync()
     {
         ResourceList = new List<BookedResource>();
         await GetTokenAsync();
         await GetResources();
     }
+   
+
 
     private async Task GetTokenAsync()
     {
@@ -134,6 +139,7 @@
     .container {
         display: grid;
     }
+
         .container > div {
             background-color: brown;
         }
