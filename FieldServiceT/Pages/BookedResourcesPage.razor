@@ -37,13 +37,13 @@
                             HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="60"></GridColumn>
                 <GridColumn Field=@nameof(BookedResource.CreatedOn) HeaderText="Created on"
                             HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Format="D" Width="80"></GridColumn>
-                <GridColumn Field=@nameof(BookedResource.CreatedOn) HeaderText="Duration"
+                <GridColumn Field=@nameof(BookedResource.Duration) HeaderText="Duration"
                             HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="60"></GridColumn>
-                <GridColumn Field=@nameof(BookedResource.Duration) HeaderText="End time"
-                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="80" HideAtMedia="(min-width: 700px)"></GridColumn>
-                <GridColumn Field=@nameof(BookedResource.EndTime) HeaderText="Modified on"
-                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Left" Width="80" HideAtMedia="(min-width: 700px)"></GridColumn>
-                <GridColumn Field=@nameof(BookedResource.ModifiedOn) HeaderText="Status"
+                <GridColumn Field=@nameof(BookedResource.EndTime) HeaderText="End time"
+                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Format="D" Width="80" HideAtMedia="(min-width: 700px)"></GridColumn>
+                <GridColumn Field=@nameof(BookedResource.ModifiedOn) HeaderText="Modified on"
+                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Format="D" Width="80" HideAtMedia="(min-width: 700px)"></GridColumn>
+                <GridColumn Field=@nameof(BookedResource.StatusName) HeaderText="Status"
                             HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="60"></GridColumn>
             </GridColumns>
         </SfGrid>
@@ -75,8 +75,6 @@
         await GetTokenAsync();
         await GetResources();
     }
-   
-
 
     private async Task GetTokenAsync()
     {

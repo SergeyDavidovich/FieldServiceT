@@ -8,9 +8,11 @@
 
 @inject LocationService  locationService
 
-<h3>Map Page</h3>
+<h6 style="padding-left:16px">Map</h6>
 
 <SfMaps>
+    <MapsCenterPosition Latitude="40.7209" Longitude="-73.9680" />
+    <MapsZoomSettings Enable="true" ZoomFactor="10" />
     <MapsLayers>
         <MapsLayer LayerType="ShapeLayerType.OSM">
             <MapsMarkerSettings>
@@ -21,7 +23,6 @@
             </MapsMarkerSettings>
             <MapsShapeSettings Fill="lightgray"></MapsShapeSettings>
         </MapsLayer>
-        <MapsZoomSettings Enable="true"></MapsZoomSettings>
     </MapsLayers>
 </SfMaps>
 

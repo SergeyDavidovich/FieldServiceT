@@ -18,35 +18,48 @@
 @using Syncfusion.Blazor.Buttons
 
 <div>
-    <div id="top" style="margin-bottom:10px; padding:10px; margin:4px; border: solid 1px lightgray; font-size:smaller" class="card">
-        <button style="float:right" class="btn btn-primary btn-sm" type="button" @onclick="GetLocation">Get Location</button>
-        <p>Lat: @location?.Latitude</p>
-        <p>Long: @location?.Longitude</p>
-        <p>Accuracy: @location?.Accuracy</p>
+    <div id="top" style="margin-top:2px; margin-bottom:2px; padding-left:50px; padding-top:10px;  border: solid 1px lightgray; background-color:antiquewhite; font-size:smaller">
+        <button class="btn btn-primary btn-sm button-geo" type="button" @onclick="GetLocation">Location</button>
+        <p>Latitude: <b>@location?.Latitude</b></p>
+        <p>Longitude: <b>@location?.Longitude</b></p>
+        <button class="btn btn-danger btn-sm button-geo" type="button" @onclick="ResetLocation">Reset</button>
+        <p>Accuracy: <b>@location?.Accuracy</b></p>
     </div>
-    <div id="grid">
+    <div id="grid" style="font-size:smaller">
         <div>
             <SfCard>
-                <CardHeader Title="Resource data:" SubTitle="@ResourceId"></CardHeader>
+                <CardHeader Title="RESOURCE DATA"></CardHeader>
                 <CardContent>
-                    <div>Content</div>
+                    <div class="grid">
+                        <label>Resource id:</label>
+                        <label><b>@Resource.BookableResourceBookingId</b></label>
+                        <label>Created on:</label>
+                        <label><b>@Resource.CreatedOn</b></label>
+                        <label>Duration:</label>
+                        <label><b>@Resource.Duration</b></label>
+                        <label>End time:</label>
+                        <label><b>@Resource.EndTime</b></label>
+                        <label>Name:</label>
+                        <label><b>@Resource.Name</b></label>
+                        <label>Status:</label>
+                        <label><b>@Resource.StatusName</b></label>
+                    </div>
                 </CardContent>
-                <CardContent EnableSeperator="true"></CardContent>
                 <CardFooter>
                     <CardFooterContent>
-                        <div>
-                            <SfButton type="button" class="btn btn-success btn-sm">Button 1</SfButton>
-                            <SfButton type="button" class="btn btn-success btn-sm">Button 2</SfButton>
-                            <SfButton type="button" class="btn btn-success btn-sm">Button 3</SfButton>
-                            <SfButton type="button" class="btn btn-success btn-sm">Button 4</SfButton>
-                        </div>
                     </CardFooterContent>
                 </CardFooter>
             </SfCard>
         </div>
+        <div style="margin-left:10px;">
+            <SfButton type="button" class="btn btn-success btn-sm">Button 1</SfButton>
+            <SfButton type="button" class="btn btn-success btn-sm">Button 2</SfButton>
+            <SfButton type="button" class="btn btn-success btn-sm">Button 3</SfButton>
+            <SfButton type="button" class="btn btn-success btn-sm">Button 4</SfButton>
+        </div>
         <div>
             <SfCard>
-                <CardHeader Title="Work order data:" SubTitle="@ResourceId"></CardHeader>
+                <CardHeader Title="WORK ORDER DATA"></CardHeader>
                 <CardContent>
                     <div>Content</div>
                 </CardContent>
@@ -75,16 +88,16 @@
 
     string url = "https://eg8pfua3iofsrjt3zb.crm.dynamics.com/api/data/v9.0/bookableresourcebookings/";
 
-    public string Result { get; set; }
+    public BookedResource Resource { get; set; }
 
     Location location;
-    double Latitude;
-    double Longitude;
-    SfMaps CurrentMap { get; set; }
+    double? Latitude;
+    double? Longitude;
 
 
     protected override async Task OnInitializedAsync()
     {
+        Resource = new BookedResource();
         await GetResource();
     }
 
@@ -93,10 +106,12 @@
         location = await locationService.GetLocationAsync();
         Latitude = (double)location.Latitude;
         Longitude = (double)location.Longitude;
-
-        var md = new MarkerData();
-
-        MarkerDataSource = md.GetData();
+    }
+    private void ResetLocation()
+    {
+        location = null;
+        Latitude = null;
+        Longitude = null;
     }
 
     private async Task GetResource()
@@ -117,7 +132,7 @@
 
                 var resource = result.Value.First<BookedResource>();
 
-                Result = resource.Name;
+                Resource = resource;
             }
         }
     }
@@ -130,6 +145,7 @@
             set;
         }
     }
+
     public ObservableCollection<MarkerData> MarkerDataSource { get; set; }
 
     public class MarkerData
@@ -155,6 +171,23 @@
         grid-template-columns: repeat(auto-fit, 1fr);
         grid-template-rows: repeat(2, 300px);
         grid-gap: 6px;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-auto-rows: 2em;
+        grid-gap: .5em;
+    }
+
+    label {
+        color: black;
+    }
+
+    .button-geo {
+        float: right;
+        width:80px;
+        margin-right:4px;
     }
 </style>
 @*Lat: 50,5716595
