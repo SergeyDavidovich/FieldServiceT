@@ -1,5 +1,5 @@
 ﻿@page "/BookableResourcesPage"
-@*@attribute [Authorize]*@
+@attribute [Authorize]
 
 @using System.Collections.ObjectModel
 @using System.ComponentModel
@@ -48,13 +48,7 @@
     string CurrentToken { get; set; }
     string Error { get; set; }
 
-    string selectedId;
-
     string url = "https://eg8pfua3iofsrjt3zb.crm.dynamics.com/api/data/v9.0/bookableresources";
-
-    //string url =""
-
-
 
     AuthenticationResult token;
     List<BookableResource> ResourceList { get; set; }

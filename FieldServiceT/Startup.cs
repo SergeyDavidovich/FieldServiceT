@@ -16,6 +16,7 @@ using Microsoft.Extensions.Hosting;
 using FieldServiceT.Data;
 using Syncfusion.Blazor;
 using AspNetMonsters.Blazor.Geolocation;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace FieldServiceT
 {
@@ -53,34 +54,34 @@ namespace FieldServiceT
             services.AddSingleton<Helpers.BookableResourceService>();
         }
 
-    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-    {
-        if (env.IsDevelopment())
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseDeveloperExceptionPage();
-        }
-        else
-        {
-            app.UseExceptionHandler("/Error");
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-            app.UseHsts();
-        }
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
 
-        app.UseHttpsRedirection();
-        app.UseStaticFiles();
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
-        app.UseRouting();
+            app.UseRouting();
 
-        app.UseAuthentication();
-        //app.UseAuthorization();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
-        app.UseEndpoints(endpoints =>
+            app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
             endpoints.MapBlazorHub();
             endpoints.MapFallbackToPage("/_Host");
         });
+        }
     }
-}
 }

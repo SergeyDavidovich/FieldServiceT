@@ -1,0 +1,37 @@
+﻿// https://gist.github.com/SteveSandersonMS/175a08dcdccb384a52ba760122cd2eda
+
+@page "/TestMail"
+
+    @using Microsoft.AspNetCore.Authorization
+
+    <h3>TestMail</h3>
+    <h4>@UserName</h4>
+
+    @code {
+
+        string UserName { get; set; }
+
+        protected override async Task OnInitializedAsync()
+        {
+            await LogUsername();
+        }
+        [CascadingParameter] Task<AuthenticationState> authenticationStateTask { get; set; }
+
+        async Task LogUsername()
+        {
+            var authState = await authenticationStateTask;
+            UserName = authState.User.Identity.Name;
+
+
+            string systemuser_query = "systemusers?$select=systemuserid,fullname&$filter=internalemailaddress eq 'email'";
+
+            string bookableresources_query = "bookableresources?$select=bookableresourceid&$filter=_userid_value eq systemuserid)";
+
+            //if (user.Identity.IsAuthenticated)
+            //{
+            //}
+            //else
+            //{
+            //}
+        }
+    }
