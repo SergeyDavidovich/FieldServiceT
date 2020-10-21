@@ -6,16 +6,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+
 
 namespace FieldServiceT.Helpers
 {
-    public class BookableResourceService
+    public class BookableResourceBookingService
     {
-        private string baseUrl= "https://eg8pfua3iofsrjt3zb.crm.dynamics.com/api/data/v9.0/bookableresourcebookings";
-        public BookableResourceService()
-        {}
+        IConfiguration _configuration;
+        private string baseUrl;  // "https://eg8pfua3iofsrjt3zb.crm.dynamics.com/api/data/v9.0/bookableresourcebookings";
+
+        public BookableResourceBookingService(IConfiguration configuration)
+        {
+            _configuration = configuration;
+            baseUrl = configuration["BaseUrl"] + "bookableresourcebookings";
+        }
+
+        public BookableResourceBookingService()
+        { }
         public AuthenticationResult Token { get; set; }
-        public async Task<List<BookedResource>> GetResourcesAsync()
+        public async Task<List<BookedResource>> GetAllResourcesAsync()
         {
             {
                 //GET serviceRoot/ Me / Friends ?$filter = Friends / any(f: f / FirstName eq 'Scott')
@@ -26,7 +36,7 @@ namespace FieldServiceT.Helpers
 
                 string tempQuery = baseUrl + "?$select=name,createdon,duration&$expand=BookingStatus($select=name)";
 
-               var queryUri = new Uri(tempQuery);
+                var queryUri = new Uri(tempQuery);
 
                 using (var client = new System.Net.Http.HttpClient())
                 {

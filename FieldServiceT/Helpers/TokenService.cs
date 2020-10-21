@@ -7,6 +7,7 @@ using System.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using System.Configuration;
 using System.Net.Http.Headers;
+//using Microsoft.IdentityModel.Protocols;
 
 namespace FieldServiceT.Helpers
 {

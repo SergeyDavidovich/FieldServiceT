@@ -1,5 +1,4 @@
 ﻿@page "/"
-
 @*@attribute [Authorize]*@
 
 @using AspNetMonsters.Blazor.Geolocation
@@ -10,7 +9,7 @@
 @using Newtonsoft.Json.Serialization
 @using Newtonsoft.Json
 @using System.Text
-
+@using Microsoft.Extensions.Configuration
 
 @using FieldServiceT.Helpers
 @using Microsoft.IdentityModel.Clients.ActiveDirectory
@@ -22,9 +21,9 @@
 @inject NavigationManager navigationManager
 @inject BrowserService browserService
 
+
 <div style="background-color:dodgerblue; width:auto; font-size:9px">
     <h6 style="color:white; padding:4px;">Booked Resources</h6>
-  
     <div class="shadow" style="cursor:pointer; width:auto; padding:0px;">
         <SfGrid DataSource="@ResourceList" AllowFiltering="true" AllowSorting="true">
             <GridFilterSettings Type="FilterType.CheckBox" Mode="FilterBarMode.Immediate"></GridFilterSettings>
@@ -74,6 +73,7 @@
         ResourceList = new List<BookedResource>();
         await GetTokenAsync();
         await GetResources();
+
     }
 
     private async Task GetTokenAsync()

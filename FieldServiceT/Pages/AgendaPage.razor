@@ -1,8 +1,6 @@
 ﻿@page "/AgendaPage"
 
-@*@inject FieldServiceT.Helpers.BrowserService browserService*@
-@inject FieldServiceT.Helpers.BookableResourceService bookableResourceService
-@*@inject FieldServiceT.Helpers.TokenService*@
+@inject FieldServiceT.Helpers.BookableResourceBookingService bookableResourceBookingService
 
 @using Syncfusion.Blazor.Schedule
 @using Microsoft.IdentityModel.Clients.ActiveDirectory
@@ -27,12 +25,11 @@
 
 @code 
 {
-
     #region
     private AuthenticationResult token;
     private List<BookedResource> ResourceList { get; set; }
     private string CurrentToken { get; set; }
-    private DateTime CurrentDate = new DateTime(2020, 1, 9);
+    private DateTime CurrentDate = DateTime.Now;
 
     protected override async Task OnInitializedAsync()
     {
@@ -55,12 +52,8 @@
     }
     private async Task GetResources()
     {
-
-        var service = new BookableResourceService();
-
-        service.Token = token;
-
-        ResourceList = await service.GetResourcesAsync();
+        bookableResourceBookingService.Token = token;
+        ResourceList = await bookableResourceBookingService.GetAllResourcesAsync();
     }
 
     #endregion

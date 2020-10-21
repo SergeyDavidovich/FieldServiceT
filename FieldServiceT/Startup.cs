@@ -51,7 +51,7 @@ namespace FieldServiceT
             services.AddSingleton<WeatherForecastService>();
             services.AddSyncfusionBlazor();
             services.AddScoped<Helpers.BrowserService>();
-            services.AddSingleton<Helpers.BookableResourceService>();
+            services.AddSingleton<Helpers.BookableResourceBookingService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
