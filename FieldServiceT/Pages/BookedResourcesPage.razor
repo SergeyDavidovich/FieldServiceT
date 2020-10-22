@@ -28,22 +28,22 @@
         <SfGrid DataSource="@resourceList" AllowFiltering="true" AllowSorting="true">
             <GridFilterSettings Type="FilterType.CheckBox" Mode="FilterBarMode.Immediate"></GridFilterSettings>
             @*<GridEvents OnRecordDoubleClick="RecordDoubleClickHandler" TValue="BookableResourceBooking"></GridEvents>*@
-            <GridEvents RowSelected="RowSelectedHandler" TValue="BookedResource"></GridEvents>
+            <GridEvents RowSelected="RowSelectedHandler" TValue="BookedResourceScreen"></GridEvents>
             <GridColumns>
-                <GridColumn Field=@nameof(BookedResource.BookableResourceBookingId) HeaderText="Id"
-                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="0"></GridColumn>
-                <GridColumn Field=@nameof(BookedResource.Name) HeaderText="Name"
+                <GridColumn Field=@nameof(BookedResourceScreen.BookableResourceBookingId) HeaderText="Id"
+                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="0"></GridColumn>
+                <GridColumn Field=@nameof(BookedResourceScreen.Name) HeaderText="NAME"
                             HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="60"></GridColumn>
-                <GridColumn Field=@nameof(BookedResource.CreatedOn) HeaderText="Created on"
-                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Format="D" Width="80"></GridColumn>
-                <GridColumn Field=@nameof(BookedResource.Duration) HeaderText="Duration"
-                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="60"></GridColumn>
-                <GridColumn Field=@nameof(BookedResource.EndTime) HeaderText="End time"
-                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Format="D" Width="80" HideAtMedia="(min-width: 700px)"></GridColumn>
-                <GridColumn Field=@nameof(BookedResource.ModifiedOn) HeaderText="Modified on"
-                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Format="D" Width="80" HideAtMedia="(min-width: 700px)"></GridColumn>
-                <GridColumn Field=@nameof(BookedResource.StatusName) HeaderText="Status"
-                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="60"></GridColumn>
+                <GridColumn Field=@nameof(BookedResourceScreen.StartTime) HeaderText="START TIME"
+                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Format="D" Width="80"></GridColumn>
+                <GridColumn Field=@nameof(BookedResourceScreen.EndTime) HeaderText="END TIME"
+                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Format="D" Width="60"></GridColumn>
+                <GridColumn Field=@nameof(BookedResourceScreen.WOName) HeaderText="WO NAME"
+                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="60" HideAtMedia="(min-width: 700px)"></GridColumn>
+                <GridColumn Field=@nameof(BookedResourceScreen.WOAddress1) HeaderText="ADDRESS1"
+                                HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="60"></GridColumn>
+                    <GridColumn Field=@nameof(BookedResourceScreen.WOAddressName) HeaderText="ADDRESS NAME"
+                                HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="80" HideAtMedia="(min-width: 500px)"></GridColumn>
             </GridColumns>
         </SfGrid>
     </div>
@@ -67,13 +67,13 @@
     private string systemuserId;
     private string bookableResourceId;
 
-    private List<BookedResource> resourceList { get; set; }
+    private List<BookedResourceScreen> resourceList { get; set; }
 
     [CascadingParameter] Task<AuthenticationState> authenticationStateTask { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        resourceList = new List<BookedResource>();
+        resourceList = new List<BookedResourceScreen>();
 
         await GetTokenAsync();
 
@@ -145,7 +145,7 @@
         }
     }
 
-    private async Task<List<BookedResource>> GetBookableResourceBookingsAsync()
+    private async Task<List<BookedResourceScreen>> GetBookableResourceBookingsAsync()
     {
         string query = baseUrl + "bookableresourcebookings";
         query += "?$filter=_resource_value eq '" + bookableResourceId + "'";
@@ -161,11 +161,25 @@
 
             var result = JsonConvert.DeserializeObject<ODataResponse<BookedResource>>(strjson).Value;
 
-            return result;
+            //var list = new List<BookedResourceScreen>();
+
+            var list = result.Select(res => new BookedResourceScreen()
+            {
+                BookableResourceBookingId = res.BookableResourceBookingId,
+                Name = res.Name,
+                StartTime = res.StartTime,
+                EndTime = res.EndTime,
+                WOName = res.WorkOrder == null ? "" : res.WorkOrder.Name,
+                WOAddressName = res.WorkOrder == null ? "" : res.WorkOrder.Addressname,
+                WOAddress1 = res.WorkOrder == null ? "" : res.WorkOrder.Address1
+            }
+            );
+
+            return list.ToList<BookedResourceScreen>();
         }
     }
 
-    public void RowSelectedHandler(RowSelectEventArgs<BookedResource> args)
+    public void RowSelectedHandler(RowSelectEventArgs<BookedResourceScreen> args)
     {
         var id = args.Data.BookableResourceBookingId;
         var url = "/BookedResourcePage/" + id + "/" + token.AccessToken;
@@ -174,6 +188,18 @@
 
     internal class ODataResponse<T>
     { public List<T> Value { get; set; } }
+
+    public class BookedResourceScreen
+    {
+        public string BookableResourceBookingId { get; set; }
+        public string Name { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
+
+        public string WOName { get; set; }
+        public string WOAddress1 { get; set; }
+        public string WOAddressName { get; set; }
+    }
 
     #endregion
 }

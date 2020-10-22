@@ -36,10 +36,10 @@
     </div>
     <h6 style="color:white; padding:4px;">Booked Resources</h6>
     <div class="shadow" style="cursor:pointer; width:auto; padding:0px;">
-        <SfGrid DataSource="@resourceList" AllowFiltering="true" AllowSorting="true">
-            <GridFilterSettings Type="FilterType.CheckBox" Mode="FilterBarMode.Immediate"></GridFilterSettings>
+        <!--<SfGrid DataSource="@resourceList" AllowFiltering="true" AllowSorting="true">
+            <GridFilterSettings Type="FilterType.CheckBox" Mode="FilterBarMode.Immediate"></GridFilterSettings>-->
             @*<GridEvents OnRecordDoubleClick="RecordDoubleClickHandler" TValue="BookableResourceBooking"></GridEvents>*@
-            <GridEvents RowSelected="RowSelectedHandler" TValue="BookedResource"></GridEvents>
+            <!--<GridEvents RowSelected="RowSelectedHandler" TValue="BookedResource"></GridEvents>
             <GridColumns>
                 <GridColumn Field=@nameof(BookedResource.BookableResourceBookingId) HeaderText="Id"
                             HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="0"></GridColumn>
@@ -52,11 +52,11 @@
                 <GridColumn Field=@nameof(BookedResource.EndTime) HeaderText="End time"
                             HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Format="D" Width="80" HideAtMedia="(min-width: 700px)"></GridColumn>
                 <GridColumn Field=@nameof(BookedResource.ModifiedOn) HeaderText="Modified on"
-                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Format="D" Width="80" HideAtMedia="(min-width: 700px)"></GridColumn>
-                <GridColumn Field=@nameof(BookedResource.StatusName) HeaderText="Status"
-                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="60"></GridColumn>
-            </GridColumns>
-        </SfGrid>
+                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Format="D" Width="80" HideAtMedia="(min-width: 700px)"></GridColumn>-->
+                @*<GridColumn Field=@nameof(BookedResource.StatusName) HeaderText="Status"
+                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="60"></GridColumn>*@
+            <!--</GridColumns>
+        </SfGrid>-->
     </div>
 </div>
 
