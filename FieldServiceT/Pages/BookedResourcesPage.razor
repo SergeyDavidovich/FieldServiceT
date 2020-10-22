@@ -27,7 +27,6 @@
     <div class="shadow" style="cursor:pointer; width:auto; padding:0px;">
         <SfGrid DataSource="@resourceList" AllowFiltering="true" AllowSorting="true">
             <GridFilterSettings Type="FilterType.CheckBox" Mode="FilterBarMode.Immediate"></GridFilterSettings>
-            @*<GridEvents OnRecordDoubleClick="RecordDoubleClickHandler" TValue="BookableResourceBooking"></GridEvents>*@
             <GridEvents RowSelected="RowSelectedHandler" TValue="BookedResourceScreen"></GridEvents>
             <GridColumns>
                 <GridColumn Field=@nameof(BookedResourceScreen.BookableResourceBookingId) HeaderText="Id"

@@ -1,6 +1,4 @@
-﻿@* https://gist.github.com/SteveSandersonMS/175a08dcdccb384a52ba760122cd2eda*@
-
-@page "/TestMail"
+﻿@page "/TestMail"
 @*@attribute [Authorize]*@
 
 @using AspNetMonsters.Blazor.Geolocation
@@ -12,7 +10,6 @@
 @using Newtonsoft.Json
 @using System.Text
 @using Microsoft.Extensions.Configuration
-@using Syncfusion.Blazor.Inputs
 
 @using FieldServiceT.Helpers
 @using Microsoft.IdentityModel.Clients.ActiveDirectory
@@ -21,42 +18,37 @@
 @using Microsoft.OData
 @using Microsoft.OData.Client
 @using Microsoft.AspNetCore.Authorization
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Buttons
 
 @inject NavigationManager navigationManager
 @inject BrowserService browserService
 
-<div style="background-color:white; width:auto; font-size:9px">
-    <div style="font-size:12px;">
-        <div style="float:left; top:40px">
-            <SfTextBox @ref="@TextBoxMail" Width="300px" Placeholder="e-mail" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
-        </div>
-        <div style="background-color:lightcyan; bottom:20px">
-            <SfButton class="btn btn-info">Click</SfButton>
-        </div>
-    </div>
+<div style="background-color:dodgerblue; width:auto; font-size:9px">
+    <SfTextBox @ref="MailText"></SfTextBox>
+    <SfButton  @onclick="OnButtonStartClick">START</SfButton>
     <h6 style="color:white; padding:4px;">Booked Resources</h6>
     <div class="shadow" style="cursor:pointer; width:auto; padding:0px;">
-        <!--<SfGrid DataSource="@resourceList" AllowFiltering="true" AllowSorting="true">
-            <GridFilterSettings Type="FilterType.CheckBox" Mode="FilterBarMode.Immediate"></GridFilterSettings>-->
-            @*<GridEvents OnRecordDoubleClick="RecordDoubleClickHandler" TValue="BookableResourceBooking"></GridEvents>*@
-            <!--<GridEvents RowSelected="RowSelectedHandler" TValue="BookedResource"></GridEvents>
+        <SfGrid DataSource="@resourceList" AllowFiltering="true" AllowSorting="true">
+            <GridFilterSettings Type="FilterType.CheckBox" Mode="FilterBarMode.Immediate"></GridFilterSettings>
+            <GridEvents RowSelected="RowSelectedHandler" TValue="BookedResourceScreen"></GridEvents>
             <GridColumns>
-                <GridColumn Field=@nameof(BookedResource.BookableResourceBookingId) HeaderText="Id"
-                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="0"></GridColumn>
-                <GridColumn Field=@nameof(BookedResource.Name) HeaderText="Name"
+                <GridColumn Field=@nameof(BookedResourceScreen.BookableResourceBookingId) HeaderText="Id"
+                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="0"></GridColumn>
+                <GridColumn Field=@nameof(BookedResourceScreen.Name) HeaderText="NAME"
                             HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="60"></GridColumn>
-                <GridColumn Field=@nameof(BookedResource.CreatedOn) HeaderText="Created on"
-                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Format="D" Width="80"></GridColumn>
-                <GridColumn Field=@nameof(BookedResource.Duration) HeaderText="Duration"
-                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="60"></GridColumn>
-                <GridColumn Field=@nameof(BookedResource.EndTime) HeaderText="End time"
-                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Format="D" Width="80" HideAtMedia="(min-width: 700px)"></GridColumn>
-                <GridColumn Field=@nameof(BookedResource.ModifiedOn) HeaderText="Modified on"
-                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Format="D" Width="80" HideAtMedia="(min-width: 700px)"></GridColumn>-->
-                @*<GridColumn Field=@nameof(BookedResource.StatusName) HeaderText="Status"
-                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="60"></GridColumn>*@
-            <!--</GridColumns>
-        </SfGrid>-->
+                <GridColumn Field=@nameof(BookedResourceScreen.StartTime) HeaderText="START TIME"
+                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Format="D" Width="80"></GridColumn>
+                <GridColumn Field=@nameof(BookedResourceScreen.EndTime) HeaderText="END TIME"
+                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Format="D" Width="60"></GridColumn>
+                <GridColumn Field=@nameof(BookedResourceScreen.WOName) HeaderText="WO NAME"
+                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="60" HideAtMedia="(min-width: 700px)"></GridColumn>
+                <GridColumn Field=@nameof(BookedResourceScreen.WOAddress1) HeaderText="ADDRESS1"
+                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="60"></GridColumn>
+                <GridColumn Field=@nameof(BookedResourceScreen.WOAddressName) HeaderText="ADDRESS NAME"
+                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="80" HideAtMedia="(min-width: 500px)"></GridColumn>
+            </GridColumns>
+        </SfGrid>
     </div>
 </div>
 
@@ -67,7 +59,7 @@
     // https://42clouds.com/ru-ru/techdocs/interfeys-odata-vozmozhnosti-i-nastroyka.html#link10
 
     #region Code
-    private SfTextBox TextBoxMail { get; set; }
+
     private string CurrentToken { get; set; }
     private string Error { get; set; }
     private string selectedId;
@@ -78,13 +70,34 @@
     private string systemuserId;
     private string bookableResourceId;
 
-    private List<BookedResource> resourceList { get; set; }
+    private List<BookedResourceScreen> resourceList { get; set; }
 
     [CascadingParameter] Task<AuthenticationState> authenticationStateTask { get; set; }
 
+    SfTextBox MailText { get; set; }
+
+    public async Task OnButtonStartClick(MouseEventArgs args)
+    {
+        resourceList = new List<BookedResourceScreen>();
+
+        await GetTokenAsync();
+
+        userMail = MailText.Value;
+
+        systemuserId = await GetSystemUserIdAsync();
+
+        bookableResourceId = await GetBookableResourceAsync();
+        if (bookableResourceId == null)
+        {
+            resourceList = null;
+            return;
+        }
+        resourceList = await GetBookableResourceBookingsAsync();
+    }
+
     protected override async Task OnInitializedAsync()
     {
-        //resourceList = new List<BookedResource>();
+        //resourceList = new List<BookedResourceScreen>();
 
         //await GetTokenAsync();
 
@@ -115,10 +128,8 @@
 
     private async Task<string> GetUserMailAsync()
     {
-        //var authState = await authenticationStateTask;
-        //return authState.User.Identity.Name;
-        string mail = TextBoxMail.Value;
-        return mail;
+        var authState = await authenticationStateTask;
+        return authState.User.Identity.Name;
     }
 
     private async Task<string> GetSystemUserIdAsync()
@@ -158,13 +169,12 @@
         }
     }
 
-    private async Task<List<BookedResource>> GetBookableResourceBookingsAsync()
+    private async Task<List<BookedResourceScreen>> GetBookableResourceBookingsAsync()
     {
-        //todo: отладить запрос и вопорсы по выводимым полям
         string query = baseUrl + "bookableresourcebookings";
         query += "?$filter=_resource_value eq '" + bookableResourceId + "'";
-        query += "?$select=name,createdon,duration";
-        query += "&$expand=BookingStatus($select = name, address1)";
+        query += "&$select=name,starttime,endtime";
+        query += "&$expand=msdyn_workorder($select = msdyn_name, msdyn_address1,msdyn_addressname)";
 
         using (var client = new System.Net.Http.HttpClient())
         {
@@ -175,11 +185,25 @@
 
             var result = JsonConvert.DeserializeObject<ODataResponse<BookedResource>>(strjson).Value;
 
-            return result;
+            //var list = new List<BookedResourceScreen>();
+
+            var list = result.Select(res => new BookedResourceScreen()
+            {
+                BookableResourceBookingId = res.BookableResourceBookingId,
+                Name = res.Name,
+                StartTime = res.StartTime,
+                EndTime = res.EndTime,
+                WOName = res.WorkOrder == null ? "" : res.WorkOrder.Name,
+                WOAddressName = res.WorkOrder == null ? "" : res.WorkOrder.Addressname,
+                WOAddress1 = res.WorkOrder == null ? "" : res.WorkOrder.Address1
+            }
+            );
+
+            return list.ToList<BookedResourceScreen>();
         }
     }
 
-    public void RowSelectedHandler(RowSelectEventArgs<BookedResource> args)
+    public void RowSelectedHandler(RowSelectEventArgs<BookedResourceScreen> args)
     {
         var id = args.Data.BookableResourceBookingId;
         var url = "/BookedResourcePage/" + id + "/" + token.AccessToken;
@@ -188,6 +212,18 @@
 
     internal class ODataResponse<T>
     { public List<T> Value { get; set; } }
+
+    public class BookedResourceScreen
+    {
+        public string BookableResourceBookingId { get; set; }
+        public string Name { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
+
+        public string WOName { get; set; }
+        public string WOAddress1 { get; set; }
+        public string WOAddressName { get; set; }
+    }
 
     #endregion
 }
