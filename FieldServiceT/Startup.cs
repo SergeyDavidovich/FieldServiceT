@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using FieldServiceT.Data;
 using Syncfusion.Blazor;
 using AspNetMonsters.Blazor.Geolocation;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -48,7 +47,6 @@ namespace FieldServiceT
 
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
             services.AddSyncfusionBlazor();
             services.AddScoped<Helpers.BrowserService>();
             services.AddSingleton<Helpers.BookableResourceBookingService>();

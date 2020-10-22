@@ -17,15 +17,15 @@
 @using System.Text.Json
 @using Microsoft.OData
 @using Microsoft.OData.Client
+@using Microsoft.AspNetCore.Authorization
 
 @inject NavigationManager navigationManager
 @inject BrowserService browserService
 
-
 <div style="background-color:dodgerblue; width:auto; font-size:9px">
     <h6 style="color:white; padding:4px;">Booked Resources</h6>
     <div class="shadow" style="cursor:pointer; width:auto; padding:0px;">
-        <SfGrid DataSource="@ResourceList" AllowFiltering="true" AllowSorting="true">
+        <SfGrid DataSource="@resourceList" AllowFiltering="true" AllowSorting="true">
             <GridFilterSettings Type="FilterType.CheckBox" Mode="FilterBarMode.Immediate"></GridFilterSettings>
             @*<GridEvents OnRecordDoubleClick="RecordDoubleClickHandler" TValue="BookableResourceBooking"></GridEvents>*@
             <GridEvents RowSelected="RowSelectedHandler" TValue="BookedResource"></GridEvents>
@@ -48,39 +48,52 @@
         </SfGrid>
     </div>
 </div>
+
 @code
 {
     // https://docs.microsoft.com/en-us/dynamics365/customer-engagement/web-api/bookableresourcebooking?view=dynamics-ce-odata-9
-    //https://docs.microsoft.com/en-us/dynamics365/customer-engagement/web-api/bookableresourcebooking?view=dynamics-ce-odata-9#single-valued-navigation-properties
-    //https://42clouds.com/ru-ru/techdocs/interfeys-odata-vozmozhnosti-i-nastroyka.html#link10
+    // https://docs.microsoft.com/en-us/dynamics365/customer-engagement/web-api/bookableresourcebooking?view=dynamics-ce-odata-9#single-valued-navigation-properties
+    // https://42clouds.com/ru-ru/techdocs/interfeys-odata-vozmozhnosti-i-nastroyka.html#link10
 
     #region Code
 
     private string CurrentToken { get; set; }
     private string Error { get; set; }
-
     private string selectedId;
-    private string baseUrl = "https://eg8pfua3iofsrjt3zb.crm.dynamics.com/api/data/v9.0/bookableresourcebookings";
-    private Uri queryUri;
 
+    private string baseUrl = "https://eg8pfua3iofsrjt3zb.crm.dynamics.com/api/data/v9.0/";
     private AuthenticationResult token;
-    private List<BookedResource> ResourceList { get; set; }
-    private (string, string) MyTuple;
+    private string userMail;
+    private string systemuserId;
+    private string bookableResourceId;
 
+    private List<BookedResource> resourceList { get; set; }
+
+    [CascadingParameter] Task<AuthenticationState> authenticationStateTask { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        ResourceList = new List<BookedResource>();
-        await GetTokenAsync();
-        await GetResources();
+        resourceList = new List<BookedResource>();
 
+        await GetTokenAsync();
+
+        userMail = await GetUserMailAsync();
+        systemuserId = await GetSystemUserIdAsync();
+
+        bookableResourceId = await GetBookableResourceAsync();
+        if (bookableResourceId == null)
+        {
+            resourceList = null;
+            return;
+        }
+        resourceList = await GetBookableResourceBookingsAsync();
     }
 
     private async Task GetTokenAsync()
     {
         try
         {
-            token = await TokenService.GetAuthenticationResult();
+            token = await TokenService.GetAuthenticationResultAsync();
             CurrentToken = token.AccessToken;
         }
         catch (Exception e)
@@ -88,39 +101,70 @@
             CurrentToken = $"ERROR! - {e.Message}";
         }
     }
-    private async Task GetResources()
+
+    private async Task<string> GetUserMailAsync()
+    {
+        var authState = await authenticationStateTask;
+        return authState.User.Identity.Name;
+    }
+
+    private async Task<string> GetSystemUserIdAsync()
+    {
+        string query = baseUrl + "systemusers?$select=systemuserid,fullname&$filter=internalemailaddress eq '" + userMail + "'";
+        using (var client = new System.Net.Http.HttpClient())
+        {
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
+            var response = await client.GetAsync(new Uri(query));
+            var strjson = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<ODataResponse<SystemUser>>(strjson).Value.First<SystemUser>();
+            return result.SystemUserId;
+        }
+    }
+
+    private async Task<string> GetBookableResourceAsync()
     {
         {
-            //GET serviceRoot/ Me / Friends ?$filter = Friends / any(f: f / FirstName eq 'Scott')
-            // baseUrl qBuilder ?$filter = bookingstatuses/any(s:s/bookingstatusid eq _bookingstatus_value
-
-            //$select = Id,Name &$expand = RelatedObj($select = PropertyName)
-            //EntitySet ?$select = Id,Name,RelatedObj / PropertyName &$expand = RelatedObj
-
-            string tempQuery = baseUrl + "?$select=name,createdon,duration&$expand=BookingStatus($select=name)";
-
-            queryUri = new Uri(tempQuery);
+            string query = baseUrl + "bookableresources";
+            query += "?$select=bookableresourceid";
+            query += "&$filter=_userid_value eq '" + systemuserId + "'";
 
             using (var client = new System.Net.Http.HttpClient())
             {
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
 
-                var response = await client.GetAsync(queryUri);
+                var response = await client.GetAsync(new Uri(query));
                 var strjson = await response.Content.ReadAsStringAsync();
 
-                var result = JsonConvert.DeserializeObject<ODataResponse<BookedResource>>(strjson);
+                var result = JsonConvert.DeserializeObject<ODataResponse<BookableResource>>(strjson).Value.FirstOrDefault<BookableResource>();
 
-                ResourceList = result.Value;
+                if (result == null)
+                    return null;
+                else
+                    return result.BookableResourceId;
             }
         }
     }
 
-    //public void RecordDoubleClickHandler(RecordDoubleClickEventArgs<BookableResourceBooking> args)
-    //{
-    //    var id = args.RowData.BookableResourceBookingId;
-    //    var url = "/ResoursesBookingPage/" + id + "/" + token.AccessToken;
-    //    navigationManager.NavigateTo(url);
-    //}
+    private async Task<List<BookedResource>> GetBookableResourceBookingsAsync()
+    {
+        string query = baseUrl + "bookableresourcebookings";
+        query += "?$filter=_resource_value eq '" + bookableResourceId + "'";
+        query += "&$select=name,starttime,endtime";
+        query += "&$expand=msdyn_workorder($select = msdyn_name, msdyn_address1,msdyn_addressname)";
+
+        using (var client = new System.Net.Http.HttpClient())
+        {
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
+
+            var response = await client.GetAsync(new Uri(query));
+            var strjson = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<ODataResponse<BookedResource>>(strjson).Value;
+
+            return result;
+        }
+    }
+
     public void RowSelectedHandler(RowSelectEventArgs<BookedResource> args)
     {
         var id = args.Data.BookableResourceBookingId;

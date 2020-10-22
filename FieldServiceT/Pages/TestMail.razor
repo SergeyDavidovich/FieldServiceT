@@ -1,37 +1,203 @@
-﻿// https://gist.github.com/SteveSandersonMS/175a08dcdccb384a52ba760122cd2eda
+﻿@* https://gist.github.com/SteveSandersonMS/175a08dcdccb384a52ba760122cd2eda*@
 
 @page "/TestMail"
+@*@attribute [Authorize]*@
 
-    @using Microsoft.AspNetCore.Authorization
+@using AspNetMonsters.Blazor.Geolocation
+@using System.Collections.ObjectModel
+@using System.ComponentModel
+@using Syncfusion.Blazor.Grids
+@using FieldServiceT.Models
+@using Newtonsoft.Json.Serialization
+@using Newtonsoft.Json
+@using System.Text
+@using Microsoft.Extensions.Configuration
+@using Syncfusion.Blazor.Inputs
 
-    <h3>TestMail</h3>
-    <h4>@UserName</h4>
+@using FieldServiceT.Helpers
+@using Microsoft.IdentityModel.Clients.ActiveDirectory
+@using System.Net.Http.Headers
+@using System.Text.Json
+@using Microsoft.OData
+@using Microsoft.OData.Client
+@using Microsoft.AspNetCore.Authorization
 
-    @code {
+@inject NavigationManager navigationManager
+@inject BrowserService browserService
 
-        string UserName { get; set; }
+<div style="background-color:white; width:auto; font-size:9px">
+    <div style="font-size:12px;">
+        <div style="float:left; top:40px">
+            <SfTextBox @ref="@TextBoxMail" Width="300px" Placeholder="e-mail" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
+        </div>
+        <div style="background-color:lightcyan; bottom:20px">
+            <SfButton class="btn btn-info">Click</SfButton>
+        </div>
+    </div>
+    <h6 style="color:white; padding:4px;">Booked Resources</h6>
+    <div class="shadow" style="cursor:pointer; width:auto; padding:0px;">
+        <SfGrid DataSource="@resourceList" AllowFiltering="true" AllowSorting="true">
+            <GridFilterSettings Type="FilterType.CheckBox" Mode="FilterBarMode.Immediate"></GridFilterSettings>
+            @*<GridEvents OnRecordDoubleClick="RecordDoubleClickHandler" TValue="BookableResourceBooking"></GridEvents>*@
+            <GridEvents RowSelected="RowSelectedHandler" TValue="BookedResource"></GridEvents>
+            <GridColumns>
+                <GridColumn Field=@nameof(BookedResource.BookableResourceBookingId) HeaderText="Id"
+                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="0"></GridColumn>
+                <GridColumn Field=@nameof(BookedResource.Name) HeaderText="Name"
+                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="60"></GridColumn>
+                <GridColumn Field=@nameof(BookedResource.CreatedOn) HeaderText="Created on"
+                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Format="D" Width="80"></GridColumn>
+                <GridColumn Field=@nameof(BookedResource.Duration) HeaderText="Duration"
+                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="60"></GridColumn>
+                <GridColumn Field=@nameof(BookedResource.EndTime) HeaderText="End time"
+                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Format="D" Width="80" HideAtMedia="(min-width: 700px)"></GridColumn>
+                <GridColumn Field=@nameof(BookedResource.ModifiedOn) HeaderText="Modified on"
+                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Format="D" Width="80" HideAtMedia="(min-width: 700px)"></GridColumn>
+                <GridColumn Field=@nameof(BookedResource.StatusName) HeaderText="Status"
+                            HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="60"></GridColumn>
+            </GridColumns>
+        </SfGrid>
+    </div>
+</div>
 
-        protected override async Task OnInitializedAsync()
+@code
+{
+    // https://docs.microsoft.com/en-us/dynamics365/customer-engagement/web-api/bookableresourcebooking?view=dynamics-ce-odata-9
+    // https://docs.microsoft.com/en-us/dynamics365/customer-engagement/web-api/bookableresourcebooking?view=dynamics-ce-odata-9#single-valued-navigation-properties
+    // https://42clouds.com/ru-ru/techdocs/interfeys-odata-vozmozhnosti-i-nastroyka.html#link10
+
+    #region Code
+    private SfTextBox TextBoxMail { get; set; }
+    private string CurrentToken { get; set; }
+    private string Error { get; set; }
+    private string selectedId;
+
+    private string baseUrl = "https://eg8pfua3iofsrjt3zb.crm.dynamics.com/api/data/v9.0/";
+    private AuthenticationResult token;
+    private string userMail;
+    private string systemuserId;
+    private string bookableResourceId;
+
+    private List<BookedResource> resourceList { get; set; }
+
+    [CascadingParameter] Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        //resourceList = new List<BookedResource>();
+
+        //await GetTokenAsync();
+
+        //userMail = await GetUserMailAsync();
+        //systemuserId = await GetSystemUserIdAsync();
+
+        //bookableResourceId = await GetBookableResourceAsync();
+        //if (bookableResourceId == null)
+        //{
+        //    resourceList = null;
+        //    return;
+        //}
+        //resourceList = await GetBookableResourceBookingsAsync();
+    }
+
+    private async Task GetTokenAsync()
+    {
+        try
         {
-            await LogUsername();
+            token = await TokenService.GetAuthenticationResultAsync();
+            CurrentToken = token.AccessToken;
         }
-        [CascadingParameter] Task<AuthenticationState> authenticationStateTask { get; set; }
-
-        async Task LogUsername()
+        catch (Exception e)
         {
-            var authState = await authenticationStateTask;
-            UserName = authState.User.Identity.Name;
-
-
-            string systemuser_query = "systemusers?$select=systemuserid,fullname&$filter=internalemailaddress eq 'email'";
-
-            string bookableresources_query = "bookableresources?$select=bookableresourceid&$filter=_userid_value eq systemuserid)";
-
-            //if (user.Identity.IsAuthenticated)
-            //{
-            //}
-            //else
-            //{
-            //}
+            CurrentToken = $"ERROR! - {e.Message}";
         }
     }
+
+    private async Task<string> GetUserMailAsync()
+    {
+        //var authState = await authenticationStateTask;
+        //return authState.User.Identity.Name;
+        string mail = TextBoxMail.Value;
+        return mail;
+    }
+
+    private async Task<string> GetSystemUserIdAsync()
+    {
+        string query = baseUrl + "systemusers?$select=systemuserid,fullname&$filter=internalemailaddress eq '" + userMail + "'";
+        using (var client = new System.Net.Http.HttpClient())
+        {
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
+            var response = await client.GetAsync(new Uri(query));
+            var strjson = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<ODataResponse<SystemUser>>(strjson).Value.First<SystemUser>();
+            return result.SystemUserId;
+        }
+    }
+
+    private async Task<string> GetBookableResourceAsync()
+    {
+        {
+            string query = baseUrl + "bookableresources";
+            query += "?$select=bookableresourceid";
+            query += "&$filter=_userid_value eq '" + systemuserId + "'";
+
+            using (var client = new System.Net.Http.HttpClient())
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
+
+                var response = await client.GetAsync(new Uri(query));
+                var strjson = await response.Content.ReadAsStringAsync();
+
+                var result = JsonConvert.DeserializeObject<ODataResponse<BookableResource>>(strjson).Value.FirstOrDefault<BookableResource>();
+
+                if (result == null)
+                    return null;
+                else
+                    return result.BookableResourceId;
+            }
+        }
+    }
+
+    private async Task<List<BookedResource>> GetBookableResourceBookingsAsync()
+    {
+        //todo: отладить запрос и вопорсы по выводимым полям
+        string query = baseUrl + "bookableresourcebookings";
+        query += "?$filter=_resource_value eq '" + bookableResourceId + "'";
+        query += "?$select=name,createdon,duration";
+        query += "&$expand=BookingStatus($select = name, address1)";
+
+        using (var client = new System.Net.Http.HttpClient())
+        {
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
+
+            var response = await client.GetAsync(new Uri(query));
+            var strjson = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<ODataResponse<BookedResource>>(strjson).Value;
+
+            return result;
+        }
+    }
+
+    public void RowSelectedHandler(RowSelectEventArgs<BookedResource> args)
+    {
+        var id = args.Data.BookableResourceBookingId;
+        var url = "/BookedResourcePage/" + id + "/" + token.AccessToken;
+        navigationManager.NavigateTo(url);
+    }
+
+    internal class ODataResponse<T>
+    { public List<T> Value { get; set; } }
+
+    #endregion
+}
+<style>
+    .container {
+        display: grid;
+    }
+
+        .container > div {
+            background-color: brown;
+        }
+</style>
+

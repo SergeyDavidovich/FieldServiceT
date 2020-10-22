@@ -20,36 +20,36 @@ namespace FieldServiceT.Helpers
         private static readonly string CRMHost = "https://eg8pfua3iofsrjt3zb.crm.dynamics.com/";
 
 
-        public static async Task<AuthenticationResult> GetAuthenticationResult()
+    public static async Task<AuthenticationResult> GetAuthenticationResultAsync()
+    {
+        String authorityUrl = "https://login.microsoftonline.com/" + tenantId;
+
+        try
         {
-            String authorityUrl = "https://login.microsoftonline.com/" + tenantId;
+            AuthenticationContext authContext = new AuthenticationContext(authorityUrl);
 
-            try
-            {
-                AuthenticationContext authContext = new AuthenticationContext(authorityUrl);
+            ClientCredential clientCredential = new ClientCredential(clientId, appKey);
 
-                ClientCredential clientCredential = new ClientCredential(clientId, appKey);
+            AuthenticationResult token = await authContext.AcquireTokenAsync(CRMHost, clientCredential).ConfigureAwait(false);
 
-                AuthenticationResult token = await authContext.AcquireTokenAsync(CRMHost, clientCredential).ConfigureAwait(false);
-
-                return token;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            return token;
         }
-
-        //public static async Task Authentificate(AuthenticationResult token)
-        //{
-        //    using (var client = new System.Net.Http.HttpClient())
-        //    {
-        //        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
-
-        //        var response = await client.GetAsync("https://eg8pfua3iofsrjt3zb.api.crm6.dynamics.com/api/data/v9.0/bookableresourcebookings");
-        //        var contacts = await response.Content.ReadAsStringAsync();
-        //    }
-        //}
+        catch (Exception)
+        {
+            throw;
+        }
     }
+
+    //public static async Task Authentificate(AuthenticationResult token)
+    //{
+    //    using (var client = new System.Net.Http.HttpClient())
+    //    {
+    //        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
+
+    //        var response = await client.GetAsync("https://eg8pfua3iofsrjt3zb.api.crm6.dynamics.com/api/data/v9.0/bookableresourcebookings");
+    //        var contacts = await response.Content.ReadAsStringAsync();
+    //    }
+    //}
+}
 }
 
