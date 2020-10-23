@@ -1,5 +1,5 @@
 ﻿@page "/BookedResourcePage/{ResourceId}/{Token}"
-@*@attribute [Authorize]*@
+@attribute [Authorize]
 
 @inject LocationService  locationService
 
@@ -62,11 +62,11 @@
         <div>
             <SfCard>
                 <CardHeader Title="RESOURCE DATA"></CardHeader>
-                <!--<CardContent>
-                    <div id="inner-grid">-->
-                        @*<label>Resource id:</label>
-                        <label><b>@Resource.BookableResourceBookingId</b></label>*@
-                        <!--<label>Created on:</label>
+                @*<CardContent>
+                    <div id="inner-grid">
+                        <label>Resource id:</label>
+                        <label><b>@Resource.BookableResourceBookingId</b></label>
+                        <label>Created on:</label>
                         <label><b>@Resource.CreatedOn</b></label>
                         <label>Duration:</label>
                         <label><b>@Resource.Duration</b></label>
@@ -74,10 +74,10 @@
                         <label><b>@Resource.EndTime</b></label>
                         <label>Name:</label>
                         <label><b>@Resource.Name</b></label>
-                        <label>Status:</label>-->
-                        @*<label><b>@Resource.StatusName</b></label>*@
-                    <!--</div>
-                </CardContent>-->
+                        <label>Status:</label>
+                        <label><b>@Resource.StatusName</b></label>
+                    </div>
+                </CardContent>*@
                 <CardFooter>
                     <CardFooterContent>
                     </CardFooterContent>
@@ -111,7 +111,7 @@
     [CascadingParameter]
     RouteData RouteData { get; set; }
 
-    string url = "https://eg8pfua3iofsrjt3zb.crm.dynamics.com/api/data/v9.0/bookableresourcebookings/";
+    string baseUrl = "https://eg8pfua3iofsrjt3zb.crm.dynamics.com/api/data/v9.0/";
 
     public BookedResource Resource { get; set; }
 
@@ -142,15 +142,16 @@
     private async Task GetResource()
     {
         {
-            string query = $"?$filter=bookableresourcebookingid eq '{ResourceId}'";
-
-            string resourceuri = url + query;
+            string query = baseUrl + "bookableresourcebookings/";
+            query += $"?$filter=bookableresourcebookingid eq '" + ResourceId +"'";
+            query += "&$select=name,starttime,endtime";
+            query += "&$expand=msdyn_workorder($select = msdyn_name, msdyn_address1,msdyn_addressname)";
 
             using (var client = new System.Net.Http.HttpClient())
             {
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
 
-                var response = await client.GetAsync(new Uri(resourceuri));
+                var response = await client.GetAsync(new Uri(query));
                 var strjson = await response.Content.ReadAsStringAsync();
 
                 var result = JsonConvert.DeserializeObject<ODataResponse<BookedResource>>(strjson);

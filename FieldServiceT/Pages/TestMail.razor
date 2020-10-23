@@ -26,7 +26,7 @@
 
 <div style="background-color:dodgerblue; width:auto; font-size:9px">
     <SfTextBox @ref="MailText"></SfTextBox>
-    <SfButton  @onclick="OnButtonStartClick">START</SfButton>
+    <SfButton  @onclick="OnButtonStartClick" style="margin:2px; color:red">START</SfButton>
     <h6 style="color:white; padding:4px;">Booked Resources</h6>
     <div class="shadow" style="cursor:pointer; width:auto; padding:0px;">
         <SfGrid DataSource="@resourceList" AllowFiltering="true" AllowSorting="true">
@@ -78,6 +78,8 @@
 
     public async Task OnButtonStartClick(MouseEventArgs args)
     {
+        if (MailText.Value == null) return;
+
         resourceList = new List<BookedResourceScreen>();
 
         await GetTokenAsync();
@@ -95,23 +97,23 @@
         resourceList = await GetBookableResourceBookingsAsync();
     }
 
-    protected override async Task OnInitializedAsync()
-    {
-        //resourceList = new List<BookedResourceScreen>();
+    //protected override async Task OnInitializedAsync()
+    //{
+    //    resourceList = new List<BookedResourceScreen>();
 
-        //await GetTokenAsync();
+    //    await GetTokenAsync();
 
-        //userMail = await GetUserMailAsync();
-        //systemuserId = await GetSystemUserIdAsync();
+    //    userMail = await GetUserMailAsync();
+    //    systemuserId = await GetSystemUserIdAsync();
 
-        //bookableResourceId = await GetBookableResourceAsync();
-        //if (bookableResourceId == null)
-        //{
-        //    resourceList = null;
-        //    return;
-        //}
-        //resourceList = await GetBookableResourceBookingsAsync();
-    }
+    //    bookableResourceId = await GetBookableResourceAsync();
+    //    if (bookableResourceId == null)
+    //    {
+    //        resourceList = null;
+    //        return;
+    //    }
+    //    resourceList = await GetBookableResourceBookingsAsync();
+    //}
 
     private async Task GetTokenAsync()
     {
@@ -212,18 +214,6 @@
 
     internal class ODataResponse<T>
     { public List<T> Value { get; set; } }
-
-    public class BookedResourceScreen
-    {
-        public string BookableResourceBookingId { get; set; }
-        public string Name { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
-
-        public string WOName { get; set; }
-        public string WOAddress1 { get; set; }
-        public string WOAddressName { get; set; }
-    }
 
     #endregion
 }
