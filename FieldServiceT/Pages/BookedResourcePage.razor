@@ -58,26 +58,35 @@
         <SfButton type="button" class="btn btn-success btn-sm">Button 3</SfButton>
         <SfButton type="button" class="btn btn-success btn-sm">Button 4</SfButton>
     </div>
+
+    <p>Id: @Resource.BookableResourceBookingId</p>
+    <p>Name: @Resource.Name</p>
+    <p>Start time: @Resource.StartTime</p>
+    <p>End time: @Resource.EndTime</p>
+    <p>WOName: @Resource.WOName</p>
+    <p>WOAddress1:@Resource.WOAddress1</p>
+    <p>WOAddressName:@Resource.WOAddressName</p>
+
     <div id="sub-grid" style="font-size:smaller">
         <div>
             <SfCard>
                 <CardHeader Title="RESOURCE DATA"></CardHeader>
                 @*<CardContent>
-                    <div id="inner-grid">
-                        <label>Resource id:</label>
-                        <label><b>@Resource.BookableResourceBookingId</b></label>
-                        <label>Created on:</label>
-                        <label><b>@Resource.CreatedOn</b></label>
-                        <label>Duration:</label>
-                        <label><b>@Resource.Duration</b></label>
-                        <label>End time:</label>
-                        <label><b>@Resource.EndTime</b></label>
-                        <label>Name:</label>
-                        <label><b>@Resource.Name</b></label>
-                        <label>Status:</label>
-                        <label><b>@Resource.StatusName</b></label>
-                    </div>
-                </CardContent>*@
+                        <div id="inner-grid">
+                            <label>Resource id:</label>
+                            <label><b>@Resource.BookableResourceBookingId</b></label>
+                            <label>Created on:</label>
+                            <label><b>@Resource.CreatedOn</b></label>
+                            <label>Duration:</label>
+                            <label><b>@Resource.Duration</b></label>
+                            <label>End time:</label>
+                            <label><b>@Resource.EndTime</b></label>
+                            <label>Name:</label>
+                            <label><b>@Resource.Name</b></label>
+                            <label>Status:</label>
+                            <label><b>@Resource.StatusName</b></label>
+                        </div>
+                    </CardContent>*@
                 <CardFooter>
                     <CardFooterContent>
                     </CardFooterContent>
@@ -113,7 +122,7 @@
 
     string baseUrl = "https://eg8pfua3iofsrjt3zb.crm.dynamics.com/api/data/v9.0/";
 
-    public BookedResource Resource { get; set; }
+    public BookedResourceScreen Resource { get; set; }
 
     Location location;
     double? Latitude;
@@ -122,7 +131,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Resource = new BookedResource();
+        Resource = new BookedResourceScreen();
         await GetResource();
     }
 
@@ -143,7 +152,7 @@
     {
         {
             string query = baseUrl + "bookableresourcebookings/";
-            query += $"?$filter=bookableresourcebookingid eq '" + ResourceId +"'";
+            query += $"?$filter=bookableresourcebookingid eq '" + ResourceId + "'";
             query += "&$select=name,starttime,endtime";
             query += "&$expand=msdyn_workorder($select = msdyn_name, msdyn_address1,msdyn_addressname)";
 
@@ -158,7 +167,18 @@
 
                 var resource = result.Value.First<BookedResource>();
 
-                Resource = resource;
+                var flatResource = new BookedResourceScreen()
+                {
+                    BookableResourceBookingId = resource.BookableResourceBookingId,
+                    Name = resource.Name,
+                    StartTime = resource.StartTime,
+                    EndTime = resource.EndTime,
+                    WOName = resource.WorkOrder.Name,
+                    WOAddressName = resource.WorkOrder.Addressname,
+                    WOAddress1 = resource.WorkOrder.Address1
+                };
+
+                Resource = flatResource;
             }
         }
     }
@@ -197,10 +217,12 @@
         grid-template-rows: repeat(3, auto);
         grid-gap: 6px;
     }
-    #inner-grid{
-        display:grid;
+
+    #inner-grid {
+        display: grid;
         grid-template-columns: 1fr 1fr;
     }
+
     label {
         color: black;
     }
