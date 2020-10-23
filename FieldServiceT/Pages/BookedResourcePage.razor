@@ -16,6 +16,7 @@
 @using Syncfusion.Blazor.Maps
 @using Syncfusion.Blazor.Cards
 @using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Navigations
 
 <div id="grid">
     <div style="margin-top:2px; margin-bottom:2px; padding:10px;  border: solid 1px lightgray; background-color:antiquewhite; font-size:smaller">
@@ -59,35 +60,65 @@
         <SfButton type="button" class="btn btn-success btn-sm">Button 4</SfButton>
     </div>
 
-    <p>Id: @Resource.BookableResourceBookingId</p>
+    @*<p>Id: @Resource.BookableResourceBookingId</p>
     <p>Name: @Resource.Name</p>
     <p>Start time: @Resource.StartTime</p>
     <p>End time: @Resource.EndTime</p>
     <p>WOName: @Resource.WOName</p>
     <p>WOAddress1:@Resource.WOAddress1</p>
-    <p>WOAddressName:@Resource.WOAddressName</p>
+    <p>WOAddressName:@Resource.WOAddressName</p>*@
 
-    <div id="sub-grid" style="font-size:smaller">
+    <div id="inner-grid" class="col-lg-12 control-section">
+        <div class="e-sample-resize-container">
+            <SfTab CssClass="default-tab">
+                <TabItems>
+                    <TabItem>
+                        <ChildContent>
+                            <TabHeader Text="RESOURCE DATA" IconCss="e-twitter"></TabHeader>
+                        </ChildContent>
+                        <ContentTemplate>
+                            <p>@*Id: @Resource.BookableResourceBookingId*@</p>
+                            <p>Name: <b>@Resource.Name</b></p>
+                            <p>Start time: <b>@Resource.StartTime</b></p>
+                            <p>End time: <b>@Resource.EndTime</b></p>
+                        </ContentTemplate>
+                    </TabItem>
+                    <TabItem>
+                        <ChildContent>
+                            <TabHeader Text="ORDER DATA" IconCss="e-facebook"></TabHeader>
+                        </ChildContent>
+                        <ContentTemplate>
+                            <p>WOName: <b>@Resource.WOName</b></p>
+                            <p>WOAddress1: <b>@Resource.WOAddress1</b></p>
+                            <p>WOAddressName: <b>@Resource.WOAddressName</b></p>
+                        </ContentTemplate>
+                    </TabItem>
+                </TabItems>
+            </SfTab>
+        </div>
+    </div>
+
+    <!--<div id="sub-grid" style="font-size:smaller">
         <div>
             <SfCard>
-                <CardHeader Title="RESOURCE DATA"></CardHeader>
-                @*<CardContent>
-                        <div id="inner-grid">
-                            <label>Resource id:</label>
-                            <label><b>@Resource.BookableResourceBookingId</b></label>
-                            <label>Created on:</label>
-                            <label><b>@Resource.CreatedOn</b></label>
-                            <label>Duration:</label>
-                            <label><b>@Resource.Duration</b></label>
-                            <label>End time:</label>
-                            <label><b>@Resource.EndTime</b></label>
-                            <label>Name:</label>
-                            <label><b>@Resource.Name</b></label>
-                            <label>Status:</label>
-                            <label><b>@Resource.StatusName</b></label>
-                        </div>
-                    </CardContent>*@
-                <CardFooter>
+                <CardHeader Title="RESOURCE DATA"></CardHeader>-->
+    @*<CardContent>
+            <div id="inner-grid">
+                <label>Resource id:</label>
+                <label><b>@Resource.BookableResourceBookingId</b></label>
+                <label>Created on:</label>
+                <label><b>@Resource.CreatedOn</b></label>
+                <label>Duration:</label>
+                <label><b>@Resource.Duration</b></label>
+                <label>End time:</label>
+                <label><b>@Resource.EndTime</b></label>
+                <label>Name:</label>
+                <label><b>@Resource.Name</b></label>
+                <label>Status:</label>
+                <label><b>@Resource.StatusName</b></label>
+            </div>
+        </CardContent>*@
+    <!--<CardFooter>
                     <CardFooterContent>
                     </CardFooterContent>
                 </CardFooter>
@@ -106,7 +137,7 @@
                 </CardFooter>
             </SfCard>
         </div>
-    </div>
+    </div>-->
 </div>
 
 @code {
