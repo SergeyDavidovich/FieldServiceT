@@ -23,7 +23,7 @@
 @inject BrowserService browserService
 
 <div style="background-color:dodgerblue; width:auto; font-size:9px">
-    <h6 style="color:white; padding:4px;">Booked Resources</h6>
+    <h6 style="color:white; padding:4px;">Booked Resources @Message</h6>
     <div class="shadow" style="cursor:pointer; width:auto; padding:0px;">
         <SfGrid DataSource="@resourceList" AllowFiltering="true" AllowSorting="true">
             <GridFilterSettings Type="FilterType.CheckBox" Mode="FilterBarMode.Immediate"></GridFilterSettings>
@@ -40,9 +40,9 @@
                 <GridColumn Field=@nameof(BookedResourceScreen.WOName) HeaderText="WO NAME"
                             HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="60" HideAtMedia="(min-width: 700px)"></GridColumn>
                 <GridColumn Field=@nameof(BookedResourceScreen.WOAddress1) HeaderText="ADDRESS1"
-                                HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="60"></GridColumn>
-                    <GridColumn Field=@nameof(BookedResourceScreen.WOAddressName) HeaderText="ADDRESS NAME"
-                                HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="80" HideAtMedia="(min-width: 500px)"></GridColumn>
+                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="60"></GridColumn>
+                <GridColumn Field=@nameof(BookedResourceScreen.WOAddressName) HeaderText="ADDRESS NAME"
+                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="80" HideAtMedia="(min-width: 500px)"></GridColumn>
             </GridColumns>
         </SfGrid>
     </div>
@@ -70,16 +70,27 @@
 
     [CascadingParameter] Task<AuthenticationState> authenticationStateTask { get; set; }
 
+    private string Message { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         resourceList = new List<BookedResourceScreen>();
 
-        await GetTokenAsync();
+        CurrentToken = await GetTokenAsync();
 
-        userMail = await GetUserMailAsync();
+        try
+        {
+            userMail = await GetUserMailAsync();
+        }
+        catch (Exception ex)
+        {
+            Message = ex.Message;
+        }
+
         systemuserId = await GetSystemUserIdAsync();
 
         bookableResourceId = await GetBookableResourceAsync();
+
         if (bookableResourceId == null)
         {
             resourceList = null;
@@ -88,17 +99,10 @@
         resourceList = await GetBookableResourceBookingsAsync();
     }
 
-    private async Task GetTokenAsync()
+    private async Task<string> GetTokenAsync()
     {
-        try
-        {
-            token = await TokenService.GetAuthenticationResultAsync();
-            CurrentToken = token.AccessToken;
-        }
-        catch (Exception e)
-        {
-            CurrentToken = $"ERROR! - {e.Message}";
-        }
+        token = await TokenService.GetAuthenticationResultAsync();
+        return token.AccessToken;
     }
 
     private async Task<string> GetUserMailAsync()
@@ -188,7 +192,7 @@
     internal class ODataResponse<T>
     { public List<T> Value { get; set; } }
 
-   
+
     #endregion
 }
 <style>
