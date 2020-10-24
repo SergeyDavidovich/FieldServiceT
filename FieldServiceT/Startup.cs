@@ -47,7 +47,7 @@ namespace FieldServiceT
 
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSyncfusionBlazor();
+            services.AddSyncfusionBlazor(true);
             services.AddScoped<Helpers.BrowserService>();
             services.AddSingleton<Helpers.BookableResourceBookingService>();
         }
