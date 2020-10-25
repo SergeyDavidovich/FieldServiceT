@@ -23,10 +23,11 @@
 
 @inject NavigationManager navigationManager
 @inject BrowserService browserService
+@inject IConfiguration configuration
 
 <div style="background-color:dodgerblue; width:auto; font-size:9px">
     <SfTextBox @ref="MailText"></SfTextBox>
-    <SfButton  @onclick="OnButtonStartClick" style="margin:2px; color:red">START</SfButton>
+    <SfButton @onclick="OnButtonStartClick" style="margin:2px; color:red">START</SfButton>
     <h6 style="color:white; padding:4px;">Booked Resources</h6>
     <div class="shadow" style="cursor:pointer; width:auto; padding:0px;">
         <SfGrid DataSource="@resourceList" AllowFiltering="true" AllowSorting="true">
@@ -64,7 +65,7 @@
     private string Error { get; set; }
     private string selectedId;
 
-    private string baseUrl = "https://eg8pfua3iofsrjt3zb.crm.dynamics.com/api/data/v9.0/";
+    private string baseUrl; // = "https://eg8pfua3iofsrjt3zb.crm.dynamics.com/api/data/v9.0/";
     private AuthenticationResult token;
     private string userMail;
     private string systemuserId;
@@ -97,23 +98,26 @@
         resourceList = await GetBookableResourceBookingsAsync();
     }
 
-    //protected override async Task OnInitializedAsync()
-    //{
-    //    resourceList = new List<BookedResourceScreen>();
+    protected override void OnInitialized()
+    {
+        baseUrl = configuration["BaseUrl"];
 
-    //    await GetTokenAsync();
 
-    //    userMail = await GetUserMailAsync();
-    //    systemuserId = await GetSystemUserIdAsync();
+        //resourceList = new List<BookedResourceScreen>();
 
-    //    bookableResourceId = await GetBookableResourceAsync();
-    //    if (bookableResourceId == null)
-    //    {
-    //        resourceList = null;
-    //        return;
-    //    }
-    //    resourceList = await GetBookableResourceBookingsAsync();
-    //}
+        //await GetTokenAsync();
+
+        //userMail = await GetUserMailAsync();
+        //systemuserId = await GetSystemUserIdAsync();
+
+        //bookableResourceId = await GetBookableResourceAsync();
+        //if (bookableResourceId == null)
+        //{
+        //    resourceList = null;
+        //    return;
+        //}
+        //resourceList = await GetBookableResourceBookingsAsync();
+    }
 
     private async Task GetTokenAsync()
     {
