@@ -19,6 +19,9 @@ namespace FieldServiceT.Models
 
         [JsonProperty("msdyn_address1")]
         public string Address1 { get; set; }
+
+        [JsonProperty("msdyn_workordersummary")]
+        public string WorkOrderSummary { get; set; }
     }
 }
 

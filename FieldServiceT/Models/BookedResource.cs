@@ -12,7 +12,7 @@ namespace FieldServiceT.Models
         [Key]
         [JsonProperty("bookableresourcebookingid")]
         public string BookableResourceBookingId { get; set; }
-        
+
         [JsonProperty("name")]
         public string Name { get; set; }
 
@@ -24,5 +24,7 @@ namespace FieldServiceT.Models
 
         [JsonProperty("msdyn_workorder")]
         public WorkOrder WorkOrder { get; set; }
+
+        
     }
 }

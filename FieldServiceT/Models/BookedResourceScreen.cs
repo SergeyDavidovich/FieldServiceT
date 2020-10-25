@@ -15,6 +15,7 @@ namespace FieldServiceT.Models
         public string WOName { get; set; }
         public string WOAddress1 { get; set; }
         public string WOAddressName { get; set; }
+        public string WOSummary { get; set; }
     }
 
 }
