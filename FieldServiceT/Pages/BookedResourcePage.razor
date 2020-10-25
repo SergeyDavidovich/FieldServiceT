@@ -156,7 +156,7 @@
     [CascadingParameter]
     RouteData RouteData { get; set; }
 
-    string baseUrl; 
+    string baseUrl;
 
     public BookedResourceScreen Resource { get; set; }
 
@@ -219,15 +219,6 @@
 
                 Resource = flatResource;
             }
-        }
-    }
-
-    internal class ODataResponse<T>
-    {
-        public List<T> Value
-        {
-            get;
-            set;
         }
     }
 
