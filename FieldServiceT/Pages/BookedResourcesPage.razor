@@ -1,6 +1,8 @@
 ﻿@page "/"
 @attribute [Authorize]
 
+@inject IConfiguration configuration
+
 @using AspNetMonsters.Blazor.Geolocation
 @using System.Collections.ObjectModel
 @using System.ComponentModel
@@ -56,11 +58,13 @@
 
     #region Code
 
+
+
     private string CurrentToken { get; set; }
     private string Error { get; set; }
     private string selectedId;
 
-    private string baseUrl = "https://eg8pfua3iofsrjt3zb.crm.dynamics.com/api/data/v9.0/";
+    private string baseUrl; // = "https://eg8pfua3iofsrjt3zb.crm.dynamics.com/api/data/v9.0/";
     private AuthenticationResult token;
     private string userMail;
     private string systemuserId;
@@ -74,8 +78,8 @@
 
     protected override async Task OnInitializedAsync()
     {
+        baseUrl = configuration["BaseUrl"];
         resourceList = new List<BookedResourceScreen>();
-
         CurrentToken = await GetTokenAsync();
 
         try

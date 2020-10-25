@@ -2,6 +2,7 @@
 @attribute [Authorize]
 
 @inject LocationService  locationService
+@inject Microsoft.Extensions.Configuration.IConfiguration configuration
 
 @using AspNetMonsters.Blazor.Geolocation
 
@@ -54,10 +55,10 @@
         </table>
     </div>
     <div style="margin-left:10px;">
-        <SfButton type="button" class="btn btn-success btn-sm">Button 1</SfButton>
-        <SfButton type="button" class="btn btn-success btn-sm">Button 2</SfButton>
-        <SfButton type="button" class="btn btn-success btn-sm">Button 3</SfButton>
-        <SfButton type="button" class="btn btn-success btn-sm">Button 4</SfButton>
+        <SfButton type="button" class="btn btn-success btn-sm button-geo" >En-Route</SfButton>
+        <SfButton type="button" class="btn btn-success btn-sm button-geo">On-Site</SfButton>
+        <SfButton type="button" class="btn btn-success btn-sm button-geo">Off-site</SfButton>
+        <SfButton type="button" class="btn btn-success btn-sm button-geo">Complete</SfButton>
     </div>
     <hr />
 
@@ -143,7 +144,8 @@
 </div>
 
 @code {
-    #region
+
+    #region Declarations
     [Parameter]
     public string ResourceId { get; set; }
 
@@ -153,17 +155,20 @@
     [CascadingParameter]
     RouteData RouteData { get; set; }
 
-    string baseUrl = "https://eg8pfua3iofsrjt3zb.crm.dynamics.com/api/data/v9.0/";
+    string baseUrl; 
 
     public BookedResourceScreen Resource { get; set; }
 
     Location location;
     double? Latitude;
     double? Longitude;
+    #endregion
 
+    #region
 
     protected override async Task OnInitializedAsync()
     {
+        baseUrl = configuration["BaseUrl"];
         Resource = new BookedResourceScreen();
         await GetResource();
     }
@@ -261,8 +266,9 @@
     }
 
     .button-geo {
-        width: 80px;
-        margin: 4px;
+        font-size-adjust:inherit;
+        width: 90px;
+        margin: 1px;
     }
     p{
         margin-left:12px;
