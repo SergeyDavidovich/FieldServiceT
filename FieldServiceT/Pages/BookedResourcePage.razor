@@ -6,7 +6,7 @@
 
 @using AspNetMonsters.Blazor.Geolocation
 
-@using System.Text.Json
+@*@using System.Text.Json*@
 @using Microsoft.OData
 @using Microsoft.OData.Client
 @using Newtonsoft.Json.Serialization
@@ -18,47 +18,59 @@
 @using Syncfusion.Blazor.Cards
 @using Syncfusion.Blazor.Buttons
 @using Syncfusion.Blazor.Navigations
+@using System.Net.Http
 
 <div id="grid">
-    <div style="margin-top:2px; margin-bottom:2px; padding:10px;  border: solid 1px lightgray; background-color:antiquewhite; font-size:smaller">
-        <table border="0" width="100%">
-            <tr>
-                <td width="120">
-                    Latitude:
-                </td>
-                <td width="120">
-                    <b>@location?.Latitude</b>
-                </td>
-                <td>
-                    <button class="btn btn-primary btn-sm button-geo" type="button" @onclick="GetLocation">Location</button>
-                </td>
-            </tr>
-            <tr>
-                <td width="120">
-                    Longitude:
-                </td>
-                <td width="120">
-                    <b>@location?.Longitude</b>
-                </td>
-                <td>
-                    <button class="btn btn-danger btn-sm button-geo" type="button" @onclick="ResetLocation">Reset</button>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Accuracy:
-                </td>
-                <td>
-                    <b>@location?.Accuracy</b>
-                </td>
-            </tr>
-        </table>
+    <div id="container">
+        <div>Assdfgghh</div>
+        <div>Bdfsdfdf</div>
+        <div><button>Click</button></div>
+        <div>Assdfgghh</div>
+        <div>Bdfsdfdf</div>
+        <div><button>Click</button></div>
+        <div>Assdfgghh</div>
+        <div>Bdfsdfdf</div>
     </div>
+    @*<div style="margin-top:2px; margin-bottom:2px; padding:10px;  border: solid 1px lightgray; background-color:antiquewhite; font-size:smaller">
+            <table border="0" width="100%">
+                <tr>
+                    <td width="120">
+                        Latitude:
+                    </td>
+                    <td width="120">
+                        <b>@location?.Latitude</b>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-sm button-geo" type="button" @onclick="GetLocation">Location</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="120">
+                        Longitude:
+                    </td>
+                    <td width="120">
+                        <b>@location?.Longitude</b>
+                    </td>
+                    <td>
+                        <button class="btn btn-danger btn-sm button-geo" type="button" @onclick="ResetLocation">Reset</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Accuracy:
+                    </td>
+                    <td>
+                        <b>@location?.Accuracy</b>
+                    </td>
+                </tr>
+            </table>
+        </div>*@
+
     <div style="margin-left:10px;">
-        <SfButton type="button" class="btn btn-success btn-sm button-geo">En-Route</SfButton>
-        <SfButton type="button" class="btn btn-success btn-sm button-geo">On-Site</SfButton>
-        <SfButton type="button" class="btn btn-success btn-sm button-geo">Off-site</SfButton>
-        <SfButton type="button" class="btn btn-success btn-sm button-geo">Complete</SfButton>
+        <SfButton type="button" class="btn btn-success btn-sm button-geo" OnClick="@Button_EnRoute_Handler">En-Route</SfButton>
+        <SfButton type="button" class="btn btn-success btn-sm button-geo" OnClick="@Button_OnSite_Handler">On-Site</SfButton>
+        <SfButton type="button" class="btn btn-success btn-sm button-geo" OnClick="@Button_OffSite_Handler">Off-site</SfButton>
+        <SfButton type="button" class="btn btn-success btn-sm button-geo" OnClick="@Button_WorkComplete_Handler">Complete</SfButton>
     </div>
     <hr />
 
@@ -157,24 +169,27 @@
     RouteData RouteData { get; set; }
 
     string baseUrl;
+    string webHookUrl;
 
     public BookedResourceScreen Resource { get; set; }
 
     Location location;
     double? Latitude;
     double? Longitude;
+
     #endregion
 
-    #region
 
     protected override async Task OnInitializedAsync()
     {
         baseUrl = configuration["BaseUrl"];
+        webHookUrl = configuration["WebHookUrl"];
         Resource = new BookedResourceScreen();
+
         await GetResource();
     }
 
-    private async Task GetLocation()
+    private async Task GetLocationAsync()
     {
         location = await locationService.GetLocationAsync();
         Latitude = (double)location.Latitude;
@@ -222,50 +237,42 @@
         }
     }
 
-    public ObservableCollection<MarkerData> MarkerDataSource { get; set; }
-
-    public class MarkerData
+    private async Task Button_EnRoute_Handler(MouseEventArgs args)
     {
-        public double latitude { get; set; }
-        public double longitude { get; set; }
-        public string name { get; set; }
+        await PostLocationData("En-Route");
+    }
+    private async Task Button_OnSite_Handler(MouseEventArgs args)
+    {
+        await PostLocationData("On-Site");
+    }
+    private async Task Button_OffSite_Handler(MouseEventArgs args)
+    {
+        await PostLocationData("Off-site");
+    }
+    private async Task Button_WorkComplete_Handler(MouseEventArgs args)
+    {
+        await PostLocationData("Work Complete");
+    }
 
-        public ObservableCollection<MarkerData> GetData()
+    private async Task PostLocationData(string buttonId)
+    {
+        await GetLocationAsync();
+
+        var location = new LocationValue()
         {
-            ObservableCollection<MarkerData> MarkerDataSource = new ObservableCollection<MarkerData>() {
-                new MarkerData{ latitude= 50.5716595, longitude= 19.3219768, name= "Zory" }
-            };
-            return MarkerDataSource;
+            Latitude = Latitude.ToString(),
+            Longitude = Longitude.ToString(),
+            BKBid = ResourceId,
+            ButtonId = buttonId
+        };
+
+        using (var client = new System.Net.Http.HttpClient())
+        {
+            string json = JsonConvert.SerializeObject(location);
+            HttpContent content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+            var response = await client.PostAsync(webHookUrl, content);
         }
     }
-    #endregion
+
 }
 
-<style>
-    #grid {
-        display: grid;
-        grid-template-rows: repeat(3, auto);
-        grid-gap: 6px;
-    }
-
-    #inner-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-    }
-
-    label {
-        color: black;
-    }
-
-    .button-geo {
-        font-size-adjust:inherit;
-        width: 90px;
-        margin: 1px;
-    }
-    p{
-        margin-left:12px;
-    }
-</style>
-
-@*Lat: 50,5716595
-    Long: 19,3219768*@
