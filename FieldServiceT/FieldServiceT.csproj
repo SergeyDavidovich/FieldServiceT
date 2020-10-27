@@ -18,6 +18,13 @@
 
   <ItemGroup>
     <Folder Include="Data\" />
+    <Folder Include="wwwroot\_content\Syncfusion.Blazor\styles\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\_content\Syncfusion.Blazor\styles\fabric.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

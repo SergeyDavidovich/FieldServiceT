@@ -27,8 +27,8 @@
 <div style="background-color:dodgerblue; width:auto; font-size:9px">
     <h6 style="color:white; padding:4px;">Booked Resources @Message</h6>
     <div class="shadow" style="cursor:pointer; width:auto; padding:0px;">
-        <SfGrid DataSource="@resourceList" AllowFiltering="true" AllowSorting="true">
-            <GridFilterSettings Type="FilterType.CheckBox" Mode="FilterBarMode.Immediate"></GridFilterSettings>
+        <SfGrid DataSource="@resourceList" AllowFiltering="true" AllowSorting="true" AllowPaging="true">
+            <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.CheckBox"></GridFilterSettings>
             <GridEvents RowSelected="RowSelectedHandler" TValue="BookedResourceScreen"></GridEvents>
             <GridColumns>
                 <GridColumn Field=@nameof(BookedResourceScreen.BookableResourceBookingId) HeaderText="Id"
