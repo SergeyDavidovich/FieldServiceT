@@ -47,7 +47,8 @@
                             HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="80" HideAtMedia="(min-width: 500px)"></GridColumn>
                 <GridColumn Field=@nameof(BookedResourceScreen.WOSummary) HeaderText="SUMMARY"
                             HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="80" HideAtMedia="(min-width: 500px)"></GridColumn>
-
+                <GridColumn Field=@nameof(BookedResourceScreen.StatusName) HeaderText="STATUS"
+                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="80" HideAtMedia="(min-width: 500px)"></GridColumn>
             </GridColumns>
         </SfGrid>
     </div>
@@ -160,7 +161,8 @@
         string query = baseUrl + "bookableresourcebookings";
         query += "?$filter=_resource_value eq '" + bookableResourceId + "'";
         query += "&$select=name,starttime,endtime";
-        query += "&$expand=msdyn_workorder($select = msdyn_name, msdyn_address1,msdyn_addressname,msdyn_workordersummary )";
+        query += "&$expand=msdyn_workorder($select = msdyn_name, msdyn_address1,msdyn_addressname,msdyn_workordersummary ),";
+        query += "BookingStatus($select=name)";
 
         using (var client = new System.Net.Http.HttpClient())
         {
@@ -180,9 +182,9 @@
                 WOName = res.WorkOrder == null ? "" : res.WorkOrder.Name,
                 WOAddressName = res.WorkOrder == null ? "" : res.WorkOrder.Addressname,
                 WOAddress1 = res.WorkOrder == null ? "" : res.WorkOrder.Address1,
-                WOSummary = res.WorkOrder== null ? "" : res.WorkOrder.WorkOrderSummary
-            }
-            );
+                WOSummary = res.WorkOrder == null ? "" : res.WorkOrder.WorkOrderSummary,
+                StatusName = res.BookingStatus.Name == null ? "" : res.BookingStatus.Name
+            });
 
             var resultList = list.ToList<BookedResourceScreen>();
             return resultList;
