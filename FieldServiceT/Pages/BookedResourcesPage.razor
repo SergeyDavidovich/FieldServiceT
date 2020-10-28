@@ -26,7 +26,7 @@
 
 <div style="background-color:dodgerblue; width:auto; font-size:9px">
     <h6 style="color:white; padding:4px;">Booked Resources @Message</h6>
-    <div class="shadow" style="cursor:pointer; width:auto; padding:0px;">
+    <div class="shadow" style="cursor:pointer; width:auto; padding:0px; overflow:scroll">
         <SfGrid DataSource="@resourceList" AllowFiltering="true" AllowSorting="true" AllowPaging="true">
             <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.CheckBox"></GridFilterSettings>
             <GridEvents RowSelected="RowSelectedHandler" TValue="BookedResourceScreen"></GridEvents>
@@ -36,11 +36,11 @@
                 <GridColumn Field=@nameof(BookedResourceScreen.Name) HeaderText="NAME"
                             HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="60"></GridColumn>
                 <GridColumn Field=@nameof(BookedResourceScreen.StartTime) HeaderText="START TIME"
-                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Format="D" Width="80"></GridColumn>
+                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Format="d" Width="70"></GridColumn>
                 <GridColumn Field=@nameof(BookedResourceScreen.EndTime) HeaderText="END TIME"
-                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Format="D" Width="60"></GridColumn>
+                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Format="d" Width="70"></GridColumn>
                 <GridColumn Field=@nameof(BookedResourceScreen.WOName) HeaderText="WO NAME"
-                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="60" HideAtMedia="(min-width: 700px)"></GridColumn>
+                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="60" HideAtMedia="(min-width: 500px)"></GridColumn>
                 <GridColumn Field=@nameof(BookedResourceScreen.WOAddress1) HeaderText="ADDRESS1"
                             HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="60"></GridColumn>
                 <GridColumn Field=@nameof(BookedResourceScreen.WOAddressName) HeaderText="ADDRESS NAME"
@@ -48,7 +48,7 @@
                 <GridColumn Field=@nameof(BookedResourceScreen.WOSummary) HeaderText="SUMMARY"
                             HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="80" HideAtMedia="(min-width: 500px)"></GridColumn>
                 <GridColumn Field=@nameof(BookedResourceScreen.StatusName) HeaderText="STATUS"
-                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="80" HideAtMedia="(min-width: 500px)"></GridColumn>
+                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="50"></GridColumn>
             </GridColumns>
         </SfGrid>
     </div>
