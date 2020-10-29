@@ -1,0 +1,253 @@
+﻿@page "/"
+@attribute [Authorize]
+
+@using AspNetMonsters.Blazor.Geolocation
+@using System.Collections.ObjectModel
+@using System.ComponentModel
+@using Syncfusion.Blazor.Grids
+@using FieldServiceT.Models
+@using Newtonsoft.Json.Serialization
+@using Newtonsoft.Json
+@using System.Text
+@using Microsoft.Extensions.Configuration
+@using FieldServiceT.Helpers
+@using Microsoft.IdentityModel.Clients.ActiveDirectory
+@using System.Net.Http.Headers
+@using System.Text.Json
+@using Microsoft.OData
+@using Microsoft.OData.Client
+@using Microsoft.AspNetCore.Authorization
+@using Syncfusion.Blazor.Lists
+@using Syncfusion.Blazor.Inputs
+
+
+@inject NavigationManager navigationManager
+@inject IConfiguration configuration
+@inject BrowserService browserService
+
+<div style="background-color:dodgerblue; width:auto; font-size:9px">
+    @*<h6 style="color:white; padding:4px;">Booked Resources @Message</h6>
+        <div class="shadow" style="cursor:pointer; width:auto; padding:0px; overflow:scroll">
+            <SfGrid DataSource="@resourceList" AllowFiltering="true" AllowSorting="true" AllowPaging="true">
+                <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.CheckBox"></GridFilterSettings>
+                <GridEvents RowSelected="RowSelectedHandler" TValue="BookedResourceScreen"></GridEvents>
+                <GridColumns>
+                    <GridColumn Field=@nameof(BookedResourceScreen.BookableResourceBookingId) HeaderText="Id"
+                                HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="0"></GridColumn>
+                    <GridColumn Field=@nameof(BookedResourceScreen.Name) HeaderText="NAME"
+                                HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="60"></GridColumn>
+                    <GridColumn Field=@nameof(BookedResourceScreen.StartTime) HeaderText="START TIME"
+                                HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Format="d" Width="70"></GridColumn>
+                    <GridColumn Field=@nameof(BookedResourceScreen.EndTime) HeaderText="END TIME"
+                                HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Format="d" Width="70"></GridColumn>
+                    <GridColumn Field=@nameof(BookedResourceScreen.WOName) HeaderText="WO NAME"
+                                HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="60" HideAtMedia="(min-width: 500px)"></GridColumn>
+                    <GridColumn Field=@nameof(BookedResourceScreen.WOAddress1) HeaderText="ADDRESS1"
+                                HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="60"></GridColumn>
+                    <GridColumn Field=@nameof(BookedResourceScreen.WOAddressName) HeaderText="ADDRESS NAME"
+                                HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="80" HideAtMedia="(min-width: 500px)"></GridColumn>
+                    <GridColumn Field=@nameof(BookedResourceScreen.WOSummary) HeaderText="SUMMARY"
+                                HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="80" HideAtMedia="(min-width: 500px)"></GridColumn>
+                    <GridColumn Field=@nameof(BookedResourceScreen.StatusName) HeaderText="STATUS"
+                                HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="50"></GridColumn>
+                </GridColumns>
+            </SfGrid>
+        </div>*@
+</div>
+
+<div class="content">
+    <SfTextBox Placeholder="Filter: Status" Input="@OnInput"></SfTextBox>
+    <SfListView DataSource="@resourceList"
+                HeaderTitle="Bookings"
+                ShowHeader="true"
+                CssClass="e-list-template"
+                SortOrder="Syncfusion.Blazor.Lists.SortOrder.Ascending" Height="1000px">
+        <ListViewFieldSettings TValue="BookedResourceScreen" Id="BookableResourceBookingId" Text="StatusName"></ListViewFieldSettings>
+        <ListViewTemplates TValue="BookedResourceScreen">
+            <Template>
+                <div class="e-list-wrapper e-list-multi-line e-list-avatar"  @onclick="(e => OnSelect(context))">
+                    <span class="e-avatar e-avatar-circle">@(context.WOName)</span>
+                    <span class="e-list-item-header">@context.StartTime</span>
+                    <span class="e-list-item-header">@context.StatusName</span>
+                    <span class="e-list-content">@context.WOAddress1</span>
+                    <span class="e-list-content">@context.WOSummary</span>
+                </div>
+            </Template>
+        </ListViewTemplates>
+    </SfListView>
+</div>
+
+@code
+{
+    // https://docs.microsoft.com/en-us/dynamics365/customer-engagement/web-api/bookableresourcebooking?view=dynamics-ce-odata-9
+    // https://docs.microsoft.com/en-us/dynamics365/customer-engagement/web-api/bookableresourcebooking?view=dynamics-ce-odata-9#single-valued-navigation-properties
+    // https://42clouds.com/ru-ru/techdocs/interfeys-odata-vozmozhnosti-i-nastroyka.html#link10
+
+    #region Code
+
+    async Task OnInput(InputEventArgs eventArgs)
+    {
+        //ListData = DataSource.FindAll(e => e.Text.ToLower().StartsWith(eventArgs.Value));
+        //resourceList = await GetBookableResourceBookingsAsync();
+    }
+
+    void OnSelect(BookedResourceScreen selected)
+    {
+        var id = selected.BookableResourceBookingId;
+        var url = "/BookedResourcePage/" + id + "/" + token.AccessToken;
+        navigationManager.NavigateTo(url);
+    }
+
+    #region Declarations
+
+    private string CurrentToken { get; set; }
+    private string Error { get; set; }
+    private string selectedId;
+
+    private string baseUrl;
+    private AuthenticationResult token;
+    private string userMail;
+    private string systemuserId;
+    private string bookableResourceId;
+
+    private List<BookedResourceScreen> resourceList { get; set; }
+
+    [CascadingParameter] Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    private string Message { get; set; }
+    #endregion
+
+    protected override async Task OnInitializedAsync()
+    {
+        baseUrl = configuration["BaseUrl"];
+        resourceList = new List<BookedResourceScreen>();
+        CurrentToken = await GetTokenAsync();
+
+        try
+        {
+            userMail = await GetUserMailAsync();
+        }
+        catch (Exception ex)
+        {
+            Message = ex.Message;
+        }
+
+        systemuserId = await GetSystemUserIdAsync();
+
+        bookableResourceId = await GetBookableResourceAsync();
+
+        if (bookableResourceId == null)
+        {
+            resourceList = null;
+            return;
+        }
+        resourceList = await GetBookableResourceBookingsAsync();
+    }
+
+    private async Task<string> GetTokenAsync()
+    {
+        token = await TokenService.GetAuthenticationResultAsync();
+        return token.AccessToken;
+    }
+
+    private async Task<string> GetUserMailAsync()
+    {
+        var authState = await authenticationStateTask;
+        return authState.User.Identity.Name;
+    }
+
+    private async Task<string> GetSystemUserIdAsync()
+    {
+        string query = baseUrl + "systemusers?$select=systemuserid,fullname&$filter=internalemailaddress eq '" + userMail + "'";
+        using (var client = new System.Net.Http.HttpClient())
+        {
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
+            var response = await client.GetAsync(new Uri(query));
+            var strjson = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<ODataResponse<SystemUser>>(strjson).Value.First<SystemUser>();
+            return result.SystemUserId;
+        }
+    }
+
+    private async Task<string> GetBookableResourceAsync()
+    {
+        {
+            string query = baseUrl + "bookableresources";
+            query += "?$select=bookableresourceid";
+            query += "&$filter=_userid_value eq '" + systemuserId + "'";
+
+            using (var client = new System.Net.Http.HttpClient())
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
+
+                var response = await client.GetAsync(new Uri(query));
+                var strjson = await response.Content.ReadAsStringAsync();
+
+                var result = JsonConvert.DeserializeObject<ODataResponse<BookableResource>>(strjson).Value.FirstOrDefault<BookableResource>();
+
+                if (result == null)
+                    return null;
+                else
+                    return result.BookableResourceId;
+            }
+        }
+    }
+
+    private async Task<List<BookedResourceScreen>> GetBookableResourceBookingsAsync()
+    {
+        string query = baseUrl + "bookableresourcebookings";
+        query += "?$filter=_resource_value eq '" + bookableResourceId + "'";
+        query += "&$select=name,starttime,endtime";
+        query += "&$expand=msdyn_workorder($select = msdyn_name, msdyn_address1,msdyn_addressname,msdyn_workordersummary ),";
+        query += "BookingStatus($select=name)";
+
+        using (var client = new System.Net.Http.HttpClient())
+        {
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
+
+            var response = await client.GetAsync(new Uri(query));
+            var strjson = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<ODataResponse<BookedResource>>(strjson).Value;
+
+            var list = result.Select(res => new BookedResourceScreen()
+            {
+                BookableResourceBookingId = res.BookableResourceBookingId,
+                Name = res.Name,
+                StartTime = res.StartTime,
+                EndTime = res.EndTime,
+                WOName = res.WorkOrder == null ? "" : res.WorkOrder.Name,
+                WOAddressName = res.WorkOrder == null ? "" : res.WorkOrder.Addressname,
+                WOAddress1 = res.WorkOrder == null ? "" : res.WorkOrder.Address1,
+                WOSummary = res.WorkOrder == null ? "" : res.WorkOrder.WorkOrderSummary,
+                StatusName = res.BookingStatus.Name == null ? "" : res.BookingStatus.Name
+            });
+
+            var resultList = list.ToList<BookedResourceScreen>();
+            return resultList;
+        }
+    }
+
+    public void RowSelectedHandler(RowSelectEventArgs<BookedResourceScreen> args)
+    {
+        var id = args.Data.BookableResourceBookingId;
+        var url = "/BookedResourcePage/" + id + "/" + token.AccessToken;
+        navigationManager.NavigateTo(url);
+    }
+
+    internal class ODataResponse<T>
+    { public List<T> Value { get; set; } }
+
+
+    #endregion
+}
+<style>
+    .container {
+        display: grid;
+    }
+
+        .container > div {
+            background-color: brown;
+        }
+</style>
+

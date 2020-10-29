@@ -1,4 +1,5 @@
-﻿@page "/"
+﻿@page "/BookingPage"
+<h3>BookingPage</h3>
 @attribute [Authorize]
 
 @using AspNetMonsters.Blazor.Geolocation
@@ -60,8 +61,6 @@
 
     #region Code
 
-
-
     private string CurrentToken { get; set; }
     private string Error { get; set; }
     private string selectedId;
@@ -72,16 +71,22 @@
     private string systemuserId;
     private string bookableResourceId;
 
-    private List<BookedResourceScreen> resourceList { get; set; }
+    private List<BookedResourceScreen>
+    resourceList
+    { get; set; }
 
-    [CascadingParameter] Task<AuthenticationState> authenticationStateTask { get; set; }
+    [CascadingParameter]
+    Task<AuthenticationState>
+        authenticationStateTask
+    { get; set; }
 
     private string Message { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         baseUrl = configuration["BaseUrl"];
-        resourceList = new List<BookedResourceScreen>();
+        resourceList = new List<BookedResourceScreen>
+            ();
         CurrentToken = await GetTokenAsync();
 
         try
@@ -105,19 +110,22 @@
         resourceList = await GetBookableResourceBookingsAsync();
     }
 
-    private async Task<string> GetTokenAsync()
+    private async Task<string>
+        GetTokenAsync()
     {
         token = await TokenService.GetAuthenticationResultAsync();
         return token.AccessToken;
     }
 
-    private async Task<string> GetUserMailAsync()
+    private async Task<string>
+        GetUserMailAsync()
     {
         var authState = await authenticationStateTask;
         return authState.User.Identity.Name;
     }
 
-    private async Task<string> GetSystemUserIdAsync()
+    private async Task<string>
+        GetSystemUserIdAsync()
     {
         string query = baseUrl + "systemusers?$select=systemuserid,fullname&$filter=internalemailaddress eq '" + userMail + "'";
         using (var client = new System.Net.Http.HttpClient())
@@ -212,3 +220,7 @@
         }
 </style>
 
+
+@code {
+
+}

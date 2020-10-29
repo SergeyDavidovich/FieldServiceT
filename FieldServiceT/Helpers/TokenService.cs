@@ -18,20 +18,15 @@ namespace FieldServiceT.Helpers
         private static readonly string clientId = "6b542434-9649-4bb6-91c8-c2688e5b4024";
 
         private static readonly string CRMHost = "https://eg8pfua3iofsrjt3zb.crm.dynamics.com/";
-
-
     public static async Task<AuthenticationResult> GetAuthenticationResultAsync()
     {
         String authorityUrl = "https://login.microsoftonline.com/" + tenantId;
-
         try
         {
             AuthenticationContext authContext = new AuthenticationContext(authorityUrl);
-
             ClientCredential clientCredential = new ClientCredential(clientId, appKey);
-
-            AuthenticationResult token = await authContext.AcquireTokenAsync(CRMHost, clientCredential).ConfigureAwait(false);
-
+            AuthenticationResult token = 
+                    await authContext.AcquireTokenAsync(CRMHost, clientCredential).ConfigureAwait(false);
             return token;
         }
         catch (Exception)
