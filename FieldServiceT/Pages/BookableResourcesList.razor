@@ -96,7 +96,7 @@
 
     private async Task<string> GetTokenAsync()
     {
-        token = await TokenService.GetAuthenticationResultAsync();
+        //token = await TokenService.GetAuthenticationResultAsync();
         return token.AccessToken;
     }
 

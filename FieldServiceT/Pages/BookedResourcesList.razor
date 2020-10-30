@@ -24,36 +24,7 @@
 @inject NavigationManager navigationManager
 @inject IConfiguration configuration
 @inject BrowserService browserService
-
-<div style="background-color:dodgerblue; width:auto; font-size:9px">
-    @*<h6 style="color:white; padding:4px;">Booked Resources @Message</h6>
-        <div class="shadow" style="cursor:pointer; width:auto; padding:0px; overflow:scroll">
-            <SfGrid DataSource="@resourceList" AllowFiltering="true" AllowSorting="true" AllowPaging="true">
-                <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.CheckBox"></GridFilterSettings>
-                <GridEvents RowSelected="RowSelectedHandler" TValue="BookedResourceScreen"></GridEvents>
-                <GridColumns>
-                    <GridColumn Field=@nameof(BookedResourceScreen.BookableResourceBookingId) HeaderText="Id"
-                                HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="0"></GridColumn>
-                    <GridColumn Field=@nameof(BookedResourceScreen.Name) HeaderText="NAME"
-                                HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="60"></GridColumn>
-                    <GridColumn Field=@nameof(BookedResourceScreen.StartTime) HeaderText="START TIME"
-                                HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Format="d" Width="70"></GridColumn>
-                    <GridColumn Field=@nameof(BookedResourceScreen.EndTime) HeaderText="END TIME"
-                                HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Format="d" Width="70"></GridColumn>
-                    <GridColumn Field=@nameof(BookedResourceScreen.WOName) HeaderText="WO NAME"
-                                HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="60" HideAtMedia="(min-width: 500px)"></GridColumn>
-                    <GridColumn Field=@nameof(BookedResourceScreen.WOAddress1) HeaderText="ADDRESS1"
-                                HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="60"></GridColumn>
-                    <GridColumn Field=@nameof(BookedResourceScreen.WOAddressName) HeaderText="ADDRESS NAME"
-                                HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="80" HideAtMedia="(min-width: 500px)"></GridColumn>
-                    <GridColumn Field=@nameof(BookedResourceScreen.WOSummary) HeaderText="SUMMARY"
-                                HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="80" HideAtMedia="(min-width: 500px)"></GridColumn>
-                    <GridColumn Field=@nameof(BookedResourceScreen.StatusName) HeaderText="STATUS"
-                                HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="50"></GridColumn>
-                </GridColumns>
-            </SfGrid>
-        </div>*@
-</div>
+@inject TokenService tokenService;
 
 <div class="content">
     <SfTextBox Placeholder="Filter: Status" Input="@OnInput"></SfTextBox>
@@ -100,7 +71,7 @@
 
     #region Declarations
 
-    private string CurrentToken { get; set; }
+    //private string CurrentToken { get; set; }
     private string Error { get; set; }
     private string selectedId;
 
@@ -121,7 +92,7 @@
     {
         baseUrl = configuration["BaseUrl"];
         resourceList = new List<BookedResourceScreen>();
-        CurrentToken = await GetTokenAsync();
+        token = await tokenService.GetAuthenticationResultAsync();
 
         try
         {
@@ -143,13 +114,6 @@
         }
         resourceList = await GetBookableResourceBookingsAsync();
     }
-
-    private async Task<string> GetTokenAsync()
-    {
-        token = await TokenService.GetAuthenticationResultAsync();
-        return token.AccessToken;
-    }
-
     private async Task<string> GetUserMailAsync()
     {
         var authState = await authenticationStateTask;

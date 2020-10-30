@@ -1,11 +1,13 @@
 ﻿@page "/AgendaPage"
 
 @inject FieldServiceT.Helpers.BookableResourceBookingService bookableResourceBookingService
+@inject TokenService tokenService
 
 @using Syncfusion.Blazor.Schedule
 @using Microsoft.IdentityModel.Clients.ActiveDirectory
 @using FieldServiceT.Models
 @using FieldServiceT.Helpers
+
 
 <h6 style="padding-left:12px">Agenda</h6>
 <div class="col-lg-12 control-section">
@@ -42,7 +44,7 @@
     {
         try
         {
-            token = await TokenService.GetAuthenticationResultAsync();
+            token = await tokenService.GetAuthenticationResultAsync();
             CurrentToken = token.AccessToken;
         }
         catch (Exception e)

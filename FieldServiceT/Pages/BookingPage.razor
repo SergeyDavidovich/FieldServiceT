@@ -21,6 +21,7 @@
 @inject NavigationManager navigationManager
 @inject IConfiguration configuration
 @inject BrowserService browserService
+@inject TokenService tokenService
 
 <div style="width:100%; height:100vh; font-size:9px">
     <div style="cursor:pointer; width:100%; height:100%;">
@@ -83,7 +84,7 @@
     {
         baseUrl = configuration["BaseUrl"];
         resourceList = new List<BookedResourceScreen>();
-        CurrentToken = await GetTokenAsync();
+        token = await tokenService.GetAuthenticationResultAsync();
 
         try
         {
@@ -105,14 +106,6 @@
         }
         resourceList = await GetBookableResourceBookingsAsync();
     }
-
-    private async Task<string>
-        GetTokenAsync()
-    {
-        token = await TokenService.GetAuthenticationResultAsync();
-        return token.AccessToken;
-    }
-
     private async Task<string>
         GetUserMailAsync()
     {
@@ -203,7 +196,6 @@
     internal class ODataResponse<T>
     { public List<T> Value { get; set; } }
 
-
     #endregion
 }
 <style>
@@ -215,8 +207,3 @@
             background-color: brown;
         }
 </style>
-
-
-@code {
-
-}
