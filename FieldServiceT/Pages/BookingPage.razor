@@ -1,5 +1,4 @@
 ﻿@page "/BookingPage"
-<h3>BookingPage</h3>
 @attribute [Authorize]
 
 @using AspNetMonsters.Blazor.Geolocation
@@ -23,10 +22,10 @@
 @inject IConfiguration configuration
 @inject BrowserService browserService
 
-<div style="background-color:dodgerblue; width:auto; font-size:9px">
-    <h6 style="color:white; padding:4px;">Booked Resources @Message</h6>
-    <div class="shadow" style="cursor:pointer; width:auto; padding:0px; overflow:scroll">
-        <SfGrid DataSource="@resourceList" AllowFiltering="true" AllowSorting="true" AllowPaging="true">
+<div style="width:100%; height:100vh; font-size:9px">
+    <div style="cursor:pointer; width:100%; height:100%;">
+        <p><em>Booking</em></p>
+        <SfGrid DataSource="@resourceList" AllowFiltering="true" AllowSorting="true" AllowPaging="true" Height="100%" ShowColumnMenu="true" AllowTextWrap="false">
             <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.CheckBox"></GridFilterSettings>
             <GridEvents RowSelected="RowSelectedHandler" TValue="BookedResourceScreen"></GridEvents>
             <GridColumns>
@@ -37,15 +36,15 @@
                 <GridColumn Field=@nameof(BookedResourceScreen.StartTime) HeaderText="START TIME"
                             HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Format="d" Width="70"></GridColumn>
                 <GridColumn Field=@nameof(BookedResourceScreen.EndTime) HeaderText="END TIME"
-                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Format="d" Width="70"></GridColumn>
+                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Format="d" Width="70" HideAtMedia="(min-width: 481px)"></GridColumn>
                 <GridColumn Field=@nameof(BookedResourceScreen.WOName) HeaderText="WO NAME"
-                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="60" HideAtMedia="(min-width: 500px)"></GridColumn>
+                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="60" HideAtMedia="(min-width: 481px)"></GridColumn>
                 <GridColumn Field=@nameof(BookedResourceScreen.WOAddress1) HeaderText="ADDRESS1"
                             HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="60"></GridColumn>
                 <GridColumn Field=@nameof(BookedResourceScreen.WOAddressName) HeaderText="ADDRESS NAME"
-                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="80" HideAtMedia="(min-width: 500px)"></GridColumn>
+                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="80" HideAtMedia="(min-width: 481px)"></GridColumn>
                 <GridColumn Field=@nameof(BookedResourceScreen.WOSummary) HeaderText="SUMMARY"
-                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="80" HideAtMedia="(min-width: 500px)"></GridColumn>
+                            HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="0" HideAtMedia="(min-width: 481px)"></GridColumn>
                 <GridColumn Field=@nameof(BookedResourceScreen.StatusName) HeaderText="STATUS"
                             HeaderTextAlign="TextAlign.Left" TextAlign="TextAlign.Left" Width="50"></GridColumn>
             </GridColumns>
@@ -61,6 +60,7 @@
 
     #region Code
 
+    #region Declarations
     private string CurrentToken { get; set; }
     private string Error { get; set; }
     private string selectedId;
@@ -71,22 +71,18 @@
     private string systemuserId;
     private string bookableResourceId;
 
-    private List<BookedResourceScreen>
-    resourceList
-    { get; set; }
+    private List<BookedResourceScreen> resourceList { get; set; }
 
     [CascadingParameter]
-    Task<AuthenticationState>
-        authenticationStateTask
-    { get; set; }
+    Task<AuthenticationState> authenticationStateTask { get; set; }
 
     private string Message { get; set; }
+    #endregion
 
     protected override async Task OnInitializedAsync()
     {
         baseUrl = configuration["BaseUrl"];
-        resourceList = new List<BookedResourceScreen>
-            ();
+        resourceList = new List<BookedResourceScreen>();
         CurrentToken = await GetTokenAsync();
 
         try
