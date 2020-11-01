@@ -26,7 +26,7 @@
 <div style="width:100%; height:100vh; font-size:9px">
     <div style="cursor:pointer; width:100%; height:100%;">
         <p><em>Booking</em></p>
-        <SfGrid DataSource="@resourceList" AllowFiltering="true" AllowSorting="true" AllowPaging="true" Height="100%" ShowColumnMenu="true" AllowTextWrap="false">
+        <SfGrid DataSource="@DataSourceList" AllowFiltering="true" AllowSorting="true" AllowPaging="true" Height="100%" ShowColumnMenu="true" AllowTextWrap="false">
             <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.CheckBox"></GridFilterSettings>
             <GridEvents RowSelected="RowSelectedHandler" TValue="BookedResourceScreen"></GridEvents>
             <GridColumns>
@@ -68,9 +68,9 @@
     private string selectedId;
 
     //private AuthenticationResult token;
-    private string bookableResourceId;
+    //private string bookableResourceId;
 
-    private List<BookedResourceScreen> resourceList { get; set; }
+    private List<BookedResourceScreen> DataSourceList { get; set; }
 
     [CascadingParameter]
     Task<AuthenticationState> authenticationState { get; set; }
@@ -79,21 +79,21 @@
 
     protected override async Task OnInitializedAsync()
     {
-        resourceList = new List<BookedResourceScreen>();
+        DataSourceList = new List<BookedResourceScreen>();
         string baseUrl = configuration["BaseUrl"];
 
         var token = (await tokenService.GetAuthenticationResultAsync()).AccessToken;
         var userMail = (await authenticationState).User.Identity.Name;
-        var userId = (await GetSystemUser(baseUrl, userMail, token)).SystemUserId;
+        var userId = (await GetSystemUserAsync(baseUrl, userMail, token)).SystemUserId;
 
-        bookableResourceId = await GetBookableResourceAsync(baseUrl, userId, token);
+        string bookableResourceId = await GetBookableResourceIdAsync(baseUrl, userId, token);
 
-        if (bookableResourceId == null) { resourceList = null; return; }
+        if (bookableResourceId == null) { DataSourceList = null; return; }
 
-        resourceList = await GetBookableResourceBookingsAsync(baseUrl, token);
+        DataSourceList = await GetBookableResourceBookingsAsync(baseUrl, token, bookableResourceId);
     }
 
-    private async Task<SystemUser> GetSystemUser(string baseUrl, string userMail, string accessToken)
+    private async Task<SystemUser> GetSystemUserAsync(string baseUrl, string userMail, string accessToken)
     {
         string query = baseUrl + "systemusers?$select=systemuserid,fullname&$filter=internalemailaddress eq '" + userMail + "'";
         using (var client = new System.Net.Http.HttpClient())
@@ -106,9 +106,7 @@
         }
     }
 
-
-
-    private async Task<string> GetBookableResourceAsync(string baseUrl, string userId, string accessToken)
+    private async Task<string> GetBookableResourceIdAsync(string baseUrl, string userId, string accessToken)
     {
         {
             string query = baseUrl + "bookableresources";
@@ -132,7 +130,7 @@
         }
     }
 
-    private async Task<List<BookedResourceScreen>> GetBookableResourceBookingsAsync(string baseUrl, string accessToken)
+    private async Task<List<BookedResourceScreen>> GetBookableResourceBookingsAsync(string baseUrl, string accessToken, string bookableResourceId)
     {
         string query = baseUrl + "bookableresourcebookings";
         query += "?$filter=_resource_value eq '" + bookableResourceId + "'";
@@ -166,7 +164,7 @@
             return resultList;
         }
     }
-    
+
     public void RowSelectedHandler(RowSelectEventArgs<BookedResourceScreen> args)
     {
         var id = args.Data.BookableResourceBookingId;
