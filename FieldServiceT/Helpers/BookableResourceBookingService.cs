@@ -8,7 +8,6 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 
-
 namespace FieldServiceT.Helpers
 {
     public class BookableResourceBookingService
@@ -21,7 +20,6 @@ namespace FieldServiceT.Helpers
             _configuration = configuration;
             baseUrl = configuration["BaseUrl"] + "bookableresourcebookings";
         }
-
         public BookableResourceBookingService()
         { }
         public AuthenticationResult Token { get; set; }
@@ -52,6 +50,4 @@ namespace FieldServiceT.Helpers
             }
         }
     }
-    internal class ODataResponse<T>
-    { public List<T> Value { get; set; } }
 }

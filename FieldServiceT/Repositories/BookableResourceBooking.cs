@@ -7,32 +7,33 @@ using FieldServiceT.Models;
 using FieldServiceT.Helpers;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Newtonsoft.Json;
-
-
 namespace FieldServiceT.Repositories
 {
-    public interface IBookableResourceBooking<T> where T: BookedResource
+    public interface IBookableResourceBooking<T> where T : BookedResource
     {
-        public List<T> BookedResourceBokings();
+        public List<T> GetBookedResourceBokings();
         public T GetBookingResource(string id);
     }
-
-
-
     public class BookableResourceBooking<T> : IBookableResourceBooking<T> where T : BookedResource
     {
-        //public BookableResourceBooking(TokenService tokenService)
-        //    {}
-        public string BaseURL { get; set; }
-
-        public List<T> BookedResourceBokings()
+        TokenService _tokenService;
+        public BookableResourceBooking(TokenService tokenService)
         {
-            return null;
+            _tokenService = tokenService;
         }
-
+        private async Task<string> GetTokenAsync()
+        {
+            var token = await _tokenService.GetAuthenticationResultAsync();
+            return token.AccessToken;
+        }
+        public string BaseURL { get; set; }
         public T GetBookingResource(string id)
         {
             return null;
+        }
+        public List<T> GetBookedResourceBokings()
+        {
+            throw new NotImplementedException();
         }
     }
 }

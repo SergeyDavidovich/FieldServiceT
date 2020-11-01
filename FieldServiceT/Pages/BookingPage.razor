@@ -68,34 +68,27 @@
 
     private string baseUrl;
     private AuthenticationResult token;
-    private string userMail;
+    //private string userMail;
     private string systemuserId;
     private string bookableResourceId;
 
     private List<BookedResourceScreen> resourceList { get; set; }
 
     [CascadingParameter]
-    Task<AuthenticationState> authenticationStateTask { get; set; }
+    Task<AuthenticationState> authenticationState { get; set; }
 
     private string Message { get; set; }
     #endregion
 
     protected override async Task OnInitializedAsync()
     {
-        baseUrl = configuration["BaseUrl"];
         resourceList = new List<BookedResourceScreen>();
+        baseUrl = configuration["BaseUrl"];
         token = await tokenService.GetAuthenticationResultAsync();
 
-        try
-        {
-            userMail = await GetUserMailAsync();
-        }
-        catch (Exception ex)
-        {
-            Message = ex.Message;
-        }
+        var userMail = (await authenticationState).User.Identity.Name;
 
-        systemuserId = await GetSystemUserIdAsync();
+        systemuserId = await GetSystemUserIdAsync(userMail);
 
         bookableResourceId = await GetBookableResourceAsync();
 
@@ -106,15 +99,8 @@
         }
         resourceList = await GetBookableResourceBookingsAsync();
     }
-    private async Task<string>
-        GetUserMailAsync()
-    {
-        var authState = await authenticationStateTask;
-        return authState.User.Identity.Name;
-    }
 
-    private async Task<string>
-        GetSystemUserIdAsync()
+    private async Task<string>GetSystemUserIdAsync(string userMail)
     {
         string query = baseUrl + "systemusers?$select=systemuserid,fullname&$filter=internalemailaddress eq '" + userMail + "'";
         using (var client = new System.Net.Http.HttpClient())
@@ -193,8 +179,6 @@
         navigationManager.NavigateTo(url);
     }
 
-    internal class ODataResponse<T>
-    { public List<T> Value { get; set; } }
 
     #endregion
 }
