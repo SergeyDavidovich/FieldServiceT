@@ -24,45 +24,6 @@
 @using Syncfusion.Blazor.Notifications
 
 <div id="grid">
-    <!--<div style="margin-top:2px; margin-bottom:2px; padding:10px;  border: solid 1px lightgray; background-color:antiquewhite; font-size:smaller">-->
-        @*<table border="0" width="100%">
-                <tr>
-                    <td width="120">
-                        Latitude:
-                    </td>
-                    <td width="120">
-                        <b>@location?.Latitude</b>
-                    </td>
-                    <td>
-                        <button class="btn btn-primary btn-sm button-geo" type="button" @onclick="GetLocation">Location</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td width="120">
-                        Longitude:
-                    </td>
-                    <td width="120">
-                        <b>@location?.Longitude</b>
-                    </td>
-                    <td>
-                        <button class="btn btn-danger btn-sm button-geo" type="button" @onclick="ResetLocation">Reset</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Accuracy:
-                    </td>
-                    <td>
-                        <b>@location?.Accuracy</b>
-                    </td>
-                </tr>
-            </table>*@
-    <!--</div>-->
-    <!--<div class="col-lg-12 control-section toast-default-section">
-        <SfToast ID="toast_default" @ref="ToastObj" Title="Adaptive Tiles Meeting" Content="Hello!" Timeout="5000" Icon="e-meeting">-->
-            @*<ToastPosition X="@ToastPosition"></ToastPosition>*@
-        <!--</SfToast>
-    </div>-->
     <div>
         <SfDialog Width="350" Height="140" ShowCloseIcon="true" IsModal="true" @bind-Visible="@DialogIsVisible">
             <DialogTemplates>

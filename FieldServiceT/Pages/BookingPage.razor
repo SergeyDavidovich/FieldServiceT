@@ -63,19 +63,10 @@
 
     #region Code
 
-    #region Declarations
-
-    private string selectedId;
-
-    //private AuthenticationResult token;
-    //private string bookableResourceId;
-
     private List<BookedResourceScreen> DataSourceList { get; set; }
 
     [CascadingParameter]
     Task<AuthenticationState> authenticationState { get; set; }
-
-    #endregion
 
     protected override async Task OnInitializedAsync()
     {
@@ -90,7 +81,9 @@
 
         if (bookableResourceId == null) { DataSourceList = null; return; }
 
-        DataSourceList = await GetBookableResourceBookingsAsync(baseUrl, token, bookableResourceId);
+        var bookableResourceBookings = await GetBookableResourceBookingsAsync(baseUrl, token, bookableResourceId);
+
+        DataSourceList = MappedToScreenObject(bookableResourceBookings);
     }
 
     private async Task<SystemUser> GetSystemUserAsync(string baseUrl, string userMail, string accessToken)
@@ -130,7 +123,7 @@
         }
     }
 
-    private async Task<List<BookedResourceScreen>> GetBookableResourceBookingsAsync(string baseUrl, string accessToken, string bookableResourceId)
+    private async Task<List<BookedResource>> GetBookableResourceBookingsAsync(string baseUrl, string accessToken, string bookableResourceId)
     {
         string query = baseUrl + "bookableresourcebookings";
         query += "?$filter=_resource_value eq '" + bookableResourceId + "'";
@@ -138,31 +131,36 @@
         query += "&$expand=msdyn_workorder($select = msdyn_name, msdyn_address1,msdyn_addressname,msdyn_workordersummary ),";
         query += "BookingStatus($select=name)";
 
+        HttpResponseMessage response;
+
         using (var client = new System.Net.Http.HttpClient())
         {
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-
-            var response = await client.GetAsync(new Uri(query));
-            var strjson = await response.Content.ReadAsStringAsync();
-
-            var result = JsonConvert.DeserializeObject<ODataResponse<BookedResource>>(strjson).Value;
-
-            var list = result.Select(res => new BookedResourceScreen()
-            {
-                BookableResourceBookingId = res.BookableResourceBookingId,
-                Name = res.Name,
-                StartTime = res.StartTime,
-                EndTime = res.EndTime,
-                WOName = res.WorkOrder == null ? "" : res.WorkOrder.Name,
-                WOAddressName = res.WorkOrder == null ? "" : res.WorkOrder.Addressname,
-                WOAddress1 = res.WorkOrder == null ? "" : res.WorkOrder.Address1,
-                WOSummary = res.WorkOrder == null ? "" : res.WorkOrder.WorkOrderSummary,
-                StatusName = res.BookingStatus.Name == null ? "" : res.BookingStatus.Name
-            });
-
-            var resultList = list.ToList<BookedResourceScreen>();
-            return resultList;
+            response = await client.GetAsync(new Uri(query));
         }
+        var strjson = await response.Content.ReadAsStringAsync();
+
+        var result = JsonConvert.DeserializeObject<ODataResponse<BookedResource>>(strjson).Value;
+        return result;
+    }
+
+    private List<BookedResourceScreen> MappedToScreenObject(List<BookedResource> resourceList)
+    {
+        var list = resourceList.Select(res => new BookedResourceScreen()
+        {
+            BookableResourceBookingId = res.BookableResourceBookingId,
+            Name = res.Name,
+            StartTime = res.StartTime,
+            EndTime = res.EndTime,
+            WOName = res.WorkOrder == null ? "" : res.WorkOrder.Name,
+            WOAddressName = res.WorkOrder == null ? "" : res.WorkOrder.Addressname,
+            WOAddress1 = res.WorkOrder == null ? "" : res.WorkOrder.Address1,
+            WOSummary = res.WorkOrder == null ? "" : res.WorkOrder.WorkOrderSummary,
+            StatusName = res.BookingStatus.Name == null ? "" : res.BookingStatus.Name
+        });
+
+        var resultList = list.ToList<BookedResourceScreen>();
+        return resultList;
     }
 
     public void RowSelectedHandler(RowSelectEventArgs<BookedResourceScreen> args)
