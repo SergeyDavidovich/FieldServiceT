@@ -55,21 +55,19 @@
 
 @code
 {
+    #region Links
     // https://docs.microsoft.com/en-us/dynamics365/customer-engagement/web-api/bookableresourcebooking?view=dynamics-ce-odata-9
     // https://docs.microsoft.com/en-us/dynamics365/customer-engagement/web-api/bookableresourcebooking?view=dynamics-ce-odata-9#single-valued-navigation-properties
     // https://42clouds.com/ru-ru/techdocs/interfeys-odata-vozmozhnosti-i-nastroyka.html#link10
+    #endregion
 
     #region Code
 
     #region Declarations
-    private string CurrentToken { get; set; }
-    private string Error { get; set; }
+
     private string selectedId;
 
-    private string baseUrl;
-    private AuthenticationResult token;
-    //private string userMail;
-    private string systemuserId;
+    //private AuthenticationResult token;
     private string bookableResourceId;
 
     private List<BookedResourceScreen> resourceList { get; set; }
@@ -77,52 +75,49 @@
     [CascadingParameter]
     Task<AuthenticationState> authenticationState { get; set; }
 
-    private string Message { get; set; }
     #endregion
 
     protected override async Task OnInitializedAsync()
     {
         resourceList = new List<BookedResourceScreen>();
-        baseUrl = configuration["BaseUrl"];
-        token = await tokenService.GetAuthenticationResultAsync();
+        string baseUrl = configuration["BaseUrl"];
 
+        var token = (await tokenService.GetAuthenticationResultAsync()).AccessToken;
         var userMail = (await authenticationState).User.Identity.Name;
+        var userId = (await GetSystemUser(baseUrl, userMail, token)).SystemUserId;
 
-        systemuserId = await GetSystemUserIdAsync(userMail);
+        bookableResourceId = await GetBookableResourceAsync(baseUrl, userId, token);
 
-        bookableResourceId = await GetBookableResourceAsync();
+        if (bookableResourceId == null) { resourceList = null; return; }
 
-        if (bookableResourceId == null)
-        {
-            resourceList = null;
-            return;
-        }
-        resourceList = await GetBookableResourceBookingsAsync();
+        resourceList = await GetBookableResourceBookingsAsync(baseUrl, token);
     }
 
-    private async Task<string>GetSystemUserIdAsync(string userMail)
+    private async Task<SystemUser> GetSystemUser(string baseUrl, string userMail, string accessToken)
     {
         string query = baseUrl + "systemusers?$select=systemuserid,fullname&$filter=internalemailaddress eq '" + userMail + "'";
         using (var client = new System.Net.Http.HttpClient())
         {
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
             var response = await client.GetAsync(new Uri(query));
             var strjson = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<ODataResponse<SystemUser>>(strjson).Value.First<SystemUser>();
-            return result.SystemUserId;
+            return result;
         }
     }
 
-    private async Task<string> GetBookableResourceAsync()
+
+
+    private async Task<string> GetBookableResourceAsync(string baseUrl, string userId, string accessToken)
     {
         {
             string query = baseUrl + "bookableresources";
             query += "?$select=bookableresourceid";
-            query += "&$filter=_userid_value eq '" + systemuserId + "'";
+            query += "&$filter=_userid_value eq '" + userId + "'";
 
             using (var client = new System.Net.Http.HttpClient())
             {
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
                 var response = await client.GetAsync(new Uri(query));
                 var strjson = await response.Content.ReadAsStringAsync();
@@ -137,7 +132,7 @@
         }
     }
 
-    private async Task<List<BookedResourceScreen>> GetBookableResourceBookingsAsync()
+    private async Task<List<BookedResourceScreen>> GetBookableResourceBookingsAsync(string baseUrl, string accessToken)
     {
         string query = baseUrl + "bookableresourcebookings";
         query += "?$filter=_resource_value eq '" + bookableResourceId + "'";
@@ -147,7 +142,7 @@
 
         using (var client = new System.Net.Http.HttpClient())
         {
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
             var response = await client.GetAsync(new Uri(query));
             var strjson = await response.Content.ReadAsStringAsync();
@@ -171,15 +166,13 @@
             return resultList;
         }
     }
-
+    
     public void RowSelectedHandler(RowSelectEventArgs<BookedResourceScreen> args)
     {
         var id = args.Data.BookableResourceBookingId;
-        var url = "/BookedResourcePage/" + id + "/" + token.AccessToken;
+        var url = "/BookedResourcePage/" + id + "/"; // + token.AccessToken;
         navigationManager.NavigateTo(url);
     }
-
-
     #endregion
 }
 <style>

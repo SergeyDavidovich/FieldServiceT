@@ -36,7 +36,7 @@
         <ListViewFieldSettings TValue="BookedResourceScreen" Id="BookableResourceBookingId" Text="StatusName"></ListViewFieldSettings>
         <ListViewTemplates TValue="BookedResourceScreen">
             <Template>
-                <div class="e-list-wrapper e-list-multi-line e-list-avatar"  @onclick="(e => OnSelect(context))">
+                <div class="e-list-wrapper e-list-multi-line e-list-avatar" style="cursor:pointer"  @onclick="(e => OnSelect(context))">
                     <span class="e-avatar e-avatar-circle">@(context.WOName)</span>
                     <span class="e-list-item-header">@context.StartTime</span>
                     <span class="e-list-item-header">@context.StatusName</span>
