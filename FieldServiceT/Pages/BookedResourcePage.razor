@@ -1,4 +1,4 @@
-﻿@page "/BookedResourcePage/{ResourceId}/{Token}"
+﻿@page "/BookedResourcePage/{ResourceId}"
 @attribute [Authorize]
 
 @inject LocationService  locationService
@@ -6,8 +6,6 @@
 @inject FieldServiceT.Helpers.TokenService tokenService
 
 @using AspNetMonsters.Blazor.Geolocation
-
-@*@using System.Text.Json*@
 @using Microsoft.OData
 @using Microsoft.OData.Client
 @using Newtonsoft.Json.Serialization
@@ -42,16 +40,16 @@
     <hr />
 
     @*<p>Id: <b>@Resource.BookableResourceBookingId</b></p>*@
-    <p>Name: <b>@Resource.Name</b></p>
-    <p>Start time: <b>@Resource.StartTime</b></p>
-    <p>End time: <b>@Resource.EndTime</b></p>
-    <p>Work order Name: <b>@Resource.WOName</b></p>
-    <p>Work order Address1: <b>@Resource.WOAddress1</b></p>
-    <p>Work order AddressName:<b>@Resource.WOAddressName</b></p>
-    <p>Work order Summary:<b>@Resource.WOSummary</b></p>
-    <p>Status:<b>@Resource.StatusName</b></p>
-
-    <!--<div id="inner-grid" class="col-lg-12 control-section">
+    <p>Name: <b>@DataObject.Name</b></p>
+    <p>Start time: <b>@DataObject.StartTime</b></p>
+    <p>End time: <b>@DataObject.EndTime</b></p>
+    <p>Work order Name: <b>@DataObject.WOName</b></p>
+    <p>Work order Address1: <b>@DataObject.WOAddress1</b></p>
+    <p>Work order AddressName:<b>@DataObject.WOAddressName</b></p>
+    <p>Work order Summary:<b>@DataObject.WOSummary</b></p>
+    <p>Status:<b>@DataObject.StatusName</b></p>
+    <div>
+        <!--<div id="inner-grid" class="col-lg-12 control-section">
         <div class="e-sample-resize-container">
             <SfTab CssClass="default-tab">
                 <TabItems>
@@ -61,77 +59,79 @@
                         </ChildContent>
                         <ContentTemplate>
                             <p>-->
-    @*Id: @Resource.BookableResourceBookingId*@
-    <!--</p>
-                            <p>Name: <b>@Resource.Name</b></p>
-                            <p>Start time: <b>@Resource.StartTime</b></p>
-                            <p>End time: <b>@Resource.EndTime</b></p>
-                        </ContentTemplate>
-                    </TabItem>
-                    <TabItem>
-                        <ChildContent>
-                            <TabHeader Text="ORDER DATA" IconCss="e-facebook"></TabHeader>
-                        </ChildContent>
-                        <ContentTemplate>
-                            <p>WOName: <b>@Resource.WOName</b></p>
-                            <p>WOAddress1: <b>@Resource.WOAddress1</b></p>
-                            <p>WOAddressName: <b>@Resource.WOAddressName</b></p>
-                        </ContentTemplate>
-                    </TabItem>
-                </TabItems>
-            </SfTab>
-        </div>
-    </div>-->
-    <!--<div id="sub-grid" style="font-size:smaller">
+        @*Id: @Resource.BookableResourceBookingId*@
+        <!--</p>
+                                <p>Name: <b>@Resource.Name</b></p>
+                                <p>Start time: <b>@Resource.StartTime</b></p>
+                                <p>End time: <b>@Resource.EndTime</b></p>
+                            </ContentTemplate>
+                        </TabItem>
+                        <TabItem>
+                            <ChildContent>
+                                <TabHeader Text="ORDER DATA" IconCss="e-facebook"></TabHeader>
+                            </ChildContent>
+                            <ContentTemplate>
+                                <p>WOName: <b>@Resource.WOName</b></p>
+                                <p>WOAddress1: <b>@Resource.WOAddress1</b></p>
+                                <p>WOAddressName: <b>@Resource.WOAddressName</b></p>
+                            </ContentTemplate>
+                        </TabItem>
+                    </TabItems>
+                </SfTab>
+            </div>
+        </div>-->
+        <!--<div id="sub-grid" style="font-size:smaller">
         <div>
             <SfCard>
                 <CardHeader Title="RESOURCE DATA"></CardHeader>-->
-    @*<CardContent>
-            <div id="inner-grid">
-                <label>Resource id:</label>
-                <label><b>@Resource.BookableResourceBookingId</b></label>
-                <label>Created on:</label>
-                <label><b>@Resource.CreatedOn</b></label>
-                <label>Duration:</label>
-                <label><b>@Resource.Duration</b></label>
-                <label>End time:</label>
-                <label><b>@Resource.EndTime</b></label>
-                <label>Name:</label>
-                <label><b>@Resource.Name</b></label>
-                <label>Status:</label>
-                <label><b>@Resource.StatusName</b></label>
+        @*<CardContent>
+                <div id="inner-grid">
+                    <label>Resource id:</label>
+                    <label><b>@Resource.BookableResourceBookingId</b></label>
+                    <label>Created on:</label>
+                    <label><b>@Resource.CreatedOn</b></label>
+                    <label>Duration:</label>
+                    <label><b>@Resource.Duration</b></label>
+                    <label>End time:</label>
+                    <label><b>@Resource.EndTime</b></label>
+                    <label>Name:</label>
+                    <label><b>@Resource.Name</b></label>
+                    <label>Status:</label>
+                    <label><b>@Resource.StatusName</b></label>
+                </div>
+            </CardContent>*@
+        <!--<CardFooter>
+                        <CardFooterContent>
+                        </CardFooterContent>
+                    </CardFooter>
+                </SfCard>
             </div>
-        </CardContent>*@
-    <!--<CardFooter>
-                    <CardFooterContent>
-                    </CardFooterContent>
-                </CardFooter>
-            </SfCard>
-        </div>
-        <div>
-            <SfCard>
-                <CardHeader Title="WORK ORDER DATA"></CardHeader>
-                <CardContent>
-                    <div id="inner-grid">Content</div>
-                </CardContent>
-                <CardContent EnableSeperator="true"></CardContent>
-                <CardFooter>
-                    <CardFooterContent>
-                    </CardFooterContent>
-                </CardFooter>
-            </SfCard>
-        </div>
-    </div>-->
+            <div>
+                <SfCard>
+                    <CardHeader Title="WORK ORDER DATA"></CardHeader>
+                    <CardContent>
+                        <div id="inner-grid">Content</div>
+                    </CardContent>
+                    <CardContent EnableSeperator="true"></CardContent>
+                    <CardFooter>
+                        <CardFooterContent>
+                        </CardFooterContent>
+                    </CardFooter>
+                </SfCard>
+            </div>
+        </div>-->
+    </div>
 </div>
 
 @code {
+    #region
 
     #region Declarations
     [Parameter]
     public string ResourceId { get; set; }
 
-    [Parameter]
-    public string Token { get; set; }
+    //[Parameter]
+    //public string Token { get; set; }
 
     [CascadingParameter]
     RouteData RouteData { get; set; }
@@ -139,7 +139,7 @@
     string baseUrl;
     string webHookUrl;
 
-    public BookedResourceScreen Resource { get; set; }
+    public BookedResourceScreen DataObject { get; set; }
 
     Location location;
     double? Latitude;
@@ -155,9 +155,12 @@
     {
         baseUrl = configuration["BaseUrl"];
         webHookUrl = configuration["WebHookUrl"];
-        Resource = new BookedResourceScreen();
+        DataObject = new BookedResourceScreen();
+        var token = await tokenService.GetAuthenticationResultAsync();
 
-        await GetResource();
+        var resource = await GetBookableResourceBookingsByIdAsync(baseUrl, ResourceId, token.AccessToken);
+
+        DataObject = MappedToScreenObject(resource);
     }
 
     private async Task GetLocationAsync()
@@ -173,7 +176,7 @@
         Longitude = null;
     }
 
-    private async Task GetResource()
+    private async Task<BookedResource> GetBookableResourceBookingsByIdAsync(string baseUrl, string resourceId, string accessToken)
     {
         {
             string query = baseUrl + "bookableresourcebookings/";
@@ -184,7 +187,7 @@
 
             using (var client = new System.Net.Http.HttpClient())
             {
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
                 var response = await client.GetAsync(new Uri(query));
                 var strjson = await response.Content.ReadAsStringAsync();
@@ -192,24 +195,28 @@
                 var result = JsonConvert.DeserializeObject<ODataResponse<BookedResource>>(strjson);
 
                 var resource = result.Value.First<BookedResource>();
-
-                var flatResource = new BookedResourceScreen()
-                {
-                    BookableResourceBookingId = resource.BookableResourceBookingId,
-                    Name = resource.Name,
-                    StartTime = resource.StartTime,
-                    EndTime = resource.EndTime,
-                    WOName = resource.WorkOrder != null ? resource.WorkOrder.Name : null,
-                    WOAddressName = resource.WorkOrder != null ? resource.WorkOrder.Addressname : null,
-                    WOAddress1 = resource.WorkOrder != null ? resource.WorkOrder.Address1 : null,
-                    StatusName = resource.BookingStatus.Name == null ? "" : resource.BookingStatus.Name
-                };
-
-                Resource = flatResource;
+                return resource;
             }
         }
     }
 
+    private BookedResourceScreen MappedToScreenObject(BookedResource resource)
+    {
+        var screenResource = new BookedResourceScreen()
+        {
+            BookableResourceBookingId = resource.BookableResourceBookingId,
+            Name = resource.Name,
+            StartTime = resource.StartTime,
+            EndTime = resource.EndTime,
+            WOName = resource.WorkOrder != null ? resource.WorkOrder.Name : null,
+            WOAddressName = resource.WorkOrder != null ? resource.WorkOrder.Addressname : null,
+            WOAddress1 = resource.WorkOrder != null ? resource.WorkOrder.Address1 : null,
+            StatusName = resource.BookingStatus.Name == null ? "" : resource.BookingStatus.Name
+        };
+
+        return screenResource;
+    }
+    #region Event handlers
 
     private async Task Button_EnRoute_Handler(MouseEventArgs args)
     {
@@ -250,11 +257,12 @@
             var response = await client.PostAsync(webHookUrl, content);
         }
     }
-
+    #endregion
+    #endregion
 }
 <style>
-    p{
-        margin-left:12px;
+    p {
+        margin-left: 12px;
     }
 </style>
 

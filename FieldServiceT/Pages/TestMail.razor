@@ -24,6 +24,7 @@
 @inject NavigationManager navigationManager
 @inject BrowserService browserService
 @inject IConfiguration configuration
+@inject TokenService tokenService
 
 <div style="background-color:dodgerblue; width:auto; font-size:9px">
     <SfTextBox @ref="MailText"></SfTextBox>
@@ -110,7 +111,7 @@
     {
         try
         {
-            //token = await TokenService.GetAuthenticationResultAsync();
+            token = await tokenService.GetAuthenticationResultAsync();
             CurrentToken = token.AccessToken;
         }
         catch (Exception e)
@@ -178,8 +179,6 @@
 
             var result = JsonConvert.DeserializeObject<ODataResponse<BookedResource>>(strjson).Value;
 
-            //var list = new List<BookedResourceScreen>();
-
             var list = result.Select(res => new BookedResourceScreen()
             {
                 BookableResourceBookingId = res.BookableResourceBookingId,
@@ -201,7 +200,7 @@
     public void RowSelectedHandler(RowSelectEventArgs<BookedResourceScreen> args)
     {
         var id = args.Data.BookableResourceBookingId;
-        var url = "/BookedResourcePage/" + id + "/" + token.AccessToken;
+        var url = "/BookedResourcePage/" + id + "/"; 
         navigationManager.NavigateTo(url);
     }
 

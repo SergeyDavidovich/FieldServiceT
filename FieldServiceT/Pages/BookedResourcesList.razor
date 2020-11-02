@@ -36,7 +36,7 @@
         <ListViewFieldSettings TValue="BookedResourceScreen" Id="BookableResourceBookingId" Text="StatusName"></ListViewFieldSettings>
         <ListViewTemplates TValue="BookedResourceScreen">
             <Template>
-                <div class="e-list-wrapper e-list-multi-line e-list-avatar" style="cursor:pointer"  @onclick="(e => OnSelect(context))">
+                <div class="e-list-wrapper e-list-multi-line e-list-avatar" style="cursor:pointer" @onclick="(e => OnSelect(context))">
                     <span class="e-avatar e-avatar-circle">@(context.WOName)</span>
                     <span class="e-list-item-header">@context.StartTime</span>
                     <span class="e-list-item-header">@context.StatusName</span>
@@ -65,17 +65,16 @@
     void OnSelect(BookedResourceScreen selected)
     {
         var id = selected.BookableResourceBookingId;
-        var url = "/BookedResourcePage/" + id + "/" + token.AccessToken;
+        var url = "/BookedResourcePage/" + id;// + "/" + token.AccessToken;
         navigationManager.NavigateTo(url);
     }
 
     #region Declarations
 
-    //private string CurrentToken { get; set; }
     private string Error { get; set; }
     private string selectedId;
 
-    private string baseUrl;
+    //private string baseUrl;
     private AuthenticationResult token;
     private string userMail;
     private string systemuserId;
@@ -90,29 +89,19 @@
 
     protected override async Task OnInitializedAsync()
     {
-        baseUrl = configuration["BaseUrl"];
+        string baseUrl = configuration["BaseUrl"];
         resourceList = new List<BookedResourceScreen>();
         token = await tokenService.GetAuthenticationResultAsync();
-
-        try
-        {
-            userMail = await GetUserMailAsync();
-        }
-        catch (Exception ex)
-        {
-            Message = ex.Message;
-        }
-
-        systemuserId = await GetSystemUserIdAsync();
-
-        bookableResourceId = await GetBookableResourceAsync();
+        userMail = await GetUserMailAsync();
+        systemuserId = await GetSystemUserIdAsync(baseUrl);
+        bookableResourceId = await GetBookableResourceAsync(baseUrl);
 
         if (bookableResourceId == null)
         {
             resourceList = null;
             return;
         }
-        resourceList = await GetBookableResourceBookingsAsync();
+        resourceList = await GetBookableResourceBookingsAsync(baseUrl);
     }
     private async Task<string> GetUserMailAsync()
     {
@@ -120,7 +109,7 @@
         return authState.User.Identity.Name;
     }
 
-    private async Task<string> GetSystemUserIdAsync()
+    private async Task<string> GetSystemUserIdAsync(string baseUrl)
     {
         string query = baseUrl + "systemusers?$select=systemuserid,fullname&$filter=internalemailaddress eq '" + userMail + "'";
         using (var client = new System.Net.Http.HttpClient())
@@ -133,7 +122,7 @@
         }
     }
 
-    private async Task<string> GetBookableResourceAsync()
+    private async Task<string> GetBookableResourceAsync(string baseUrl)
     {
         {
             string query = baseUrl + "bookableresources";
@@ -157,7 +146,7 @@
         }
     }
 
-    private async Task<List<BookedResourceScreen>> GetBookableResourceBookingsAsync()
+    private async Task<List<BookedResourceScreen>> GetBookableResourceBookingsAsync(string baseUrl)
     {
         string query = baseUrl + "bookableresourcebookings";
         query += "?$filter=_resource_value eq '" + bookableResourceId + "'";
@@ -191,18 +180,6 @@
             return resultList;
         }
     }
-
-    public void RowSelectedHandler(RowSelectEventArgs<BookedResourceScreen> args)
-    {
-        var id = args.Data.BookableResourceBookingId;
-        var url = "/BookedResourcePage/" + id + "/" + token.AccessToken;
-        navigationManager.NavigateTo(url);
-    }
-
-    internal class ODataResponse<T>
-    { public List<T> Value { get; set; } }
-
-
     #endregion
 }
 <style>
