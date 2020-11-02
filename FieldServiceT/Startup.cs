@@ -16,6 +16,7 @@ using Microsoft.Extensions.Hosting;
 using Syncfusion.Blazor;
 using AspNetMonsters.Blazor.Geolocation;
 using Microsoft.AspNetCore.Components.Authorization;
+using FieldServiceT.Models;
 
 namespace FieldServiceT
 {
@@ -50,7 +51,7 @@ namespace FieldServiceT
             services.AddSyncfusionBlazor(true);
             services.AddScoped<Helpers.BrowserService>();
             services.AddSingleton<Helpers.TokenService>();
-            services.AddSingleton<Helpers.BookableResourceBookingService>();
+            services.AddSingleton<Repositories.BookableResourceBooking<BookedResource>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
