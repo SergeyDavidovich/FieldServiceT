@@ -116,13 +116,21 @@
         {
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
             var response = await client.GetAsync(new Uri(query));
+
+            //if (!response.IsSuccessStatusCode)
+            //{
+            //    navigationManager.NavigateTo("/error");
+            //}
+
             var strjson = await response.Content.ReadAsStringAsync();
+
             var result = JsonConvert.DeserializeObject<ODataResponse<SystemUser>>(strjson).Value.First<SystemUser>();
             return result.SystemUserId;
         }
     }
 
-    private async Task<string> GetBookableResourceAsync(string baseUrl)
+    private async Task<string>
+    GetBookableResourceAsync(string baseUrl)
     {
         {
             string query = baseUrl + "bookableresources";
