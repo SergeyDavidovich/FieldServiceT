@@ -1,15 +1,18 @@
-﻿@page "/AgendaPage"
-
-@inject FieldServiceT.Helpers.BookableResourceBookingService bookableResourceBookingService
-@inject TokenService tokenService
+﻿@page "/BKBSchedulePage"
+@attribute [Authorize]
 
 @using Syncfusion.Blazor.Schedule
 @using Microsoft.IdentityModel.Clients.ActiveDirectory
 @using FieldServiceT.Models
+@using FieldServiceT.Repositories
 @using FieldServiceT.Helpers
 
+@inject BookableResourceBooking<BookedResource> bookableResourceBookingService
+@inject TokenService tokenService
 
-<h6 style="padding-left:12px">Agenda</h6>
+
+<h6>BKBSchedulePage</h6>
+
 <div class="col-lg-12 control-section">
     <div class="schedule-wrapper">
         <SfSchedule TValue="BookedResource" Width="100%" Height="510px" @bind-SelectedDate="@CurrentDate">
@@ -25,40 +28,11 @@
     </div>
 </div>
 
-@code 
-{
-    #region
+@code {
     private AuthenticationResult token;
     private List<BookedResource> ResourceList { get; set; }
     private string CurrentToken { get; set; }
     private DateTime CurrentDate = DateTime.Now;
 
-    protected override async Task OnInitializedAsync()
-    {
-        ResourceList = new List<BookedResource>();
-        await GetTokenAsync();
-        await GetResources();
-    }
 
-    private async Task GetTokenAsync()
-    {
-        try
-        {
-            token = await tokenService.GetAuthenticationResultAsync();
-            CurrentToken = token.AccessToken;
-        }
-        catch (Exception e)
-        {
-            CurrentToken = $"ERROR! - {e.Message}";
-        }
-    }
-    private async Task GetResources()
-    {
-        bookableResourceBookingService.Token = token;
-        ResourceList = await bookableResourceBookingService.GetAllResourcesAsync();
-    }
-
-    #endregion
 }
-<style>
-</style>
