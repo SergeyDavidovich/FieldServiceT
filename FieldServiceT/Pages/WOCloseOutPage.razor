@@ -1,0 +1,31 @@
+﻿@page "/WOCloseOutPage"
+
+@using Syncfusion.Blazor.Navigations
+
+<h6>Work Order Closeout</h6>
+
+<div class="control-section e-tab-section">
+    <SfTab @ref="Tab" CssClass="BlazorTab" Height="390" LoadOn="ContentLoad.Demand" OverflowMode="OverflowMode.Popup">
+        <TabItems >
+            <TabItem >
+                <ChildContent>
+                    <TabHeader Text="Booking data"></TabHeader>
+                </ChildContent>
+            </TabItem>
+            <TabItem>
+                <ChildContent>
+                    <TabHeader Text="Materials used"></TabHeader>
+                </ChildContent>
+            </TabItem>
+            <TabItem>
+                <ChildContent>
+                    <TabHeader Text="Work Order Self Ratings"></TabHeader>
+                </ChildContent>
+            </TabItem>
+        </TabItems>
+    </SfTab>
+</div>
+
+    @code {
+        SfTab Tab;
+    }
