@@ -1,0 +1,47 @@
+﻿@inherits LayoutComponentBase
+@using Syncfusion.Blazor.Cards
+@layout MainLayout
+
+<div class="control-section">
+    <SfCard>
+        <CardHeader>
+            <h6>WOCLosedupLayout</h6>
+        </CardHeader>
+        <CardContent>
+            <div class="row">
+                <div>
+                    @Body
+                </div>
+            </div>
+        </CardContent>
+        <CardFooter>
+            <CardFooterContent>
+                <div id="buttons">
+                    <div><button class="e-button-icon" @onclick="OnPrevousClickHandler">Previous</button></div>
+                    <div><button>Next</button></div>
+                    <div><button>Submit</button></div>
+                </div>
+            </CardFooterContent>
+        </CardFooter>
+    </SfCard>
+</div>
+
+@code {
+    private void OnPrevousClickHandler(MouseEventArgs args)
+    {
+
+    }
+
+    //void OnSelect(BookedResourceScreen selected)
+    //{
+    //    var id = selected.BookableResourceBookingId;
+    //    var url = "/BookedResourcePage/" + id;// + "/" + token.AccessToken;
+    //    navigationManager.NavigateTo(url);
+    //}
+}
+<style>
+    #buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+</style>
