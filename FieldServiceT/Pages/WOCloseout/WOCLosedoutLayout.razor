@@ -5,7 +5,7 @@
 <div class="control-section">
     <SfCard>
         <CardHeader>
-            <h6>WOCLosedupLayout</h6>
+            <h7 style="text-align:left">WOCLosedupLayout</h7>
         </CardHeader>
         <CardContent>
             <div class="row">
@@ -16,10 +16,10 @@
         </CardContent>
         <CardFooter>
             <CardFooterContent>
-                <div id="buttons">
-                    <div><button class="e-button-icon" @onclick="OnPrevousClickHandler">Previous</button></div>
-                    <div><button>Next</button></div>
-                    <div><button>Submit</button></div>
+                <div id="container-buttons">
+                    <button type="button" class="btn btn-success btn-sm" @onclick="OnPrevousClickHandler">Previous</button>
+                    <button type="button" class="btn btn-success  btn-sm" @onclick="OnNextClickHandler">Next</button>
+                    <button type="button" class="btn btn-danger btn-sm" @onclick="OnSubmitClickHandler">Submit</button>
                 </div>
             </CardFooterContent>
         </CardFooter>
@@ -31,6 +31,16 @@
     {
 
     }
+    private void OnNextClickHandler(MouseEventArgs args)
+    {
+
+    }
+    private void OnSubmitClickHandler(MouseEventArgs args)
+    {
+
+    }
+
+
 
     //void OnSelect(BookedResourceScreen selected)
     //{
@@ -40,8 +50,13 @@
     //}
 }
 <style>
-    #buttons {
+    #container-buttons {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: auto auto auto;
+        grid-column-gap: 4px;
+        width:310px;
+    }
+    #container-buttons > button{
+        width:100px;
     }
 </style>

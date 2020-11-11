@@ -182,7 +182,7 @@
             string query = baseUrl + "bookableresourcebookings/";
             query += $"?$filter=bookableresourcebookingid eq '" + ResourceId + "'";
             query += "&$select=name,starttime,endtime";
-            query += "&$expand=msdyn_workorder($select = msdyn_name, msdyn_address1,msdyn_addressname),";
+            query += "&$expand=msdyn_workorder($select = msdyn_name, msdyn_address1,msdyn_addressname,msdyn_workordersummary),";
             query += "BookingStatus($select=name)";
 
             using (var client = new System.Net.Http.HttpClient())
@@ -208,10 +208,12 @@
             Name = resource.Name,
             StartTime = resource.StartTime,
             EndTime = resource.EndTime,
-            WOName = resource.WorkOrder != null ? resource.WorkOrder.Name : null,
-            WOAddressName = resource.WorkOrder != null ? resource.WorkOrder.Addressname : null,
-            WOAddress1 = resource.WorkOrder != null ? resource.WorkOrder.Address1 : null,
-            StatusName = resource.BookingStatus.Name == null ? "" : resource.BookingStatus.Name
+
+            WOName = resource.WorkOrder == null ? null: resource.WorkOrder.Name,
+            WOAddressName = resource.WorkOrder == null ? null : resource.WorkOrder.Addressname,
+            WOAddress1 = resource.WorkOrder == null ? null : resource.WorkOrder.Address1,
+            StatusName = resource.WorkOrder == null ? null : resource.BookingStatus.Name,
+            WOSummary = resource.WorkOrder == null ? null : resource.WorkOrder.WorkOrderSummary
         };
 
         return screenResource;

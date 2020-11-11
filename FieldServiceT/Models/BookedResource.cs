@@ -23,7 +23,7 @@ namespace FieldServiceT.Models
         public DateTime EndTime { get; set; }
 
         [JsonProperty("msdyn_workorder")]
-        public WorkOrder WorkOrder { get; set; }
+        public WorkOrder? WorkOrder { get; set; }
         [JsonProperty("bookingstatus")]
         public BookingStatus BookingStatus { get; set; }
     }
