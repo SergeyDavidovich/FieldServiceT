@@ -1,7 +1,40 @@
 ﻿@layout WOCLosedoutLayout
 @page "/WOCloseOutPage3"
 
-<h7>WOClosedoutPage3</h7>
+@using FieldServiceT.Pages.WOCloseout
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.InPlaceEditor
+@using Syncfusion.Blazor.Inputs
+
+
+<div style="padding:6px;">
+    <p><span style="color:red;">*</span>Required</p>
+    <p>Work Order Self Ratings</p>
+    <p>
+        very helpful insights
+    </p>
+    <div>
+        <p>22.SOW Familiarity<span> *</span></p>
+        <p>
+            How familiar and comfortable are you in completing work orders of this type?
+        </p>
+        <SfTextBox Placeholder="Enter the answer"></SfTextBox>
+    </div>
+    <div>
+        <p>23.Efficiency</p>
+        <p>
+            How efficient do you feel you were in completing this work order?
+        </p>
+        <SfTextBox Placeholder="Enter the answer"></SfTextBox>
+    </div>
+    <div>
+        <p>24.Preparednes</p>
+        <p>
+            From pre-visit studying to making sure you have the right tools, materials and equipment, how prepared were you on arrival?
+        </p>
+        <SfTextBox Placeholder="Enter the answer"></SfTextBox>
+    </div>
+</div>
 
 @code {
 

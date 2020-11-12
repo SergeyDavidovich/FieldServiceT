@@ -1,62 +1,127 @@
 ﻿@inherits LayoutComponentBase
+
 @using Syncfusion.Blazor.Cards
+@using Syncfusion.Blazor.Buttons
+
 @layout MainLayout
 
-<div class="control-section">
-    <SfCard>
-        <CardHeader>
-            <h7 style="text-align:left">WOCLosedupLayout</h7>
-        </CardHeader>
-        <CardContent>
-            <div class="row">
-                <div>
-                    @Body
-                </div>
-            </div>
-        </CardContent>
-        <CardFooter>
-            <CardFooterContent>
-                <div id="container-buttons">
-                    <button type="button" class="btn btn-success btn-sm" @onclick="OnPrevousClickHandler">Previous</button>
-                    <button type="button" class="btn btn-success  btn-sm" @onclick="OnNextClickHandler">Next</button>
-                    <button type="button" class="btn btn-danger btn-sm" @onclick="OnSubmitClickHandler">Submit</button>
-                </div>
-            </CardFooterContent>
-        </CardFooter>
-    </SfCard>
+@inject NavigationManager navigationManager
+
+<div id="grid-container">
+    <div id="header">
+        <div style="font-size: x-large; padding:4px;">
+            Work Order Closeout Form
+        </div>
+        <div style="font-size:smaller; padding:4px;text-align:justify; overflow:auto">
+            This form must be submitted and approved by Totality Dispatch PRIOR to leaving site, unless pre-approved otherwise. Additionally this form must be approved in order to be eligible for payment. ALL Required Deliverables must be submitted and approved prior to site departure unless Pre-Approved by Dispatch. ALL Deliverables are expected as quickly as possible but must be received within 12 hours of work completion in order to prevent unnecessary delays and/or penalties in work order payment.
+        </div>
+    </div>
+    <div id="content" style="height:0.5fr;">
+        @Body
+    </div>
+    <div class="btn-group align-content-center" role="group" id="footer">
+        <SfButton @ref="btnPrevious" Disabled="@PreviousDisabled" CssClass="e-success button-v" OnClick="OnPrevousClickHandler">Previous</SfButton>
+        <SfButton @ref="btnNext" Disabled="@NextDisabled" CssClass="e-success button-v" OnClick="OnNextClickHandler">Next</SfButton>
+        <SfButton @ref="btnSubmit" Disabled="SubmitDisabled" CssClass="e-danger button-v" OnClick="OnSubmitClickHandler">Submit</SfButton>
+    </div>
 </div>
 
 @code {
+    #region
+    SfButton btnPrevious;
+    SfButton btnNext;
+    SfButton btnSubmit;
+
+    bool PreviousDisabled;
+    bool NextDisabled;
+    bool SubmitDisabled;
+
+
+    Stack<string> navStack = new Stack<string>();
+
+    protected override void OnInitialized()
+    {
+        navStack.Push("WOCloseOutPage1");
+        navigationManager.NavigateTo(navStack.Peek());
+        SetButtonsState(navStack);
+    }
+
     private void OnPrevousClickHandler(MouseEventArgs args)
     {
-
+        navStack.Pop();
+        navigationManager.NavigateTo(navStack.Peek());
+        SetButtonsState(navStack);
     }
     private void OnNextClickHandler(MouseEventArgs args)
     {
-
+        switch (navStack.Count)
+        {
+            case 0:
+                navStack.Push("WOCloseOutPage1");
+                break;
+            case 1:
+                navStack.Push("WOCloseOutPage2");
+                break;
+            case 2:
+                navStack.Push("WOCloseOutPage3");
+                break;
+        }
+        navigationManager.NavigateTo(navStack.Peek());
+        SetButtonsState(navStack);
     }
     private void OnSubmitClickHandler(MouseEventArgs args)
     {
 
     }
-
-
-
-    //void OnSelect(BookedResourceScreen selected)
-    //{
-    //    var id = selected.BookableResourceBookingId;
-    //    var url = "/BookedResourcePage/" + id;// + "/" + token.AccessToken;
-    //    navigationManager.NavigateTo(url);
-    //}
+    private void SetButtonsState(Stack<string> stack)
+    {
+        switch (stack.Count)
+        {
+            case 0:
+                PreviousDisabled = true;
+                NextDisabled = false;
+                SubmitDisabled = true;
+                break;
+            case 1:
+                PreviousDisabled = true;
+                NextDisabled = false;
+                SubmitDisabled = true;
+                break;
+            case 2:
+                PreviousDisabled = false;
+                NextDisabled = false;
+                SubmitDisabled = true;
+                break;
+            case 3:
+                PreviousDisabled = false;
+                NextDisabled = true;
+                SubmitDisabled = false;
+                break;
+        }
+    }
+    #endregion
 }
 <style>
-    #container-buttons {
-        display: grid;
-        grid-template-columns: auto auto auto;
-        grid-column-gap: 4px;
-        width:310px;
+    #grid-container{
+        font-family:Arial, Helvetica, sans-serif;
+        height:90vh;
+        display:grid;
+        grid-template-rows: .5fr 1fr .5fr;
+        overflow:scroll;
     }
-    #container-buttons > button{
-        width:100px;
+    #header{
+        background-color:darkgreen;
+        color:white;
+    }
+    #content{
+        overflow:scroll;
+    }
+    #footer{
+    align-content:center
+    }
+    .button-v {
+        width: 100px;
+        height: 34px;
+        margin: 2px;
     }
 </style>

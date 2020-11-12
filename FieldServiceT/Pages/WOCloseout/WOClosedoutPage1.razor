@@ -4,8 +4,35 @@
 @using FieldServiceT.Pages.WOCloseout
 @using Syncfusion.Blazor.DropDowns
 @using Syncfusion.Blazor.InPlaceEditor
+@using Syncfusion.Blazor.Inputs
 
-<h7>WOClosedoutPage1</h7>
+
+<div style="padding:6px;">
+    <p><span style="color:red;">*</span>Required</p>
+    <p>Notes</p>
+    <p>
+        Please be detailed, organized and professional. This will assist in the efficient submission to the client for approval and payment.
+    </p>
+    <div>
+        <p>1.Totality Work Order Number<span> *</span></p>
+        <p>You MUST include zero's!</p>
+        <SfTextBox Placeholder="Enter the answer"></SfTextBox>
+    </div>
+    <div>
+        <p>2.Client Assignment/Case ID</p>
+        <p>leave blank if none provided</p>
+        <SfTextBox Placeholder="Enter the answer"></SfTextBox>
+    </div>
+    <div>
+        <p>3.MOD Name</p>
+        <SfTextBox Placeholder="Enter the answer"></SfTextBox>
+    </div>
+    <div>
+        <p>4.Detailed Close Out Notes<span> *</span></p>
+        <p>Please provide your detailed and organized close out notes including any relevant info necessary to submit work order to the client for approval efficiently.</p>
+        <SfTextBox Placeholder="Enter the answer"></SfTextBox>
+    </div>
+</div>
 
 @code {
 
