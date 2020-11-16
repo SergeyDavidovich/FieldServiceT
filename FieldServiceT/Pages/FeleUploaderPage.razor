@@ -1,0 +1,32 @@
+﻿@page "/FeleUploaderPage"
+
+@using Syncfusion.Blazor.Inputs
+@using System.IO;
+
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using System.Net.Http
+@using System.Net.Http.Headers
+
+<div style="background-color:antiquewhite; height:800px">
+    <h7>FeleUploaderPage</h7>
+    <SfUploader AutoUpload="false">
+        <UploaderEvents ValueChange="OnChange"></UploaderEvents>
+    </SfUploader>
+</div>
+
+@code {
+    private void OnChange(UploadChangeEventArgs args)
+    {
+        foreach (var file in args.Files)
+        {
+            var path = @"wwwroot/images/" + file.FileInfo.Name;
+
+            FileStream filestream = new FileStream(path, FileMode.Create, FileAccess.Write);
+            file.Stream.WriteTo(filestream);
+            filestream.Close();
+            file.Stream.Close();
+        }
+    }
+}

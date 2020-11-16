@@ -2,32 +2,52 @@
 
 @using Syncfusion.Blazor.Cards
 @using Syncfusion.Blazor.Buttons
+@using Microsoft.Extensions.Configuration
+@using FieldServiceT.Repositories
+@using FieldServiceT.Models
+@using FieldServiceT.Helpers
+@using Syncfusion.Blazor.Inputs
 
 @layout MainLayout
 
 @inject NavigationManager navigationManager
+@inject IConfiguration configuration
+@inject BookableResourceBooking<BookedResource> bookableResourceBooking
+@inject TokenService tokenService
 
 <div id="grid-container">
     <div id="header">
         <div style="font-size: x-large; padding:4px;">
             Work Order Closeout Form
         </div>
-        <div style="font-size:smaller; padding:4px;text-align:justify; overflow:auto">
-            This form must be submitted and approved by Totality Dispatch PRIOR to leaving site, unless pre-approved otherwise. Additionally this form must be approved in order to be eligible for payment. ALL Required Deliverables must be submitted and approved prior to site departure unless Pre-Approved by Dispatch. ALL Deliverables are expected as quickly as possible but must be received within 12 hours of work completion in order to prevent unnecessary delays and/or penalties in work order payment.
+        <div style="font-size:smaller; padding:4px;text-align:justify; overflow:auto; visibility:visible">
+            This form must be submitted and approved by Totality Dispatch PRIOR to leaving site, unless pre-approved otherwise.
+            Additionally this form must be approved in order to be eligible for payment. 
+            ALL Required Deliverables must be submitted and approved prior to site departure unless Pre-Approved by Dispatch. 
+            ALL Deliverables are expected as quickly as possible but must be received within 12 hours of work completion in order to prevent unnecessary delays and/or penalties in work order payment.
+        </div>
+        <div>
+            <SfTextBox @ref="TxtOrderId" Placeholder="Work order ID"></SfTextBox>
         </div>
     </div>
     <div id="content" style="height:0.5fr;">
         @Body
     </div>
     <div class="btn-group align-content-center" role="group" id="footer">
-        <SfButton @ref="btnPrevious" Disabled="@PreviousDisabled" CssClass="e-success button-v" OnClick="OnPrevousClickHandler">Previous</SfButton>
+        @*<SfButton @ref="btnPrevious" Disabled="@PreviousDisabled" CssClass="e-success button-v" OnClick="OnPrevousClickHandler">Previous</SfButton>*@
         <SfButton @ref="btnNext" Disabled="@NextDisabled" CssClass="e-success button-v" OnClick="OnNextClickHandler">Next</SfButton>
-        <SfButton @ref="btnSubmit" Disabled="SubmitDisabled" CssClass="e-danger button-v" OnClick="OnSubmitClickHandler">Submit</SfButton>
+        <SfButton @ref="btnSubmit" Disabled="@SubmitDisabled" CssClass="e-danger button-v" OnClick="OnSubmitClickHandler">Submit</SfButton>
     </div>
 </div>
 
 @code {
     #region
+
+    [CascadingParameter]
+    Task<AuthenticationState> authenticationState { get; set; }
+
+    SfTextBox TxtOrderId;
+
     SfButton btnPrevious;
     SfButton btnNext;
     SfButton btnSubmit;
@@ -35,15 +55,25 @@
     bool PreviousDisabled;
     bool NextDisabled;
     bool SubmitDisabled;
+    SystemUser user;
 
 
     Stack<string> navStack = new Stack<string>();
+    Questionnaire report;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+
+        string baseUrl = configuration["BaseUrl"];
+        string userMail = (await authenticationState).User.Identity.Name;
+        string token = (await tokenService.GetAuthenticationResultAsync()).AccessToken;
+
         navStack.Push("WOCloseOutPage1");
         navigationManager.NavigateTo(navStack.Peek());
         SetButtonsState(navStack);
+        user = await bookableResourceBooking.GetSystemUserAsync(baseUrl, userMail, token);
+
+        report = new Questionnaire() { CreatorId = user.SystemUserId, WorkOrderId = null, DateOfCreation = null, QuestionnaireItems = null };
     }
 
     private void OnPrevousClickHandler(MouseEventArgs args)
@@ -71,7 +101,11 @@
     }
     private void OnSubmitClickHandler(MouseEventArgs args)
     {
+        report.DateOfCreation = DateTime.Now.ToShortDateString();
+        report.WorkOrderId = TxtOrderId.Value;
 
+
+        // make post query
     }
     private void SetButtonsState(Stack<string> stack)
     {
@@ -102,23 +136,27 @@
     #endregion
 }
 <style>
-    #grid-container{
-        font-family:Arial, Helvetica, sans-serif;
-        height:90vh;
-        display:grid;
-        grid-template-rows: .5fr 1fr .5fr;
-        overflow:scroll;
+    #grid-container {
+        display: grid;
+        grid-template-rows: .1fr 1fr auto;
+        height: 100vh;
+        font-family: Arial, Helvetica, sans-serif;
     }
-    #header{
-        background-color:darkgreen;
-        color:white;
+
+    #header {
+        background-color: darkgreen;
+        color: white;
     }
-    #content{
-        overflow:scroll;
+
+    #content {
+        overflow: auto;
     }
-    #footer{
-    align-content:center
+
+    #footer {
+        position: center;
+        align-content: center
     }
+
     .button-v {
         width: 100px;
         height: 34px;

@@ -5,6 +5,7 @@
 @using Syncfusion.Blazor.DropDowns
 @using Syncfusion.Blazor.InPlaceEditor
 @using Syncfusion.Blazor.Inputs
+@using FieldServiceT.Models
 
 
 <div style="padding:6px;">
@@ -115,10 +116,81 @@
         <p>You MUST include zero's!</p>
         <SfTextBox Placeholder="Enter the answer"></SfTextBox>
     </div>
-
-
 </div>
 
 @code {
+    #region
+
+    const string question5 = "5.Client Assignment/Case ID";
+    const string question6 = "6.MOD Name";
+    const string question7 = "7.Detailed Close Out Notes";
+    const string question8 = "8.Detailed Close Out Notes";
+    const string question9 = "9.Detailed Close Out Notes";
+    const string question10 = "10.Detailed Close Out Notes";
+    const string question11 = "4.Detailed Close Out Notes";
+    const string question12 = "4.Detailed Close Out Notes";
+    const string question13 = "4.Detailed Close Out Notes";
+    const string question14 = "4.Detailed Close Out Notes";
+    const string question15 = "4.Detailed Close Out Notes";
+    const string question16 = "4.Detailed Close Out Notes";
+    const string question17 = "4.Detailed Close Out Notes";
+    const string question18 = "4.Detailed Close Out Notes";
+    const string question19 = "4.Detailed Close Out Notes";
+    const string question20 = "4.Detailed Close Out Notes";
+
+    SfTextBox Answer5;
+    SfTextBox Answer6;
+    SfTextBox Answer7;
+    SfTextBox Answer8;
+    SfTextBox Answer9;
+    SfTextBox Answer10;
+    SfTextBox Answer11;
+    SfTextBox Answer12;
+    SfTextBox Answer13;
+    SfTextBox Answer14;
+    SfTextBox Answer15;
+    SfTextBox Answer16;
+    SfTextBox Answer17;
+    SfTextBox Answer18;
+    SfTextBox Answer19;
+    SfTextBox Answer20;
+
+    public List<QuestionnaireItem> Quetionnaire1 { get; set; }
+
+    private string CurrentQuestion;
+    private string CurrentAnswer;
+
+    protected override void OnInitialized()
+    {
+        Quetionnaire1 = new List<QuestionnaireItem>();
+    }
+
+    //public void OnFocusOut(string index)
+    //{
+    //    switch (index)
+    //    {
+    //        case "2":
+    //            CurrentQuestion = question2;
+    //            CurrentAnswer = Answer2.Value;
+    //            break;
+    //        case "3":
+    //            CurrentQuestion = question3;
+    //            CurrentAnswer = Answer3.Value;
+    //            break;
+    //        case "4":
+    //            CurrentQuestion = question4;
+    //            CurrentAnswer = Answer4.Value;
+    //            break;
+    //    }
+
+    //    QuestionnaireItem answer = Quetionnaire1.Find(item => item.QuestionnaireId == index);
+
+    //    if (answer == null)
+    //        Quetionnaire1.Add(new QuestionnaireItem() { QuestionnaireId = index, Question = CurrentQuestion, Answer = CurrentAnswer });
+    //    else
+    //        answer.Answer = CurrentAnswer;
+    //}
+
+    #endregion
 
 }

@@ -30,7 +30,7 @@ namespace FieldServiceT.Repositories
             var bookableResourceBookings = await GetBookableResourceBookingsAsync(this.BaseURl, this.AccessToken, bookableResourceId);
             return bookableResourceBookings;
         }
-        private async Task<SystemUser> GetSystemUserAsync(string baseUrl, string userMail, string accessToken)
+        public async Task<SystemUser> GetSystemUserAsync(string baseUrl, string userMail, string accessToken)
         {
             string query = baseUrl + "systemusers?$select=systemuserid,fullname&$filter=internalemailaddress eq '" + userMail + "'";
             using (var client = new System.Net.Http.HttpClient())

@@ -1,0 +1,549 @@
+﻿@page "/WOClosedoutPage"
+
+@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Lists
+@using System.Net.Http
+@using System.Net.Http.Headers
+@using System.Collections.ObjectModel
+@using Syncfusion.Blazor.Calendars
+
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper;
+
+<div id="wrapper">
+    <SfTab @ref="@tab" CssClass="e-content" SelectedItem="@SelectedTab">
+        <TabItems>
+            <TabItem Visible="@IsVisibleTab0">
+                <ChildContent>
+                    <TabHeader Text="NOTES ͏"></TabHeader>
+                </ChildContent>
+                <ContentTemplate>
+                    <div>
+                        <div class="question-block" style="background-color:green; color:white; font-size:x-large;">
+                            <div>
+                                Work Order Closeout Form (WOC)
+                            </div>
+                            <div style="font-size:x-small">
+                                This form must be submitted and approved by Totality Dispatch PRIOR to leaving site, unless pre-approved otherwise. Additionally this form must be approved in order to be eligible for payment. ALL Required Deliverables must be submitted and approved prior to site departure unless Pre-Approved by Dispatch. ALL Deliverables are expected as quickly as possible but must be received within 12 hours of work completion in order to prevent unnecessary delays and/or penalties in work order payment.
+                            </div>
+                        </div>
+                        <div class="question-block">
+                            Please be detailed, organized and professional. This will assist in the efficient submission to the client for approval and payment.
+                        </div>
+                        <div class="question-block">
+                            <p class=" question">@Question1</p>
+                            <p class="subquestion">@SubQuestion1</p>
+                            <SfTextBox></SfTextBox>
+                        </div>
+                        <div class="question-block">
+                            <p class=" question">@Question2</p>
+                            <p class="subquestion">@SubQuestion2</p>
+                            <SfTextBox></SfTextBox>
+                        </div>
+                        <div class="question-block">
+                            <div>
+                                <p class=" question">@Question3</p>
+                                <p class="subquestion">@SubQuestion3</p>
+                                <SfTextBox></SfTextBox>
+                            </div>
+                        </div>
+                        <div class="question-block">
+                            <div>
+                                <p class=" question">@Question4</p>
+                                <p class="subquestion">@SubQuestion4</p>
+                                <SfTextBox></SfTextBox>
+                            </div>
+                        </div>
+                    </div>
+                </ContentTemplate>
+            </TabItem>
+            <TabItem Visible="@IsVisibleTab1">
+                <ChildContent>
+                    <TabHeader Text="MATERIALS USED"></TabHeader>
+                </ChildContent>
+                <ContentTemplate>
+                    <div class="question-block">
+                        <div class="question-block" style="background-color:green; color:white;">
+                            <div>
+                                Work Order Closeout Form (WOC)
+                            </div>
+                            <div style="font-size:x-small">
+                                Please only include items provided from company stock and not provided by the client. Please make sure to list them in the correct format specified
+                            </div>
+                        </div>
+                    </div>
+                    <div class="question-block">
+                        <div>
+                            <p class=" question">@Question5</p>
+                            <p class="subquestion">@SubQuestion5</p>
+                            <SfDropDownList TItem="DataModel5" TValue="string" DataSource="@DataSource5" @bind-Value="@result5"
+                                            Placeholder="select an answer">
+                                <Syncfusion.Blazor.DropDowns.DropDownListEvents TItem="DataModel5" TValue="string"
+                                                                                ValueChange="OnChange5"></Syncfusion.Blazor.DropDowns.DropDownListEvents>
+                                <DropDownListFieldSettings Text="Text" Value="Value"></DropDownListFieldSettings>
+                            </SfDropDownList>
+                        </div>
+                    </div>
+                    <div class="question-block">
+                        <div>
+                            <p class=" question">@Question6</p>
+                            <p class="subquestion">@SubQuestion6</p>
+                            <SfDropDownList TItem="DataModel6" TValue="string" DataSource="@DataSource6" @bind-Value="@result6"
+                                            Placeholder="select an answer">
+                                <Syncfusion.Blazor.DropDowns.DropDownListEvents TItem="DataModel6" TValue="string"
+                                                                                ValueChange="OnChange6"></Syncfusion.Blazor.DropDowns.DropDownListEvents>
+                                <DropDownListFieldSettings Text="Text" Value="Value"></DropDownListFieldSettings>
+                            </SfDropDownList>
+                        </div>
+                    </div>
+                    <div class="question-block">
+                        <div>
+                            <p class=" question">@Question7</p>
+                            <p class="subquestion">@SubQuestion7</p>
+                            <SfTextBox Multiline="true"></SfTextBox>
+                        </div>
+                    </div>
+                    <div class="question-block">
+                        <div>
+                            <p class=" question">@Question8</p>
+                            <p class="subquestion">@SubQuestion8</p>
+                            <SfTextBox></SfTextBox>
+                        </div>
+                    </div>
+                    <div class="question-block">
+                        <div>
+                            <p class=" question">@Question9</p>
+                            <p class="subquestion">@SubQuestion9</p>
+                            <SfTextBox></SfTextBox>
+                        </div>
+                    </div>
+                    <div class="question-block">
+                        <div>
+                            <p class=" question">@Question10</p>
+                            <p class="subquestion">@SubQuestion10</p>
+                            <SfTextBox></SfTextBox>
+                        </div>
+                    </div>
+                    <div class="question-block">
+                        <div>
+                            <p class=" question">@Question11</p>
+                            <p class="subquestion">@SubQuestion11</p>
+                            <SfDatePicker TValue="DateTime?" Format="@FormatString11" Placeholder="Enter date in dd.MM.yy" 
+                                          @bind-Value="@result11"></SfDatePicker>
+                        </div>
+                    </div>
+                    <div class="question-block">
+                        <div>
+                            <p class=" question">@Question12</p>
+                            <p class="subquestion">@SubQuestion12</p>
+                            <SfTextBox></SfTextBox>
+                        </div>
+                    </div>
+                    <div class="question-block">
+                        <div>
+                            <p class=" question">@Question13</p>
+                            <p class="subquestion">@SubQuestion13</p>
+                            <SfTextBox></SfTextBox>
+                        </div>
+                    </div>
+                    <div class="question-block">
+                        <div>
+                            <p class=" question">@Question14</p>
+                            <p class="subquestion">@SubQuestion14</p>
+                            <SfTextBox></SfTextBox>
+                        </div>
+                    </div>
+                    <div class="question-block">
+                        <div>
+                            <p class=" question">@Question15</p>
+                            <p class="subquestion">@SubQuestion15</p>
+                            <SfTextBox></SfTextBox>
+                        </div>
+                    </div>
+                    <div class="question-block">
+                        <div>
+                            <p class=" question">@Question16</p>
+                            <p class="subquestion">@SubQuestion16</p>
+                            <SfTextBox></SfTextBox>
+                        </div>
+                    </div>
+                    <div class="question-block">
+                        <div>
+                            <p class=" question">@Question17</p>
+                            <p class="subquestion">@SubQuestion17</p>
+                            <SfTextBox></SfTextBox>
+                        </div>
+                    </div>
+                    <div class="question-block">
+                        <div>
+                            <p class=" question">@Question18</p>
+                            <p class="subquestion">@SubQuestion18</p>
+                            <SfTextBox></SfTextBox>
+                        </div>
+                    </div>
+                </ContentTemplate>
+            </TabItem>
+            <TabItem Visible="@IsVisibleTab2">
+                <ChildContent>
+                    <TabHeader Text="SELF RATINGS"></TabHeader>
+                </ChildContent>
+                <ContentTemplate>
+                    <div class="question-block">
+                        <div>
+                            <p class=" question">@Question19</p>
+                            <p class="subquestion">@SubQuestion19</p>
+                            <SfRadioButton @ref="radiobtn19" Label="1" Name="options22" EnableRtl="true" Value="1" @onchange="onChange22" @bind-Checked="@CheckedValue22"></SfRadioButton>
+                            <SfRadioButton Label="2" Name="options22" EnableRtl="true" Value="2" @onchange="onChange22" @bind-Checked="@CheckedValue22"></SfRadioButton>
+                            <SfRadioButton Label="3" Name="options22" EnableRtl="true" Value="3" @onchange="onChange22" @bind-Checked="@CheckedValue22"></SfRadioButton>
+                            <SfRadioButton Label="4" Name="options22" EnableRtl="true" Value="4" @onchange="onChange22" @bind-Checked="@CheckedValue22"></SfRadioButton>
+                            <SfRadioButton Label="5" Name="options22" EnableRtl="true" Value="5" @onchange="onChange22" @bind-Checked="@CheckedValue22"></SfRadioButton>
+                            <SfRadioButton Label="6" Name="options22" EnableRtl="true" Value="6" @onchange="onChange22" @bind-Checked="@CheckedValue22"></SfRadioButton>
+                            <SfRadioButton Label="7" Name="options22" EnableRtl="true" Value="7" @onchange="onChange22" @bind-Checked="@CheckedValue22"></SfRadioButton>
+                            <SfRadioButton Label="8" Name="options22" EnableRtl="true" Value="8" @onchange="onChange22" @bind-Checked="@CheckedValue22"></SfRadioButton>
+                            <SfRadioButton Label="9" Name="options22" EnableRtl="true" Value="9" @onchange="onChange22" @bind-Checked="@CheckedValue22"></SfRadioButton>
+                            <SfRadioButton Label="10" Name="options22" EnableRtl="true" Value="10" @onchange="onChange22" @bind-Checked="@CheckedValue22"></SfRadioButton>
+                        </div>
+                    </div>
+                    <div class="question-block">
+                        <div>
+                            <p class=" question">@Question20</p>
+                            <p class="subquestion">@SubQuestion20</p>
+                            <SfRadioButton @ref="radiobtn20" Label="1" Name="options23" EnableRtl="true" Value="1" @onchange="onChange23" @bind-Checked="@CheckedValue23"></SfRadioButton>
+                            <SfRadioButton Label="2" Name="options23" EnableRtl="true" Value="2" @onchange="onChange23" @bind-Checked="@CheckedValue23"></SfRadioButton>
+                            <SfRadioButton Label="3" Name="options23" EnableRtl="true" Value="3" @onchange="onChange23" @bind-Checked="@CheckedValue23"></SfRadioButton>
+                            <SfRadioButton Label="4" Name="options23" EnableRtl="true" Value="4" @onchange="onChange23" @bind-Checked="@CheckedValue23"></SfRadioButton>
+                            <SfRadioButton Label="5" Name="options23" EnableRtl="true" Value="5" @onchange="onChange23" @bind-Checked="@CheckedValue23"></SfRadioButton>
+                            <SfRadioButton Label="6" Name="options23" EnableRtl="true" Value="6" @onchange="onChange23" @bind-Checked="@CheckedValue23"></SfRadioButton>
+                            <SfRadioButton Label="7" Name="options23" EnableRtl="true" Value="7" @onchange="onChange23" @bind-Checked="@CheckedValue23"></SfRadioButton>
+                            <SfRadioButton Label="8" Name="options23" EnableRtl="true" Value="8" @onchange="onChange23" @bind-Checked="@CheckedValue23"></SfRadioButton>
+                            <SfRadioButton Label="9" Name="options23" EnableRtl="true" Value="9" @onchange="onChange23" @bind-Checked="@CheckedValue23"></SfRadioButton>
+                            <SfRadioButton Label="10" Name="options23" EnableRtl="true" Value="10" @onchange="onChange23" @bind-Checked="@CheckedValue23"></SfRadioButton>
+                        </div>
+                    </div>
+                    <div class="question-block">
+                        <div>
+                            <p class=" question">@Question21</p>
+                            <p class="subquestion">@SubQuestion21</p>
+                            <SfRadioButton @ref="radiobtn21" Label="1" Name="options24" EnableRtl="true" Value="1" @onchange="onChange24" @bind-Checked="@CheckedValue24"></SfRadioButton>
+                            <SfRadioButton Label="2" Name="options24" EnableRtl="true" Value="2" @onchange="onChange24" @bind-Checked="@CheckedValue24"></SfRadioButton>
+                            <SfRadioButton Label="3" Name="options24" EnableRtl="true" Value="3" @onchange="onChange24" @bind-Checked="@CheckedValue24"></SfRadioButton>
+                            <SfRadioButton Label="4" Name="options24" EnableRtl="true" Value="4" @onchange="onChange24" @bind-Checked="@CheckedValue24"></SfRadioButton>
+                            <SfRadioButton Label="5" Name="options24" EnableRtl="true" Value="5" @onchange="onChange24" @bind-Checked="@CheckedValue24"></SfRadioButton>
+                            <SfRadioButton Label="6" Name="options24" EnableRtl="true" Value="6" @onchange="onChange24" @bind-Checked="@CheckedValue24"></SfRadioButton>
+                            <SfRadioButton Label="7" Name="options24" EnableRtl="true" Value="7" @onchange="onChange24" @bind-Checked="@CheckedValue24"></SfRadioButton>
+                            <SfRadioButton Label="8" Name="options24" EnableRtl="true" Value="8" @onchange="onChange24" @bind-Checked="@CheckedValue24"></SfRadioButton>
+                            <SfRadioButton Label="9" Name="options24" EnableRtl="true" Value="9" @onchange="onChange24" @bind-Checked="@CheckedValue24"></SfRadioButton>
+                            <SfRadioButton Label="10" Name="options24" EnableRtl="true" Value="10" @onchange="onChange24" @bind-Checked="@CheckedValue24"></SfRadioButton>
+                        </div>
+                    </div>
+                </ContentTemplate>
+            </TabItem>
+            <TabItem Visible="@IsVisibleTab3">
+                <ChildContent>
+                    <TabHeader Text="UPLOAD FILES"></TabHeader>
+                </ChildContent>
+                <ContentTemplate>
+                    <div>
+                        <SfUploader AutoUpload="false">
+                            <UploaderEvents ValueChange="OnChange"></UploaderEvents>
+                        </SfUploader>
+                    </div>
+                </ContentTemplate>
+            </TabItem>
+        </TabItems>
+    </SfTab>
+    <div class="btn-container">
+        <SfButton CssClass="e-info button" Disabled="ButtonNextDisabled" OnClick="ButtonNextClickHandler">Next</SfButton>
+        <SfButton CssClass="e-danger button" Disabled="ButtonSubmitDisabled" OnClick="ButtonSubmitClickHandler">Submit</SfButton>
+    </div>
+</div>
+
+@code {
+
+    #region Code
+
+    SfTab tab;
+
+    protected override void OnInitialized()
+    {
+        DataSource5 = new List<DataModel5>()
+{
+            new DataModel5() { Text = "Yes", Value = "Yes" },
+            new DataModel5() { Text = "No", Value = "No" },
+         };
+        DataSource6 = new List<DataModel6>()
+{
+            new DataModel6() { Text = "Yes", Value = "Yes" },
+            new DataModel6() { Text = "No", Value = "No" },
+         };
+    }
+
+    #region RadioButtons
+
+    public string CheckedValue22 = "0";
+    public string CheckedValue23 = "0";
+    public string CheckedValue24 = "0";
+
+    SfRadioButton<string> radiobtn19;
+    SfRadioButton<string> radiobtn20;
+    SfRadioButton<string> radiobtn21;
+
+    string result22;
+    string result23;
+    string result24;
+
+    public void onChange22() { result22 = radiobtn19.Checked; }
+    public void onChange23() { result23 = radiobtn20.Checked; }
+    public void onChange24() { result24 = radiobtn21.Checked; }
+
+    #endregion
+
+    #region Questions Constants
+
+    const string Question1 = "͏͏1.Totality Work Order Number";
+    const string Question2 = "͏͏2.Client Assignment/Case ID";
+    const string Question3 = "͏͏3.MOD Name";
+    const string Question4 = "͏͏4.Detailed Close Out Notes";
+
+    const string Question5 = "͏͏5.Any billable Parts/Materials used?";
+    const string Question6 = "͏͏6.Cable Used?";
+    const string Question7 = "͏͏7.Materials";
+    const string Question8 = "͏͏8.Hardware";
+    const string Question9 = "͏͏9.Other materials explanation";
+    const string Question10 = "͏͏10.Work Complete?";
+    const string Question11 = "͏͏11.Completion Date";
+
+    const string Question12 = "͏͏12.Revisit Required";
+    const string Question13 = "͏͏13.Store/Location Name";
+    const string Question14 = "͏͏14.Check in time";
+    const string Question15 = "͏͏15.Check out time";
+    const string Question16 = "͏͏16.Name & Title of Client Support Staff";
+    const string Question17 = "͏͏17.Issues or Escalations?";
+    const string Question18 = "͏͏18.Issue explanation";
+
+    //const string Question19 = "͏͏19.Name & Title of Client Support Staff";
+    //const string Question20 = "͏͏20.Issues or Escalations?";
+    //const string Question21 = "͏͏21.Issue explanation";
+
+    const string Question19 = "͏͏19.SOW Familiarity";
+    const string Question20 = "͏͏20.Efficiency";
+    const string Question21 = "͏͏21.Preparedness";
+
+    const string SubQuestion1 = "You MUST include zero's!";
+    const string SubQuestion2 = "leave blank if none provided";
+    const string SubQuestion3 = "";
+    const string SubQuestion4 = "Please provide your detailed and organized close out notes including any relevant info necessary to submit work order to the client for approval efficiently.";
+
+    const string SubQuestion5 = "";
+    const string SubQuestion6 = "";
+    const string SubQuestion7 = "List materials used for this work order with individual line items 7ft Cat6 Blue Patch Cable x 10 Cat5e RJ45 Keystone Jack Orange x 4 3/4 EMT Conduit x 10 ft";
+    const string SubQuestion8 = "List Hardware used for this work order with individual line items toggle bolts x 10 3/4\" J-hook x 4 1/4\" Bolt x 10 1/4\" Hex nut x 10";
+    const string SubQuestion9 = "";
+    const string SubQuestion10 = "";
+    const string SubQuestion11 = "";
+    const string SubQuestion12 = "";
+    const string SubQuestion13 = "Please include store number if known";
+    const string SubQuestion14 = "";
+    const string SubQuestion15 = "";
+    const string SubQuestion16 = "";
+    const string SubQuestion17 = "";
+    const string SubQuestion18 = "";
+    //const string SubQuestion19 = "";
+    //const string SubQuestion20 = "";
+    //const string SubQuestion21 = "";
+
+    const string SubQuestion19 = "How familiar and comfortable are you in completing work orders of this type?";
+    const string SubQuestion20 = "How efficient do you feel you were in completing this work order?";
+    const string SubQuestion21 = "From pre-visit studying to making sure you have the right tools, materials and equipment, how prepared were you on arrival?";
+    #endregion
+
+    #region ButtonsEventsHandlers
+
+    int SelectedTab = 0;
+
+    bool ButtonNextDisabled = false;
+    bool ButtonSubmitDisabled = true;
+
+    public void ButtonNextClickHandler(MouseEventArgs args)
+    {
+        //var selected = tab.SelectedItem;
+        switch (SelectedTab)
+        {
+            case 0:
+                tab.Select(1);
+                SelectedTab = 1;
+                IsVisibleTab0 = false;
+                IsVisibleTab1 = true;
+                IsVisibleTab2 = false;
+                IsVisibleTab3 = false;
+                ButtonNextDisabled = false;
+                ButtonSubmitDisabled = true;
+                break;
+            case 1:
+                tab.Select(2);
+                SelectedTab = 2;
+                IsVisibleTab0 = false;
+                IsVisibleTab1 = false;
+                IsVisibleTab2 = true;
+                IsVisibleTab3 = false;
+                ButtonNextDisabled = false;
+                ButtonSubmitDisabled = true;
+                break;
+            case 2:
+                tab.Select(3);
+                SelectedTab = 3;
+                IsVisibleTab0 = false;
+                IsVisibleTab1 = false;
+                IsVisibleTab2 = false;
+                IsVisibleTab3 = true;
+                ButtonNextDisabled = true;
+                ButtonSubmitDisabled = false;
+                break;
+        }
+    }
+
+    public void ButtonSubmitClickHandler(MouseEventArgs args) { }
+
+    #endregion
+
+    #region Tabs navigation
+
+    bool IsVisibleTab0 = true;
+    bool IsVisibleTab1 = false;
+    bool IsVisibleTab2 = false;
+    bool IsVisibleTab3 = false;
+
+    #endregion
+
+    #region FileUploader
+
+    SfUploader loader;
+
+    private void Selected(SelectedEventArgs args)
+    {
+        if (loader.DataContainer.Count > 1)
+            loader.ClearAll();
+    }
+
+    private void OnChange(UploadChangeEventArgs args)
+    {
+        string WOid = "00000";
+        string secret = "dFbiiILJsNWV1vBBaWGA2JSF67GjfPdO";
+
+        string requestEndpoint = "https://fileupload20201104135508.azurewebsites.net/Call.aspx";//?WOid=";// + WOid;
+        requestEndpoint += @"?WOid=" + WOid;
+        requestEndpoint += @"&secret=" + secret;
+
+        MultipartFormDataContent httpContent; // = new MultipartFormDataContent();
+        StreamContent fileContent;
+
+        httpContent = new MultipartFormDataContent();
+
+        foreach (var file in args.Files)
+        {
+
+            var filestream = file.Stream;
+
+            filestream.Position = 0;
+
+            fileContent = new StreamContent(filestream);
+
+            fileContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
+            {
+                FileName = file.FileInfo.Name
+            };
+
+            httpContent.Add(fileContent);
+        }
+        var client = new System.Net.Http.HttpClient();
+        var response = client.PostAsync(requestEndpoint, httpContent).Result;
+    }
+
+    #endregion
+
+    #region questions-blocs support
+
+    #region question 5
+
+    List<DataModel5> DataSource5;
+    public string result5 { get; set; }
+
+    public void OnChange5(Syncfusion.Blazor.DropDowns.ChangeEventArgs<string, DataModel5> args)
+    {
+        this.result5 = args.ItemData.Text;
+    }
+    public class DataModel5
+    {
+        public string Text { get; set; }
+        public string Value { get; set; }
+    }
+    #endregion
+
+    #region question 6
+
+    List<DataModel6> DataSource6;
+    public string result6 { get; set; }
+
+    public void OnChange6(Syncfusion.Blazor.DropDowns.ChangeEventArgs<string, DataModel6> args)
+    {
+        this.result6 = args.ItemData.Text;
+    }
+    public class DataModel6
+    {
+        public string Text { get; set; }
+        public string Value { get; set; }
+    }
+
+    #endregion
+
+    #region question 11
+
+    public DateTime? result11 { get; set; } = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+    public string FormatString11 { get; set; } = "dd-MMM-yyyy";
+
+    #endregion
+
+    #endregion
+
+    #endregion
+}
+
+<style>
+    .e-content .e-item {
+        font-size: 12px;
+        padding: 0px;
+        text-align: justify;
+    }
+
+    #wrapper {
+        font-family: wf_segoe-ui_normal,"Segoe UI","Segoe WP",Tahoma,Arial,sans-serif;
+    }
+
+    .question-block {
+        padding: 6px;
+    }
+
+    .question {
+        color: green;
+        font-size: 12px;
+    }
+
+    .subquestion {
+        font-size: 11px;
+    }
+
+    .button {
+        width: 100px;
+        margin: 6px;
+        height: 30px;
+    }
+
+    .visiblity-collapsed {
+        visibility: collapse;
+    }
+
+    .visibility-visible {
+        visibility: visible;
+    }
+</style>
