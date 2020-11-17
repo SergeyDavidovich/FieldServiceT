@@ -245,9 +245,35 @@
                 </ChildContent>
                 <ContentTemplate>
                     <div>
-                        <SfUploader AutoUpload="false">
-                            <UploaderEvents ValueChange="OnChange"></UploaderEvents>
-                        </SfUploader>
+                        <div style=" position:initial; top: 0; z-index: 2;">
+                            <SfUploader Enabled="@loaderEnabled" @ref="@Uploader" ShowFileList="true" Multiple=false AutoUpload=false AllowedExtensions=".jpg, .png, jpeg" SequentialUpload="true">
+                                <UploaderEvents ValueChange="OnChange"></UploaderEvents>
+                            </SfUploader>
+                        </div>
+                        <p style="font-size: x-small"><span style="color:red;">*</span>You may upload .png .jpeg .jpg files only</p>
+                        <div id="container" class="row material2">
+                            @*<div>
+                    <SfTextBox ID="1" @ref="@txtbox1" Enabled="@enabled1" CssClass="e-outline" Placeholder="Work Order photo" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
+                </div>
+                <div>
+                    <SfTextBox ID="2" @ref="@txtbox2" Enabled="@enabled2" CssClass="e-filled" Placeholder="Area photo" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
+                </div>*@
+                            <div>
+                                <SfTextBox ID="3" @ref="@txtbox3" Enabled="@enabled3" CssClass="e-filled" Placeholder="Deliverable1" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
+                            </div>
+                            <div>
+                                <SfTextBox ID="4" @ref="@txtbox4" Enabled="@enabled4" CssClass="e-filled" Placeholder="Deliverable2" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
+                            </div>
+                            <div>
+                                <SfTextBox ID="5" @ref="@txtbox5" Enabled="@enabled5" CssClass="e-filled" Placeholder="Deliverable3" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
+                            </div>
+                            <div>
+                                <SfTextBox ID="6" @ref="@txtbox6" Enabled="@enabled6" CssClass="e-filled" Placeholder="Deliverable4" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
+                            </div>
+                            <div>
+                                <SfTextBox ID="7" @ref="@txtbox7" Enabled="@enabled7" CssClass="e-filled" Placeholder="Deliverable5" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
+                            </div>
+                        </div>
                     </div>
                 </ContentTemplate>
             </TabItem>
@@ -277,6 +303,16 @@
             new DataModel6() { Text = "Yes", Value = "Yes" },
             new DataModel6() { Text = "No", Value = "No" },
          };
+
+        names.Enqueue("WorkOrderPhoto");
+        names.Enqueue("AreaPhoto");
+        names.Enqueue("Deliverable1");
+        names.Enqueue("Deliverable2");
+        names.Enqueue("Deliverable3");
+        names.Enqueue("Deliverable4");
+        names.Enqueue("Deliverable5");
+
+        loaderEnabled = true;
     }
 
     #region RadioButtons
@@ -418,16 +454,72 @@
 
     #region FileUploader
 
-    SfUploader loader;
+    SfUploader Uploader;
 
-    private void Selected(SelectedEventArgs args)
-    {
-        if (loader.DataContainer.Count > 1)
-            loader.ClearAll();
-    }
+    SfTextBox txtbox1;
+    SfTextBox txtbox2;
+    SfTextBox txtbox3;
+    SfTextBox txtbox4;
+    SfTextBox txtbox5;
+    SfTextBox txtbox6;
+    SfTextBox txtbox7;
 
+    bool loaderEnabled;
+
+    bool enabled1;
+    bool enabled2;
+    bool enabled3;
+    bool enabled4;
+    bool enabled5;
+    bool enabled6;
+    bool enabled7;
+
+    Queue<string> names = new Queue<string>();
+
+    string fileName;
     private void OnChange(UploadChangeEventArgs args)
     {
+        string ext = args.Files.First().FileInfo.Type;
+
+        var file = args.Files.First();
+
+        switch (names.Count)
+        {
+            case 7:
+                file.FileInfo.Name = GetFullName("WorkOrderPhoto", ext);
+                break;
+            case 6:
+                file.FileInfo.Name = GetFullName("AreaPhoto", ext);
+                enabled3 = true;
+                break;
+            case 5:
+                file.FileInfo.Name = GetFullName(txtbox3.Value, ext);
+                enabled3 = false;
+                enabled4 = true;
+                break;
+            case 4:
+                file.FileInfo.Name = GetFullName(txtbox4.Value, ext);
+                enabled4 = false;
+                enabled5 = true;
+                break;
+            case 3:
+                file.FileInfo.Name = GetFullName(txtbox5.Value, ext);
+                enabled5 = false;
+                enabled6 = true;
+                break;
+            case 2:
+                file.FileInfo.Name = GetFullName(txtbox6.Value, ext);
+                enabled6 = false;
+                enabled7 = true;
+                break;
+            case 1:
+                file.FileInfo.Name = GetFullName(txtbox7.Value, ext);
+                enabled7 = false;
+                loaderEnabled = false;
+                break;
+        }
+        names.Dequeue();
+
         string WOid = "00000";
         string secret = "dFbiiILJsNWV1vBBaWGA2JSF67GjfPdO";
 
@@ -439,26 +531,29 @@
         StreamContent fileContent;
 
         httpContent = new MultipartFormDataContent();
+        var filestream = file.Stream;
+        filestream.Position = 0;
+        fileContent = new StreamContent(filestream);
 
-        foreach (var file in args.Files)
+        fileContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
         {
+            FileName = file.FileInfo.Name
+        };
 
-            var filestream = file.Stream;
-
-            filestream.Position = 0;
-
-            fileContent = new StreamContent(filestream);
-
-            fileContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
-            {
-                FileName = file.FileInfo.Name
-            };
-
-            httpContent.Add(fileContent);
-        }
+        httpContent.Add(fileContent);
+        //}
         var client = new System.Net.Http.HttpClient();
         var response = client.PostAsync(requestEndpoint, httpContent).Result;
     }
+
+    private string GetFullName(string name, string ext)
+    {
+        DateTime now = DateTime.UtcNow;
+        string timePrefix = now.Day.ToString() + "-" + now.Month.ToString() + "-" + now.Year.ToString() + "_" + now.Hour.ToString() + "-" + now.Minute.ToString();
+        string result = timePrefix + "_" + name + "." + ext;
+        return result;
+    }
+
 
     #endregion
 
@@ -545,5 +640,13 @@
 
     .visibility-visible {
         visibility: visible;
+    }
+    #container {
+        display: grid;
+        grid-template-rows: auto repeat(5);
+        position: relative;
+        left: 20px;
+        width: 260px;
+        grid-row-gap: 1px;
     }
 </style>
