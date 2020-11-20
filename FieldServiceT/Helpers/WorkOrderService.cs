@@ -21,23 +21,22 @@ namespace FieldServiceT.Helpers
         {
             Questionnaire = new WOQuestionnaire();
         }
-        public string AccessToken { get; set; }
         public WOQuestionnaire Questionnaire   { get; set; }
         public async Task<HttpStatusCode> SendWORequestPostAsync()
         {
             HttpResponseMessage response;
             using (var client = new HttpClient())
             {
-                //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token.AccessToken);
-
                 // сериализация объекта с помощью Json.NET
                 string json = JsonConvert.SerializeObject(Questionnaire);
                 HttpContent content = new StringContent(json);
 
-                HttpRequestMessage request = new HttpRequestMessage();
-                request.RequestUri = new Uri(postUri); 
-                request.Method = HttpMethod.Post;
-                request.Content = content;
+                HttpRequestMessage request = new HttpRequestMessage
+                {
+                    RequestUri = new Uri(postUri),
+                    Method = HttpMethod.Post,
+                    Content = content
+                };
                 response = await client.SendAsync(request);
             }
             return response.StatusCode;
