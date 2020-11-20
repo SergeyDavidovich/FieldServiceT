@@ -59,7 +59,7 @@
 
 
     Stack<string> navStack = new Stack<string>();
-    Questionnaire report;
+    WOQuestionnaire woReport;
 
     protected override async Task OnInitializedAsync()
     {
@@ -73,7 +73,7 @@
         SetButtonsState(navStack);
         user = await bookableResourceBooking.GetSystemUserAsync(baseUrl, userMail, token);
 
-        report = new Questionnaire() { CreatorId = user.SystemUserId, WorkOrderId = null, DateOfCreation = null, QuestionnaireItems = null };
+        woReport = new WOQuestionnaire() { CreatorId = user.SystemUserId, WorkOrderId = null, DateOfCreation = null };
     }
 
     private void OnPrevousClickHandler(MouseEventArgs args)
@@ -101,8 +101,8 @@
     }
     private void OnSubmitClickHandler(MouseEventArgs args)
     {
-        report.DateOfCreation = DateTime.Now.ToShortDateString();
-        report.WorkOrderId = TxtOrderId.Value;
+        woReport.DateOfCreation = DateTime.Now.ToShortDateString();
+        woReport.WorkOrderId = TxtOrderId.Value;
 
 
         // make post query

@@ -15,7 +15,6 @@ namespace FieldServiceT.Repositories
     public interface IBookableResourceBooking<BookedResource>
     {
         public Task<List<BookedResource>> GetBookedResourceBokings();
-        //public BookedResource GetBookingResource(string id);
     }
     public class BookableResourceBooking<BookedResource> : IBookableResourceBooking<BookedResource>
     {
@@ -86,12 +85,6 @@ namespace FieldServiceT.Repositories
             var result = JsonConvert.DeserializeObject<ODataResponse<BookedResource>>(strjson).Value;
             return result;
         }
-
-
-        //public BookedResource GetBookingResource(string id)
-        //{
-        //    return BookedResource;
-        //}
     }
 }
 

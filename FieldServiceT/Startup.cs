@@ -35,25 +35,26 @@ namespace FieldServiceT
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddAuthentication(AzureADDefaults.AuthenticationScheme)
-            //    .AddAzureAD(options => Configuration.Bind("AzureAd", options));
+            services.AddAuthentication(AzureADDefaults.AuthenticationScheme)
+                .AddAzureAD(options => Configuration.Bind("AzureAd", options));
 
-            //services.AddControllersWithViews(options =>
-            //{
-            //    var policy = new AuthorizationPolicyBuilder()
-            //        .RequireAuthenticatedUser()
-            //        .Build();
-            //    options.Filters.Add(new AuthorizeFilter(policy));
-            //});
+            services.AddControllersWithViews(options =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+                options.Filters.Add(new AuthorizeFilter(policy));
+            });
 
             services.AddScoped<LocationService>();
 
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSyncfusionBlazor(false);
+            services.AddSyncfusionBlazor();
             services.AddScoped<Helpers.BrowserService>();
             services.AddSingleton<Helpers.TokenService>();
             services.AddSingleton<Repositories.BookableResourceBooking<BookedResource>>();
+            //services.AddSingleton<Helpers.WorkOrderService(new WOQuestionnaire()>);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -75,8 +76,8 @@ namespace FieldServiceT
 
             app.UseRouting();
 
-            //app.UseAuthentication();
-            //app.UseAuthorization();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
         {

@@ -3,16 +3,16 @@
 @using Syncfusion.Blazor.Navigations
 @using Syncfusion.Blazor.Inputs
 @using Syncfusion.Blazor.DropDowns
-@using Syncfusion.Blazor.Lists
 @using System.Net.Http
 @using System.Net.Http.Headers
-@using System.Collections.ObjectModel
 @using Syncfusion.Blazor.Calendars
 
-@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper;
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+@*@inject FieldServiceT.Helpers.WorkOrderService workOrderService*@
 
-<div id="wrapper">
-    <SfTab @ref="@tab" CssClass="e-content" SelectedItem="@SelectedTab">
+
+<div id="wrapper" style="margin:0px;">
+    <SfTab @ref="@tab" CssClass="e-content">
         <TabItems>
             <TabItem Visible="@IsVisibleTab0">
                 <ChildContent>
@@ -20,7 +20,7 @@
                 </ChildContent>
                 <ContentTemplate>
                     <div>
-                        <div class="question-block" style="background-color:green; color:white; font-size:x-large;">
+                        <div class="question-block" style="background-color:green; color:white; font-size:large;">
                             <div>
                                 Work Order Closeout Form (WOC)
                             </div>
@@ -64,7 +64,7 @@
                 </ChildContent>
                 <ContentTemplate>
                     <div class="question-block">
-                        <div class="question-block" style="background-color:green; color:white;">
+                        <div class="question-block" style="background-color:darkgreen; color:white;">
                             <div>
                                 Work Order Closeout Form (WOC)
                             </div>
@@ -77,25 +77,48 @@
                         <div>
                             <p class=" question">@Question5</p>
                             <p class="subquestion">@SubQuestion5</p>
-                            <SfDropDownList TItem="DataModel5" TValue="string" DataSource="@DataSource5" @bind-Value="@result5"
-                                            Placeholder="select an answer">
-                                <Syncfusion.Blazor.DropDowns.DropDownListEvents TItem="DataModel5" TValue="string"
-                                                                                ValueChange="OnChange5"></Syncfusion.Blazor.DropDowns.DropDownListEvents>
-                                <DropDownListFieldSettings Text="Text" Value="Value"></DropDownListFieldSettings>
-                            </SfDropDownList>
+                            <div class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-outline-success">
+                                    <input type="radio" name="option" @onclick="@((MouseEventArgs) =>result5="Yes")">Yes
+                                </label>
+                                <label class="btn btn-outline-success">
+                                    <input type="radio" name="option" value="" @onclick="@((MouseEventArgs) =>result5="No")">No
+                                </label>
+                            </div>
                         </div>
                     </div>
                     <div class="question-block">
                         <div>
                             <p class=" question">@Question6</p>
                             <p class="subquestion">@SubQuestion6</p>
-                            <SfDropDownList TItem="DataModel6" TValue="string" DataSource="@DataSource6" @bind-Value="@result6"
-                                            Placeholder="select an answer">
-                                <Syncfusion.Blazor.DropDowns.DropDownListEvents TItem="DataModel6" TValue="string"
-                                                                                ValueChange="OnChange6"></Syncfusion.Blazor.DropDowns.DropDownListEvents>
-                                <DropDownListFieldSettings Text="Text" Value="Value"></DropDownListFieldSettings>
-                            </SfDropDownList>
+                            <div class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-outline-success">
+                                    <input type="radio" name="option" @onclick="@((MouseEventArgs) =>result6="Yes")">Yes
+                                </label>
+                                <label class="btn btn-outline-success">
+                                    <input type="radio" name="option" value="" @onclick="@((MouseEventArgs) =>result6="No")">No
+                                </label>
+                            </div>
                         </div>
+                    </div>
+                    <div class="question-block">
+                        <p class=" question">@Question61</p>
+                        <p class="subquestion">@SubQuestion61</p>
+                        <SfTextBox></SfTextBox>
+                    </div>
+                    <div class="question-block">
+                        <p class=" question">@Question62</p>
+                        <p class="subquestion">@SubQuestion62</p>
+                        <div class="btn-group" role="group">
+                            <SfDropDownList DataSource=@(new List<string>() { "Cat5e Non Plenum", "Cat5e Plenum", "Cat6e Non Plenum", "Cat6 Plenum", "RG59 Siamese Coax", "RG6 Coax" })
+                                            TItem="string" TValue="string" Placeholder="Select cable type" @bind-Value="@result62"></SfDropDownList>
+                        </div>
+                    </div>
+                    <p class=" question">@Question63</p>
+                    <p class="subquestion">@SubQuestion63</p>
+                    <div class="btn-group" role="group">
+                        <SfDropDownList DataSource=@(new List<string>() { "Blue", "White", "Black", "Other"})
+                                        TItem="string" TValue="string" Placeholder="Select cable color" @bind-Value="@result63"></SfDropDownList>
                     </div>
                     <div class="question-block">
                         <div>
@@ -122,14 +145,21 @@
                         <div>
                             <p class=" question">@Question10</p>
                             <p class="subquestion">@SubQuestion10</p>
-                            <SfTextBox></SfTextBox>
+                            <div class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-outline-success">
+                                    <input type="radio" name="option" @onclick="@((MouseEventArgs) =>result10="Yes")">Yes
+                                </label>
+                                <label class="btn btn-outline-success">
+                                    <input type="radio" name="option" value="" @onclick="@((MouseEventArgs) =>result10="No")">No
+                                </label>
+                            </div>
                         </div>
                     </div>
                     <div class="question-block">
                         <div>
                             <p class=" question">@Question11</p>
                             <p class="subquestion">@SubQuestion11</p>
-                            <SfDatePicker TValue="DateTime?" Format="@FormatString11" Placeholder="Enter date in dd.MM.yy" 
+                            <SfDatePicker TValue="DateTime?" Format="@FormatString11" Placeholder="Enter date in dd.MM.yy"
                                           @bind-Value="@result11"></SfDatePicker>
                         </div>
                     </div>
@@ -172,7 +202,14 @@
                         <div>
                             <p class=" question">@Question17</p>
                             <p class="subquestion">@SubQuestion17</p>
-                            <SfTextBox></SfTextBox>
+                            <div class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-outline-success">
+                                    <input type="radio" name="option" @onclick="@((MouseEventArgs) =>result17="Yes")">Yes
+                                </label>
+                                <label class="btn btn-outline-success">
+                                    <input type="radio" name="option" value="" @onclick="@((MouseEventArgs) =>result17="No")">No
+                                </label>
+                            </div>
                         </div>
                     </div>
                     <div class="question-block">
@@ -191,50 +228,158 @@
                 <ContentTemplate>
                     <div class="question-block">
                         <div>
-                            <p class=" question">@Question19</p>
+                            <p class="question">@Question19</p>
                             <p class="subquestion">@SubQuestion19</p>
-                            <SfRadioButton @ref="radiobtn19" Label="1" Name="options22" EnableRtl="true" Value="1" @onchange="onChange22" @bind-Checked="@CheckedValue22"></SfRadioButton>
-                            <SfRadioButton Label="2" Name="options22" EnableRtl="true" Value="2" @onchange="onChange22" @bind-Checked="@CheckedValue22"></SfRadioButton>
-                            <SfRadioButton Label="3" Name="options22" EnableRtl="true" Value="3" @onchange="onChange22" @bind-Checked="@CheckedValue22"></SfRadioButton>
-                            <SfRadioButton Label="4" Name="options22" EnableRtl="true" Value="4" @onchange="onChange22" @bind-Checked="@CheckedValue22"></SfRadioButton>
-                            <SfRadioButton Label="5" Name="options22" EnableRtl="true" Value="5" @onchange="onChange22" @bind-Checked="@CheckedValue22"></SfRadioButton>
-                            <SfRadioButton Label="6" Name="options22" EnableRtl="true" Value="6" @onchange="onChange22" @bind-Checked="@CheckedValue22"></SfRadioButton>
-                            <SfRadioButton Label="7" Name="options22" EnableRtl="true" Value="7" @onchange="onChange22" @bind-Checked="@CheckedValue22"></SfRadioButton>
-                            <SfRadioButton Label="8" Name="options22" EnableRtl="true" Value="8" @onchange="onChange22" @bind-Checked="@CheckedValue22"></SfRadioButton>
-                            <SfRadioButton Label="9" Name="options22" EnableRtl="true" Value="9" @onchange="onChange22" @bind-Checked="@CheckedValue22"></SfRadioButton>
-                            <SfRadioButton Label="10" Name="options22" EnableRtl="true" Value="10" @onchange="onChange22" @bind-Checked="@CheckedValue22"></SfRadioButton>
+                            <div class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-outline-success btn-group-vertical">
+                                    <input type="radio" name="option" @onclick="((MouseEventArgs) =>result22=1.ToString())">1
+                                </label>
+                                <label class="btn btn-outline-success btn-group-vertical">
+                                    <input type="radio" name="option" value="" @onclick="((MouseEventArgs) =>result22=2.ToString())">2
+                                </label>
+                                <label class="btn btn-outline-success btn-group-vertical">
+                                    <!-- отмеченная radio-кнопка -->
+                                    <input type="radio" name="option" value="" @onclick="((MouseEventArgs) =>result22=3.ToString())">3
+                                </label>
+                                <label class="btn btn-outline-success btn-group-vertical">
+                                    <input type="radio" name="option" value="" @onclick="((MouseEventArgs) =>result22=4.ToString())">4
+                                </label>
+                                <label class="btn btn-outline-success btn-group-vertical">
+                                    <input type="radio" name="option" value="" @onclick="((MouseEventArgs) =>result22=5.ToString())">5
+                                </label>
+                                <label class="btn btn-outline-success btn-group-vertical">
+                                    <input type="radio" name="option" value="" @onclick="((MouseEventArgs) =>result22=6.ToString())">6
+                                </label>
+                                <label class="btn btn-outline-success btn-group-vertical">
+                                    <input type="radio" name="option" value="" @onclick="((MouseEventArgs) =>result22=7.ToString())">7
+                                </label>
+                                <label class="btn btn-outline-success btn-group-vertical">
+                                    <input type="radio" name="option" value="" @onclick="((MouseEventArgs) =>result22=8.ToString())">8
+                                </label>
+                                <label class="btn btn-outline-success btn-group-vertical">
+                                    <input type="radio" name="option" value="" @onclick="((MouseEventArgs) =>result22=9.ToString())">9
+                                </label>
+                                <label class="btn btn-outline-success btn-group-vertical">
+                                    <input type="radio" name="option" value="" @onclick="((MouseEventArgs) =>result22=10.ToString())">10
+                                </label>
+                            </div>
+
+                            @*<div class="btn-group-sm" role="group" aria-label="Basic example">
+                                    <SfButton CssClass="btn btn-outline-dark e-small" Label="1" Name="options22" Value="1" @onchange="onChange22" TChecked="string"></SfButton>
+                                    <SfButton CssClass="btn btn-outline-dark e-small" Label="2" Name="options22" Value="2" @onchange="onChange22" TChecked="string"></SfButton>
+                                    <SfButton CssClass="btn btn-outline-dark e-small" Label="3" Name="options22" Value="3" @onchange="onChange22" TChecked="string"></SfButton>
+                                    <SfButton CssClass="btn btn-outline-dark e-small" Label="4" Name="options22" Value="4" @onchange="onChange22" TChecked="string"></SfButton>
+                                    <SfButton CssClass="btn btn-outline-dark e-small" Label="5" Name="options22" Value="5" @onchange="onChange22" TChecked="string"></SfButton>
+                                    <SfButton CssClass="btn btn-outline-dark e-small" Label="6" Name="options22" Value="6" @onchange="onChange22" TChecked="string"></SfButton>
+                                    <SfButton CssClass="btn btn-outline-dark e-small" Label="7" Name="options22" Value="7" @onchange="onChange22" TChecked="string"></SfButton>
+                                    <SfButton CssClass="btn btn-outline-dark e-small" Label="8" Name="options22" Value="8" @onchange="onChange22" TChecked="string"></SfButton>
+                                    <SfButton CssClass="btn btn-outline-dark e-small" Label="9" Name="options22" Value="9" @onchange="onChange22" TChecked="string"></SfButton>
+                                    <SfButton CssClass="btn btn-outline-dark e-small" Label="10" Name="options22" Value="10" @onchange="onChange22" TChecked="string"></SfButton>
+                                </div>*@
                         </div>
                     </div>
                     <div class="question-block">
                         <div>
                             <p class=" question">@Question20</p>
                             <p class="subquestion">@SubQuestion20</p>
-                            <SfRadioButton @ref="radiobtn20" Label="1" Name="options23" EnableRtl="true" Value="1" @onchange="onChange23" @bind-Checked="@CheckedValue23"></SfRadioButton>
-                            <SfRadioButton Label="2" Name="options23" EnableRtl="true" Value="2" @onchange="onChange23" @bind-Checked="@CheckedValue23"></SfRadioButton>
-                            <SfRadioButton Label="3" Name="options23" EnableRtl="true" Value="3" @onchange="onChange23" @bind-Checked="@CheckedValue23"></SfRadioButton>
-                            <SfRadioButton Label="4" Name="options23" EnableRtl="true" Value="4" @onchange="onChange23" @bind-Checked="@CheckedValue23"></SfRadioButton>
-                            <SfRadioButton Label="5" Name="options23" EnableRtl="true" Value="5" @onchange="onChange23" @bind-Checked="@CheckedValue23"></SfRadioButton>
-                            <SfRadioButton Label="6" Name="options23" EnableRtl="true" Value="6" @onchange="onChange23" @bind-Checked="@CheckedValue23"></SfRadioButton>
-                            <SfRadioButton Label="7" Name="options23" EnableRtl="true" Value="7" @onchange="onChange23" @bind-Checked="@CheckedValue23"></SfRadioButton>
-                            <SfRadioButton Label="8" Name="options23" EnableRtl="true" Value="8" @onchange="onChange23" @bind-Checked="@CheckedValue23"></SfRadioButton>
-                            <SfRadioButton Label="9" Name="options23" EnableRtl="true" Value="9" @onchange="onChange23" @bind-Checked="@CheckedValue23"></SfRadioButton>
-                            <SfRadioButton Label="10" Name="options23" EnableRtl="true" Value="10" @onchange="onChange23" @bind-Checked="@CheckedValue23"></SfRadioButton>
+                            <div class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-outline-success btn-group-vertical">
+                                    <input type="radio" name="option1" @onclick="((MouseEventArgs) =>result23=1.ToString())">1
+                                </label>
+                                <label class="btn btn-outline-success btn-group-vertical">
+                                    <input type="radio" name="option1" value="" @onclick="((MouseEventArgs) =>result23=2.ToString())">2
+                                </label>
+                                <label class="btn btn-outline-success btn-group-vertical">
+                                    <!-- отмеченная radio-кнопка -->
+                                    <input type="radio" name="option1" value="" @onclick="((MouseEventArgs) =>result23=3.ToString())">3
+                                </label>
+                                <label class="btn btn-outline-success btn-group-vertical">
+                                    <input type="radio" name="option1" value="" @onclick="((MouseEventArgs) =>result23=4.ToString())">4
+                                </label>
+                                <label class="btn btn-outline-success btn-group-vertical">
+                                    <input type="radio" name="option1" value="" @onclick="((MouseEventArgs) =>result23=5.ToString())">5
+                                </label>
+                                <label class="btn btn-outline-success btn-group-vertical">
+                                    <input type="radio" name="option1" value="" @onclick="((MouseEventArgs) =>result23=6.ToString())">6
+                                </label>
+                                <label class="btn btn-outline-success btn-group-vertical">
+                                    <input type="radio" name="option1" value="" @onclick="((MouseEventArgs) =>result23=7.ToString())">7
+                                </label>
+                                <label class="btn btn-outline-success btn-group-vertical">
+                                    <input type="radio" name="option1" value="" @onclick="((MouseEventArgs) =>result23=8.ToString())">8
+                                </label>
+                                <label class="btn btn-outline-success btn-group-vertical">
+                                    <input type="radio" name="option1" value="" @onclick="((MouseEventArgs) =>result23=9.ToString())">9
+                                </label>
+                                <label class="btn btn-outline-success btn-group-vertical">
+                                    <input type="radio" name="option1" value="" @onclick="((MouseEventArgs) =>result23=10.ToString())">10
+                                </label>
+                            </div>
+
+                            @*<div class="btn-group" role="group" aria-label="Basic example">
+                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="1" Name="options23" Value="1" @onchange="onChange23" TChecked="string"></SfRadioButton>
+                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="2" Name="options23" Value="2" @onchange="onChange23" TChecked="string"></SfRadioButton>
+                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="3" Name="options23" Value="3" @onchange="onChange23" TChecked="string"></SfRadioButton>
+                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="4" Name="options23" Value="4" @onchange="onChange23" TChecked="string"></SfRadioButton>
+                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="5" Name="options23" Value="5" @onchange="onChange23" TChecked="string"></SfRadioButton>
+                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="6" Name="options23" Value="6" @onchange="onChange23" TChecked="string"></SfRadioButton>
+                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="7" Name="options23" Value="7" @onchange="onChange23" TChecked="string"></SfRadioButton>
+                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="8" Name="options23" Value="8" @onchange="onChange23" TChecked="string"></SfRadioButton>
+                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="9" Name="options23" Value="9" @onchange="onChange23" TChecked="string"></SfRadioButton>
+                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="10" Name="options23" Value="10" @onchange="onChange23" TChecked="string"></SfRadioButton>
+                                </div>*@
                         </div>
                     </div>
                     <div class="question-block">
                         <div>
                             <p class=" question">@Question21</p>
                             <p class="subquestion">@SubQuestion21</p>
-                            <SfRadioButton @ref="radiobtn21" Label="1" Name="options24" EnableRtl="true" Value="1" @onchange="onChange24" @bind-Checked="@CheckedValue24"></SfRadioButton>
-                            <SfRadioButton Label="2" Name="options24" EnableRtl="true" Value="2" @onchange="onChange24" @bind-Checked="@CheckedValue24"></SfRadioButton>
-                            <SfRadioButton Label="3" Name="options24" EnableRtl="true" Value="3" @onchange="onChange24" @bind-Checked="@CheckedValue24"></SfRadioButton>
-                            <SfRadioButton Label="4" Name="options24" EnableRtl="true" Value="4" @onchange="onChange24" @bind-Checked="@CheckedValue24"></SfRadioButton>
-                            <SfRadioButton Label="5" Name="options24" EnableRtl="true" Value="5" @onchange="onChange24" @bind-Checked="@CheckedValue24"></SfRadioButton>
-                            <SfRadioButton Label="6" Name="options24" EnableRtl="true" Value="6" @onchange="onChange24" @bind-Checked="@CheckedValue24"></SfRadioButton>
-                            <SfRadioButton Label="7" Name="options24" EnableRtl="true" Value="7" @onchange="onChange24" @bind-Checked="@CheckedValue24"></SfRadioButton>
-                            <SfRadioButton Label="8" Name="options24" EnableRtl="true" Value="8" @onchange="onChange24" @bind-Checked="@CheckedValue24"></SfRadioButton>
-                            <SfRadioButton Label="9" Name="options24" EnableRtl="true" Value="9" @onchange="onChange24" @bind-Checked="@CheckedValue24"></SfRadioButton>
-                            <SfRadioButton Label="10" Name="options24" EnableRtl="true" Value="10" @onchange="onChange24" @bind-Checked="@CheckedValue24"></SfRadioButton>
+                            <div class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-outline-success btn-group-vertical">
+                                    <input type="radio" name="option2" @onclick="((MouseEventArgs) =>result24=1.ToString())">1
+                                </label>
+                                <label class="btn btn-outline-success btn-group-vertical">
+                                    <input type="radio" name="option2" value="" @onclick="((MouseEventArgs) =>result24=2.ToString())">2
+                                </label>
+                                <label class="btn btn-outline-success btn-group-vertical">
+                                    <!-- отмеченная radio-кнопка -->
+                                    <input type="radio" name="option2" value="" @onclick="((MouseEventArgs) =>result24=3.ToString())">3
+                                </label>
+                                <label class="btn btn-outline-success btn-group-vertical">
+                                    <input type="radio" name="option2" value="" @onclick="((MouseEventArgs) =>result24=4.ToString())">4
+                                </label>
+                                <label class="btn btn-outline-success btn-group-vertical">
+                                    <input type="radio" name="option2" value="" @onclick="((MouseEventArgs) =>result24=5.ToString())">5
+                                </label>
+                                <label class="btn btn-outline-success btn-group-vertical">
+                                    <input type="radio" name="option2" value="" @onclick="((MouseEventArgs) =>result24=6.ToString())">6
+                                </label>
+                                <label class="btn btn-outline-success btn-group-vertical">
+                                    <input type="radio" name="option2" value="" @onclick="((MouseEventArgs) =>result24=7.ToString())">7
+                                </label>
+                                <label class="btn btn-outline-success btn-group-vertical">
+                                    <input type="radio" name="option2" value="" @onclick="((MouseEventArgs) =>result24=8.ToString())">8
+                                </label>
+                                <label class="btn btn-outline-success btn-group-vertical">
+                                    <input type="radio" name="option2" value="" @onclick="((MouseEventArgs) =>result24=9.ToString())">9
+                                </label>
+                                <label class="btn btn-outline-success btn-group-vertical">
+                                    <input type="radio" name="option2" value="" @onclick="((MouseEventArgs) =>result24=10.ToString())">10
+                                </label>
+                            </div>
+
+                            @*<div class="btn-group" role="group" aria-label="Basic example">
+                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="1" Name="options24" Value="1" @onchange="onChange24" TChecked="string"></SfRadioButton>
+                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="2" Name="options24" Value="2" @onchange="onChange24" TChecked="string"></SfRadioButton>
+                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="3" Name="options24" Value="3" @onchange="onChange24" TChecked="string"></SfRadioButton>
+                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="4" Name="options24" Value="4" @onchange="onChange24" TChecked="string"></SfRadioButton>
+                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="5" Name="options24" Value="5" @onchange="onChange24" TChecked="string"></SfRadioButton>
+                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="6" Name="options24" Value="6" @onchange="onChange24" TChecked="string"></SfRadioButton>
+                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="7" Name="options24" Value="7" @onchange="onChange24" TChecked="string"></SfRadioButton>
+                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="8" Name="options24" Value="8" @onchange="onChange24" TChecked="string"></SfRadioButton>
+                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="9" Name="options24" Value="9" @onchange="onChange24" TChecked="string"></SfRadioButton>
+                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="10" Name="options24" Value="10" @onchange="onChange24" TChecked="string"></SfRadioButton>
+                                </div>*@
                         </div>
                     </div>
                 </ContentTemplate>
@@ -246,18 +391,18 @@
                 <ContentTemplate>
                     <div>
                         <div style=" position:initial; top: 0; z-index: 2;">
-                            <SfUploader Enabled="@loaderEnabled" @ref="@Uploader" ShowFileList="true" Multiple=false AutoUpload=false AllowedExtensions=".jpg, .png, jpeg" SequentialUpload="true">
+                            <SfUploader Enabled="@loaderEnabled" @ref="@Uploader" ShowFileList="true" Multiple=false AutoUpload=false AllowedExtensions=".jpg, .png, .jpeg" SequentialUpload="true">
                                 <UploaderEvents ValueChange="OnChange"></UploaderEvents>
                             </SfUploader>
                         </div>
                         <p style="font-size: x-small"><span style="color:red;">*</span>You may upload .png .jpeg .jpg files only</p>
                         <div id="container" class="row material2">
                             @*<div>
-                    <SfTextBox ID="1" @ref="@txtbox1" Enabled="@enabled1" CssClass="e-outline" Placeholder="Work Order photo" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
-                </div>
-                <div>
-                    <SfTextBox ID="2" @ref="@txtbox2" Enabled="@enabled2" CssClass="e-filled" Placeholder="Area photo" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
-                </div>*@
+                                    <SfTextBox ID="1" @ref="@txtbox1" Enabled="@enabled1" CssClass="e-outline" Placeholder="Work Order photo" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
+                                </div>
+                                <div>
+                                    <SfTextBox ID="2" @ref="@txtbox2" Enabled="@enabled2" CssClass="e-filled" Placeholder="Area photo" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
+                                </div>*@
                             <div>
                                 <SfTextBox ID="3" @ref="@txtbox3" Enabled="@enabled3" CssClass="e-filled" Placeholder="Deliverable1" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
                             </div>
@@ -313,6 +458,12 @@
         names.Enqueue("Deliverable5");
 
         loaderEnabled = true;
+
+        IsVisibleTab0 = true;
+        IsVisibleTab1 = false;
+        IsVisibleTab2 = false;
+        IsVisibleTab3 = false;
+
     }
 
     #region RadioButtons
@@ -329,42 +480,42 @@
     string result23;
     string result24;
 
-    public void onChange22() { result22 = radiobtn19.Checked; }
-    public void onChange23() { result23 = radiobtn20.Checked; }
-    public void onChange24() { result24 = radiobtn21.Checked; }
+    public void onChange22(Microsoft.AspNetCore.Components.ChangeEventArgs args) { result22 = args.Value.ToString(); }
+    public void onChange23(Microsoft.AspNetCore.Components.ChangeEventArgs args) { result23 = args.Value.ToString(); }
+    public void onChange24(Microsoft.AspNetCore.Components.ChangeEventArgs args) { result24 = args.Value.ToString(); }
 
     #endregion
 
     #region Questions Constants
-
+    // TabItem "NOTES"
     const string Question1 = "͏͏1.Totality Work Order Number";
     const string Question2 = "͏͏2.Client Assignment/Case ID";
     const string Question3 = "͏͏3.MOD Name";
     const string Question4 = "͏͏4.Detailed Close Out Notes";
-
+    // TabItem "MATERIAL USED"
     const string Question5 = "͏͏5.Any billable Parts/Materials used?";
     const string Question6 = "͏͏6.Cable Used?";
-    const string Question7 = "͏͏7.Materials";
-    const string Question8 = "͏͏8.Hardware";
-    const string Question9 = "͏͏9.Other materials explanation";
-    const string Question10 = "͏͏10.Work Complete?";
-    const string Question11 = "͏͏11.Completion Date";
 
-    const string Question12 = "͏͏12.Revisit Required";
-    const string Question13 = "͏͏13.Store/Location Name";
-    const string Question14 = "͏͏14.Check in time";
-    const string Question15 = "͏͏15.Check out time";
-    const string Question16 = "͏͏16.Name & Title of Client Support Staff";
-    const string Question17 = "͏͏17.Issues or Escalations?";
-    const string Question18 = "͏͏18.Issue explanation";
+    const string Question61 = "͏͏7.Cable footage used in feet";
+    const string Question62 = "͏͏8.Please select type of cable used";
+    const string Question63 = "͏͏9.Cable Color";
 
-    //const string Question19 = "͏͏19.Name & Title of Client Support Staff";
-    //const string Question20 = "͏͏20.Issues or Escalations?";
-    //const string Question21 = "͏͏21.Issue explanation";
-
-    const string Question19 = "͏͏19.SOW Familiarity";
-    const string Question20 = "͏͏20.Efficiency";
-    const string Question21 = "͏͏21.Preparedness";
+    const string Question7 = "͏͏10.Materials";
+    const string Question8 = "͏͏11.Hardware";
+    const string Question9 = "͏͏12.Other materials explanation";
+    const string Question10 = "͏͏13.Work Complete?";
+    const string Question11 = "͏͏14.Completion Date";
+    const string Question12 = "͏͏15.Revisit Required";
+    const string Question13 = "͏͏16.Store/Location Name";
+    const string Question14 = "͏͏17.Check in time";
+    const string Question15 = "͏͏18.Check out time";
+    const string Question16 = "͏͏19.Name & Title of Client Support Staff";
+    const string Question17 = "͏͏20.Issues or Escalations?";
+    const string Question18 = "͏͏21.Issue explanation";
+    // TabItem "Work Order Self Ratings"
+    const string Question19 = "͏͏22.SOW Familiarity";
+    const string Question20 = "͏͏23.Efficiency";
+    const string Question21 = "͏͏24.Preparedness";
 
     const string SubQuestion1 = "You MUST include zero's!";
     const string SubQuestion2 = "leave blank if none provided";
@@ -373,6 +524,11 @@
 
     const string SubQuestion5 = "";
     const string SubQuestion6 = "";
+
+    const string SubQuestion61 = "i.e 557";
+    const string SubQuestion62 = "Please only include items provided from company stock and not provided by the client. Check the box if used.";
+    const string SubQuestion63 = "";
+
     const string SubQuestion7 = "List materials used for this work order with individual line items 7ft Cat6 Blue Patch Cable x 10 Cat5e RJ45 Keystone Jack Orange x 4 3/4 EMT Conduit x 10 ft";
     const string SubQuestion8 = "List Hardware used for this work order with individual line items toggle bolts x 10 3/4\" J-hook x 4 1/4\" Bolt x 10 1/4\" Hex nut x 10";
     const string SubQuestion9 = "";
@@ -396,14 +552,13 @@
 
     #region ButtonsEventsHandlers
 
-    int SelectedTab = 0;
-
     bool ButtonNextDisabled = false;
     bool ButtonSubmitDisabled = true;
 
+    int SelectedTab;
+
     public void ButtonNextClickHandler(MouseEventArgs args)
     {
-        //var selected = tab.SelectedItem;
         switch (SelectedTab)
         {
             case 0:
@@ -445,10 +600,10 @@
 
     #region Tabs navigation
 
-    bool IsVisibleTab0 = true;
-    bool IsVisibleTab1 = false;
-    bool IsVisibleTab2 = false;
-    bool IsVisibleTab3 = false;
+    bool IsVisibleTab0 { get; set; }
+    bool IsVisibleTab1 { get; set; }
+    bool IsVisibleTab2 { get; set; }
+    bool IsVisibleTab3 { get; set; }
 
     #endregion
 
@@ -592,6 +747,11 @@
 
     #endregion
 
+    public string result61 { get; set; }
+    public string result62 { get; set; }
+    public string result63 { get; set; }
+    public string result10 { get; set; }
+    public string result17 { get; set; }
     #region question 11
 
     public DateTime? result11 { get; set; } = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
@@ -641,6 +801,7 @@
     .visibility-visible {
         visibility: visible;
     }
+
     #container {
         display: grid;
         grid-template-rows: auto repeat(5);
