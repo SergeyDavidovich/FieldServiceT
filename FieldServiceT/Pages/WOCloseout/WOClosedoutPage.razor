@@ -34,25 +34,25 @@
                     <div id="q1" class="question-block">
                         <p class=" question">@Question1</p>
                         <p class="subquestion">@SubQuestion1</p>
-                        <SfTextBox @bind-Value="result1" ValueChange="@(e => Questionnaire.TotalityWorkOrderNumber = e.Value)"> </SfTextBox>
+                        <SfTextBox ValueChange="@(e => Questionnaire.TotalityWorkOrderNumber = e.Value)"></SfTextBox>
                     </div>
                     <div id="q2" class="question-block">
                         <p class=" question">@Question2</p>
                         <p class="subquestion">@SubQuestion2</p>
-                        <SfTextBox></SfTextBox>
+                        <SfTextBox ValueChange="@(e => Questionnaire.ClientAssignmentCaseID = e.Value)"></SfTextBox>
                     </div>
                     <div id="q3" class="question-block">
                         <div>
                             <p class=" question">@Question3</p>
                             <p class="subquestion">@SubQuestion3</p>
-                            <SfTextBox></SfTextBox>
+                            <SfTextBox ValueChange="@(e => Questionnaire.MODName = e.Value)"></SfTextBox>
                         </div>
                     </div>
                     <div id="q4" class="question-block">
                         <div>
                             <p class=" question">@Question4</p>
                             <p class="subquestion">@SubQuestion4</p>
-                            <SfTextBox></SfTextBox>
+                            <SfTextBox ValueChange="@(e => Questionnaire.DetailedCloseOutNotes = e.Value)"></SfTextBox>
                         </div>
                     </div>
                 </ContentTemplate>
@@ -78,10 +78,10 @@
                             <p class="subquestion">@SubQuestion5</p>
                             <div class="btn-group" data-toggle="buttons">
                                 <label class="btn btn-outline-success">
-                                    <input type="radio" name="option" @onclick="@((MouseEventArgs) =>result5="Yes")">Yes
+                                    <input type="radio" name="option5" @onclick="@(e => Questionnaire.BillablePartsMaterialsUsed = true.ToString())">Yes
                                 </label>
                                 <label class="btn btn-outline-success">
-                                    <input type="radio" name="option" value="" @onclick="@((MouseEventArgs) =>result5="No")">No
+                                    <input type="radio" name="option5" value="" @onclick="@(e => Questionnaire.BillablePartsMaterialsUsed = false.ToString())">No
                                 </label>
                             </div>
                         </div>
@@ -92,10 +92,10 @@
                             <p class="subquestion">@SubQuestion6</p>
                             <div class="btn-group" data-toggle="buttons">
                                 <label class="btn btn-outline-success">
-                                    <input type="radio" name="option" @onclick="@((MouseEventArgs) =>result6="Yes")">Yes
+                                    <input type="radio" name="option6" @onclick="@(e => Questionnaire.CableUsed = true.ToString())">Yes
                                 </label>
                                 <label class="btn btn-outline-success">
-                                    <input type="radio" name="option" value="" @onclick="@((MouseEventArgs) =>result6="No")">No
+                                    <input type="radio" name="option6" @onclick="@(e => Questionnaire.CableUsed = false.ToString())">No
                                 </label>
                             </div>
                         </div>
@@ -103,43 +103,47 @@
                     <div class="question-block">
                         <p class=" question">@Question61</p>
                         <p class="subquestion">@SubQuestion61</p>
-                        <SfTextBox></SfTextBox>
+                        <SfTextBox ValueChange="@(e => Questionnaire.CableFootageUsed = e.Value)"></SfTextBox>
                     </div>
                     <div class="question-block">
                         <p class=" question">@Question62</p>
                         <p class="subquestion">@SubQuestion62</p>
                         <div class="btn-group" role="group">
                             <SfDropDownList DataSource=@(new List<string>() { "Cat5e Non Plenum", "Cat5e Plenum", "Cat6e Non Plenum", "Cat6 Plenum", "RG59 Siamese Coax", "RG6 Coax" })
-                                            TItem="string" TValue="string" Placeholder="Select cable type" @bind-Value="@result62"></SfDropDownList>
+                                            TItem="string" TValue="string" Placeholder="Select cable type">
+                                <DropDownListEvents TItem="string" TValue="string" ValueChange="@((e) => Questionnaire.CableType = e.Value.ToString())"></DropDownListEvents>
+                            </SfDropDownList>
                         </div>
                     </div>
                     <div class="question-block">
                         <p class=" question">@Question63</p>
                         <p class="subquestion">@SubQuestion63</p>
                         <div class="btn-group" role="group">
-                            <SfDropDownList DataSource=@(new List<string>() { "Blue", "White", "Black", "Other"})
-                                            TItem="string" TValue="string" Placeholder="Select cable color" @bind-Value="@result63"></SfDropDownList>
+                            <SfDropDownList DataSource=@(new List<string>() {  "Blue", "White", "Black", "Other" })
+                                            TItem="string" TValue="string" Placeholder="Select cable type">
+                                <DropDownListEvents TItem="string" TValue="string" ValueChange="@((e) => Questionnaire.CableColor = e.Value.ToString())"></DropDownListEvents>
+                            </SfDropDownList>
                         </div>
                     </div>
                     <div class="question-block">
                         <div>
                             <p class=" question">@Question7</p>
                             <p class="subquestion">@SubQuestion7</p>
-                            <SfTextBox Multiline="true"></SfTextBox>
+                            <SfTextBox ValueChange="@(e => Questionnaire.Materials = e.Value)"></SfTextBox>
                         </div>
                     </div>
                     <div class="question-block">
                         <div>
                             <p class=" question">@Question8</p>
                             <p class="subquestion">@SubQuestion8</p>
-                            <SfTextBox></SfTextBox>
+                            <SfTextBox ValueChange="@(e => Questionnaire.Hardware = e.Value)"></SfTextBox>
                         </div>
                     </div>
                     <div class="question-block">
                         <div>
                             <p class=" question">@Question9</p>
                             <p class="subquestion">@SubQuestion9</p>
-                            <SfTextBox></SfTextBox>
+                            <SfTextBox ValueChange="@(e => Questionnaire.OtherMaterialsExplanation = e.Value)"></SfTextBox>
                         </div>
                     </div>
                     <div class="question-block">
@@ -148,10 +152,10 @@
                             <p class="subquestion">@SubQuestion10</p>
                             <div class="btn-group" data-toggle="buttons">
                                 <label class="btn btn-outline-success">
-                                    <input type="radio" name="option" @onclick="@((MouseEventArgs) =>result10="Yes")">Yes
+                                    <input type="radio" name="option10" @onclick="@(e=>Questionnaire.WorkComplete = true.ToString())">Yes
                                 </label>
                                 <label class="btn btn-outline-success">
-                                    <input type="radio" name="option" value="" @onclick="@((MouseEventArgs) =>result10="No")">No
+                                    <input type="radio" name="option10" @onclick="@(e=>Questionnaire.WorkComplete = false.ToString())">No
                                 </label>
                             </div>
                         </div>
@@ -160,8 +164,9 @@
                         <div>
                             <p class=" question">@Question11</p>
                             <p class="subquestion">@SubQuestion11</p>
-                            <SfDatePicker TValue="DateTime?" Format="@FormatString11" Placeholder="Enter date in dd.MM.yy"
-                                          @bind-Value="@result11"></SfDatePicker>
+                            <SfDatePicker TValue="DateTime?" Format="dd-MMM-yyyy" Placeholder='Choose a Date'>
+                                <DatePickerEvents TValue="DateTime?" ValueChange="@((e)=> Questionnaire.CompletionDate = e.Value.ToString())"></DatePickerEvents>
+                            </SfDatePicker>
                         </div>
                     </div>
                     <div class="question-block">
@@ -618,13 +623,8 @@
 
         var statusCode = await service.SendWORequestPostAsync();
 
-        //if (statusCode == System.Net.HttpStatusCode.OK)
-        //{
-        dialogVisibility = true;
         dialogContent = "StatusCode: " + statusCode.ToString();
-        //}
-        //else
-        //{
+        dialogVisibility = true;
     }
 
     #endregion

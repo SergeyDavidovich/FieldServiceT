@@ -19,7 +19,7 @@ namespace FieldServiceT.Models
         public string MODName { get; set; }
         public string DetailedCloseOutNotes { get; set; }
         public string BillablePartsMaterialsUsed { get; set; }
-        public string CreatCableUsedorId { get; set; }
+        public string CableUsed { get; set; }
         public string CableFootageUsed { get; set; }
         public string CableType { get; set; }
         public string CableColor { get; set; }
