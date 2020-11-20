@@ -54,7 +54,7 @@ namespace FieldServiceT
             services.AddScoped<Helpers.BrowserService>();
             services.AddSingleton<Helpers.TokenService>();
             services.AddSingleton<Repositories.BookableResourceBooking<BookedResource>>();
-            //services.AddSingleton<Helpers.WorkOrderService(new WOQuestionnaire()>);
+            services.AddSingleton < Helpers.WorkOrderService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

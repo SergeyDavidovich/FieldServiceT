@@ -6,9 +6,10 @@
 @using System.Net.Http
 @using System.Net.Http.Headers
 @using Syncfusion.Blazor.Calendars
+@using FieldServiceT.Models
 
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
-@*@inject FieldServiceT.Helpers.WorkOrderService workOrderService*@
+@inject FieldServiceT.Helpers.WorkOrderService workOrderService
 
 
 <div id="wrapper" style="margin:0px;">
@@ -19,41 +20,39 @@
                     <TabHeader Text="NOTES ͏"></TabHeader>
                 </ChildContent>
                 <ContentTemplate>
-                    <div>
-                        <div class="question-block" style="background-color:green; color:white; font-size:large;">
-                            <div>
-                                Work Order Closeout Form (WOC)
-                            </div>
-                            <div style="font-size:x-small">
-                                This form must be submitted and approved by Totality Dispatch PRIOR to leaving site, unless pre-approved otherwise. Additionally this form must be approved in order to be eligible for payment. ALL Required Deliverables must be submitted and approved prior to site departure unless Pre-Approved by Dispatch. ALL Deliverables are expected as quickly as possible but must be received within 12 hours of work completion in order to prevent unnecessary delays and/or penalties in work order payment.
-                            </div>
+                    <div class="question-block" style="background-color:green; color:white; font-size:large;">
+                        <div>
+                            Work Order Closeout Form (WOC)
                         </div>
-                        <div class="question-block">
-                            Please be detailed, organized and professional. This will assist in the efficient submission to the client for approval and payment.
+                        <div style="font-size:x-small">
+                            This form must be submitted and approved by Totality Dispatch PRIOR to leaving site, unless pre-approved otherwise. Additionally this form must be approved in order to be eligible for payment. ALL Required Deliverables must be submitted and approved prior to site departure unless Pre-Approved by Dispatch. ALL Deliverables are expected as quickly as possible but must be received within 12 hours of work completion in order to prevent unnecessary delays and/or penalties in work order payment.
                         </div>
-                        <div id="q1" class="question-block">
-                            <p class=" question">@Question1</p>
-                            <p class="subquestion">@SubQuestion1</p>
+                    </div>
+                    <div class="question-block">
+                        Please be detailed, organized and professional. This will assist in the efficient submission to the client for approval and payment.
+                    </div>
+                    <div id="q1" class="question-block">
+                        <p class=" question">@Question1</p>
+                        <p class="subquestion">@SubQuestion1</p>
+                        <SfTextBox @bind-Value="result1" ValueChange="@(e => Questionnaire.TotalityWorkOrderNumber = e.Value)"> </SfTextBox>
+                    </div>
+                    <div id="q2" class="question-block">
+                        <p class=" question">@Question2</p>
+                        <p class="subquestion">@SubQuestion2</p>
+                        <SfTextBox></SfTextBox>
+                    </div>
+                    <div id="q3" class="question-block">
+                        <div>
+                            <p class=" question">@Question3</p>
+                            <p class="subquestion">@SubQuestion3</p>
                             <SfTextBox></SfTextBox>
                         </div>
-                        <div id="q2" class="question-block">
-                            <p class=" question">@Question2</p>
-                            <p class="subquestion">@SubQuestion2</p>
+                    </div>
+                    <div id="q4" class="question-block">
+                        <div>
+                            <p class=" question">@Question4</p>
+                            <p class="subquestion">@SubQuestion4</p>
                             <SfTextBox></SfTextBox>
-                        </div>
-                        <div id="q3" class="question-block">
-                            <div>
-                                <p class=" question">@Question3</p>
-                                <p class="subquestion">@SubQuestion3</p>
-                                <SfTextBox></SfTextBox>
-                            </div>
-                        </div>
-                        <div id="q4" class="question-block">
-                            <div>
-                                <p class=" question">@Question4</p>
-                                <p class="subquestion">@SubQuestion4</p>
-                                <SfTextBox></SfTextBox>
-                            </div>
                         </div>
                     </div>
                 </ContentTemplate>
@@ -114,11 +113,13 @@
                                             TItem="string" TValue="string" Placeholder="Select cable type" @bind-Value="@result62"></SfDropDownList>
                         </div>
                     </div>
-                    <p class=" question">@Question63</p>
-                    <p class="subquestion">@SubQuestion63</p>
-                    <div class="btn-group" role="group">
-                        <SfDropDownList DataSource=@(new List<string>() { "Blue", "White", "Black", "Other"})
-                                        TItem="string" TValue="string" Placeholder="Select cable color" @bind-Value="@result63"></SfDropDownList>
+                    <div class="question-block">
+                        <p class=" question">@Question63</p>
+                        <p class="subquestion">@SubQuestion63</p>
+                        <div class="btn-group" role="group">
+                            <SfDropDownList DataSource=@(new List<string>() { "Blue", "White", "Black", "Other"})
+                                            TItem="string" TValue="string" Placeholder="Select cable color" @bind-Value="@result63"></SfDropDownList>
+                        </div>
                     </div>
                     <div class="question-block">
                         <div>
@@ -428,6 +429,19 @@
         <SfButton CssClass="e-info button" Disabled="ButtonNextDisabled" OnClick="ButtonNextClickHandler">Next</SfButton>
         <SfButton CssClass="e-danger button" Disabled="ButtonSubmitDisabled" OnClick="ButtonSubmitClickHandler">Submit</SfButton>
     </div>
+    <SfDialog @ref="dialog" Width="335px" Target="#target" IsModal="true" @bind-Visible="dialogVisibility">
+        <DialogTemplates>
+            <Header>Submit result</Header>
+            <Content>
+                <p>@dialogContent</p>
+            </Content>
+        </DialogTemplates>
+        <DialogButtons>
+            <DialogButton Content="OK" IsPrimary="true" OnClick="@DlgButtonClick" />
+        </DialogButtons>
+        <DialogEvents OnOverlayClick="@OverlayClick"></DialogEvents>
+        <DialogAnimationSettings Effect="@DialogEffect.None"></DialogAnimationSettings>
+    </SfDialog>
 </div>
 
 @code {
@@ -436,13 +450,17 @@
 
     SfTab tab;
 
+    public WOQuestionnaire Questionnaire { get; set; }
+
     protected override void OnInitialized()
     {
+        Questionnaire = workOrderService.Questionnaire;
+
         DataSource5 = new List<DataModel5>()
 {
             new DataModel5() { Text = "Yes", Value = "Yes" },
             new DataModel5() { Text = "No", Value = "No" },
-         };
+     };
         DataSource6 = new List<DataModel6>()
 {
             new DataModel6() { Text = "Yes", Value = "Yes" },
@@ -594,7 +612,20 @@
         }
     }
 
-    public void ButtonSubmitClickHandler(MouseEventArgs args) { }
+    public async Task ButtonSubmitClickHandler(MouseEventArgs args)
+    {
+        var service = workOrderService;
+
+        var statusCode = await service.SendWORequestPostAsync();
+
+        //if (statusCode == System.Net.HttpStatusCode.OK)
+        //{
+        dialogVisibility = true;
+        dialogContent = "StatusCode: " + statusCode.ToString();
+        //}
+        //else
+        //{
+    }
 
     #endregion
 
@@ -714,10 +745,31 @@
 
     #region questions-blocs support
 
+    #region Results
+
+    public string result1 { get; set; }
+    public string result2 { get; set; }
+    public string result3 { get; set; }
+    public string result4 { get; set; }
+    public string result5 { get; set; }
+    public string result6 { get; set; }
+
+    public string result61 { get; set; }
+    public string result62 { get; set; }
+    public string result63 { get; set; }
+    public string result10 { get; set; }
+    public string result17 { get; set; }
+
+    #endregion
+
+    #region Questionnarie
+
+
+    #endregion
+
     #region question 5
 
     List<DataModel5> DataSource5;
-    public string result5 { get; set; }
 
     public void OnChange5(Syncfusion.Blazor.DropDowns.ChangeEventArgs<string, DataModel5> args)
     {
@@ -733,7 +785,6 @@
     #region question 6
 
     List<DataModel6> DataSource6;
-    public string result6 { get; set; }
 
     public void OnChange6(Syncfusion.Blazor.DropDowns.ChangeEventArgs<string, DataModel6> args)
     {
@@ -747,11 +798,6 @@
 
     #endregion
 
-    public string result61 { get; set; }
-    public string result62 { get; set; }
-    public string result63 { get; set; }
-    public string result10 { get; set; }
-    public string result17 { get; set; }
     #region question 11
 
     public DateTime? result11 { get; set; } = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
@@ -759,6 +805,23 @@
 
     #endregion
 
+    #endregion
+
+    #region ModalDialog
+
+    SfDialog dialog;
+    bool dialogVisibility;
+    string dialogContent;
+
+    private void OverlayClick(Object args)
+    {
+        dialogVisibility = false;
+    }
+
+    private void DlgButtonClick()
+    {
+        dialogVisibility = false;
+    }
     #endregion
 
     #endregion
