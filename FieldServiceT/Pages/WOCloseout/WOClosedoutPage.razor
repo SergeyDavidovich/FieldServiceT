@@ -173,35 +173,42 @@
                         <div>
                             <p class=" question">@Question12</p>
                             <p class="subquestion">@SubQuestion12</p>
-                            <SfTextBox></SfTextBox>
+                            <div class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-outline-success">
+                                    <input type="radio" name="option6" @onclick="@(e => Questionnaire.RevisitRequired = true.ToString())">Yes
+                                </label>
+                                <label class="btn btn-outline-success">
+                                    <input type="radio" name="option6" @onclick="@(e => Questionnaire.RevisitRequired = false.ToString())">No
+                                </label>
+                            </div>
                         </div>
                     </div>
                     <div class="question-block">
                         <div>
                             <p class=" question">@Question13</p>
                             <p class="subquestion">@SubQuestion13</p>
-                            <SfTextBox></SfTextBox>
+                            <SfTextBox ValueChange="@(e => Questionnaire.StoreLocationName = e.Value)"></SfTextBox>
                         </div>
                     </div>
                     <div class="question-block">
                         <div>
                             <p class=" question">@Question14</p>
                             <p class="subquestion">@SubQuestion14</p>
-                            <SfTextBox></SfTextBox>
+                            <SfTextBox ValueChange="@(e => Questionnaire.CheckInTime = e.Value)"></SfTextBox>
                         </div>
                     </div>
                     <div class="question-block">
                         <div>
                             <p class=" question">@Question15</p>
                             <p class="subquestion">@SubQuestion15</p>
-                            <SfTextBox></SfTextBox>
+                            <SfTextBox ValueChange="@(e => Questionnaire.CheckOutTime = e.Value)"></SfTextBox>
                         </div>
                     </div>
                     <div class="question-block">
                         <div>
                             <p class=" question">@Question16</p>
                             <p class="subquestion">@SubQuestion16</p>
-                            <SfTextBox></SfTextBox>
+                            <SfTextBox ValueChange="@(e => Questionnaire.NameTitleofClientSupportStaff = e.Value)"></SfTextBox>
                         </div>
                     </div>
                     <div class="question-block">
@@ -210,10 +217,10 @@
                             <p class="subquestion">@SubQuestion17</p>
                             <div class="btn-group" data-toggle="buttons">
                                 <label class="btn btn-outline-success">
-                                    <input type="radio" name="option" @onclick="@((MouseEventArgs) =>result17="Yes")">Yes
+                                    <input type="radio" name="option6" @onclick="@(e => Questionnaire.IssuesorEscalations = true.ToString())">Yes
                                 </label>
                                 <label class="btn btn-outline-success">
-                                    <input type="radio" name="option" value="" @onclick="@((MouseEventArgs) =>result17="No")">No
+                                    <input type="radio" name="option6" @onclick="@(e => Questionnaire.IssuesorEscalations = false.ToString())">No
                                 </label>
                             </div>
                         </div>
@@ -222,7 +229,7 @@
                         <div>
                             <p class=" question">@Question18</p>
                             <p class="subquestion">@SubQuestion18</p>
-                            <SfTextBox></SfTextBox>
+                            <SfTextBox ValueChange="@(e => Questionnaire.Issueexplanation = e.Value)"></SfTextBox>
                         </div>
                     </div>
                 </ContentTemplate>
@@ -238,102 +245,77 @@
                             <p class="subquestion">@SubQuestion19</p>
                             <div class="btn-group" data-toggle="buttons">
                                 <label class="btn btn-outline-success btn-group-vertical">
-                                    <input type="radio" name="option" @onclick="((MouseEventArgs) =>result22=1.ToString())">1
+                                    <input type="radio" name="option19" @onclick="(e => Questionnaire.SOWFamiliarity = 1.ToString())">1
                                 </label>
                                 <label class="btn btn-outline-success btn-group-vertical">
-                                    <input type="radio" name="option" value="" @onclick="((MouseEventArgs) =>result22=2.ToString())">2
+                                    <input type="radio" name="option19" value="" @onclick="(e => Questionnaire.SOWFamiliarity =2.ToString())">2
                                 </label>
-                                <label class="btn btn-outline-success btn-group-vertical">
+                                <label class="btn btn-outline-primary btn-group-vertical">
                                     <!-- отмеченная radio-кнопка -->
-                                    <input type="radio" name="option" value="" @onclick="((MouseEventArgs) =>result22=3.ToString())">3
+                                    <input type="radio" name="option19" value="third" @onclick="(e => Questionnaire.SOWFamiliarity =3.ToString())">3
                                 </label>
-                                <label class="btn btn-outline-success btn-group-vertical">
-                                    <input type="radio" name="option" value="" @onclick="((MouseEventArgs) =>result22=4.ToString())">4
+                                <label class="btn btn-outline-primary btn-group-vertical">
+                                    <input type="radio" name="option19" value="first" @onclick="(e => Questionnaire.SOWFamiliarity =4.ToString())">4
                                 </label>
-                                <label class="btn btn-outline-success btn-group-vertical">
-                                    <input type="radio" name="option" value="" @onclick="((MouseEventArgs) =>result22=5.ToString())">5
+                                <label class="btn btn-outline-primary btn-group-vertical">
+                                    <input type="radio" name="option19" value="second" @onclick="(e => Questionnaire.SOWFamiliarity =5.ToString())">5
                                 </label>
-                                <label class="btn btn-outline-success btn-group-vertical">
-                                    <input type="radio" name="option" value="" @onclick="((MouseEventArgs) =>result22=6.ToString())">6
+                                <label class="btn btn-outline-primary btn-group-vertical">
+                                    <input type="radio" name="option19" value="third" @onclick="(e => Questionnaire.SOWFamiliarity =6.ToString())">6
                                 </label>
-                                <label class="btn btn-outline-success btn-group-vertical">
-                                    <input type="radio" name="option" value="" @onclick="((MouseEventArgs) =>result22=7.ToString())">7
+                                <label class="btn btn-outline-primary btn-group-vertical">
+                                    <input type="radio" name="option19" value="first" @onclick="(e => Questionnaire.SOWFamiliarity =7.ToString())">7
                                 </label>
-                                <label class="btn btn-outline-success btn-group-vertical">
-                                    <input type="radio" name="option" value="" @onclick="((MouseEventArgs) =>result22=8.ToString())">8
+                                <label class="btn btn-outline-primary btn-group-vertical">
+                                    <input type="radio" name="option19" value="second" @onclick="(e => Questionnaire.SOWFamiliarity =8.ToString())">8
                                 </label>
-                                <label class="btn btn-outline-success btn-group-vertical">
-                                    <input type="radio" name="option" value="" @onclick="((MouseEventArgs) =>result22=9.ToString())">9
+                                <label class="btn btn-outline-primary btn-group-vertical">
+                                    <!-- отмеченная radio-кнопка -->
+                                    <input type="radio" name="option19" value="third" @onclick="(e => Questionnaire.SOWFamiliarity =9.ToString())">9
                                 </label>
-                                <label class="btn btn-outline-success btn-group-vertical">
-                                    <input type="radio" name="option" value="" @onclick="((MouseEventArgs) =>result22=10.ToString())">10
+                                <label class="btn btn-outline-primary btn-group-vertical">
+                                    <input type="radio" name="option19" value="third" @onclick="(e => Questionnaire.SOWFamiliarity =10.ToString())">10
                                 </label>
                             </div>
-
-                            @*<div class="btn-group-sm" role="group" aria-label="Basic example">
-                                    <SfButton CssClass="btn btn-outline-dark e-small" Label="1" Name="options22" Value="1" @onchange="onChange22" TChecked="string"></SfButton>
-                                    <SfButton CssClass="btn btn-outline-dark e-small" Label="2" Name="options22" Value="2" @onchange="onChange22" TChecked="string"></SfButton>
-                                    <SfButton CssClass="btn btn-outline-dark e-small" Label="3" Name="options22" Value="3" @onchange="onChange22" TChecked="string"></SfButton>
-                                    <SfButton CssClass="btn btn-outline-dark e-small" Label="4" Name="options22" Value="4" @onchange="onChange22" TChecked="string"></SfButton>
-                                    <SfButton CssClass="btn btn-outline-dark e-small" Label="5" Name="options22" Value="5" @onchange="onChange22" TChecked="string"></SfButton>
-                                    <SfButton CssClass="btn btn-outline-dark e-small" Label="6" Name="options22" Value="6" @onchange="onChange22" TChecked="string"></SfButton>
-                                    <SfButton CssClass="btn btn-outline-dark e-small" Label="7" Name="options22" Value="7" @onchange="onChange22" TChecked="string"></SfButton>
-                                    <SfButton CssClass="btn btn-outline-dark e-small" Label="8" Name="options22" Value="8" @onchange="onChange22" TChecked="string"></SfButton>
-                                    <SfButton CssClass="btn btn-outline-dark e-small" Label="9" Name="options22" Value="9" @onchange="onChange22" TChecked="string"></SfButton>
-                                    <SfButton CssClass="btn btn-outline-dark e-small" Label="10" Name="options22" Value="10" @onchange="onChange22" TChecked="string"></SfButton>
-                                </div>*@
                         </div>
                     </div>
                     <div class="question-block">
                         <div>
-                            <p class=" question">@Question20</p>
+                            <p class="question">@Question20</p>
                             <p class="subquestion">@SubQuestion20</p>
                             <div class="btn-group" data-toggle="buttons">
                                 <label class="btn btn-outline-success btn-group-vertical">
-                                    <input type="radio" name="option1" @onclick="((MouseEventArgs) =>result23=1.ToString())">1
+                                    <input type="radio" name="option20" @onclick="(e => Questionnaire.Efficiency = 1.ToString())">1
                                 </label>
                                 <label class="btn btn-outline-success btn-group-vertical">
-                                    <input type="radio" name="option1" value="" @onclick="((MouseEventArgs) =>result23=2.ToString())">2
+                                    <input type="radio" name="option20" value="" @onclick="(e => Questionnaire.Efficiency =2.ToString())">2
                                 </label>
-                                <label class="btn btn-outline-success btn-group-vertical">
+                                <label class="btn btn-outline-primary btn-group-vertical">
                                     <!-- отмеченная radio-кнопка -->
-                                    <input type="radio" name="option1" value="" @onclick="((MouseEventArgs) =>result23=3.ToString())">3
+                                    <input type="radio" name="option20" value="third" @onclick="(e => Questionnaire.Efficiency =3.ToString())">3
                                 </label>
-                                <label class="btn btn-outline-success btn-group-vertical">
-                                    <input type="radio" name="option1" value="" @onclick="((MouseEventArgs) =>result23=4.ToString())">4
+                                <label class="btn btn-outline-primary btn-group-vertical">
+                                    <input type="radio" name="option20" value="first" @onclick="(e => Questionnaire.Efficiency =4.ToString())">4
                                 </label>
-                                <label class="btn btn-outline-success btn-group-vertical">
-                                    <input type="radio" name="option1" value="" @onclick="((MouseEventArgs) =>result23=5.ToString())">5
+                                <label class="btn btn-outline-primary btn-group-vertical">
+                                    <input type="radio" name="option20" value="second" @onclick="(e => Questionnaire.Efficiency =5.ToString())">5
                                 </label>
-                                <label class="btn btn-outline-success btn-group-vertical">
-                                    <input type="radio" name="option1" value="" @onclick="((MouseEventArgs) =>result23=6.ToString())">6
+                                <label class="btn btn-outline-primary btn-group-vertical">
+                                    <input type="radio" name="option20" value="third" @onclick="(e => Questionnaire.Efficiency =6.ToString())">6
                                 </label>
-                                <label class="btn btn-outline-success btn-group-vertical">
-                                    <input type="radio" name="option1" value="" @onclick="((MouseEventArgs) =>result23=7.ToString())">7
+                                <label class="btn btn-outline-primary btn-group-vertical">
+                                    <input type="radio" name="option20" value="first" @onclick="(e => Questionnaire.Efficiency =7.ToString())">7
                                 </label>
-                                <label class="btn btn-outline-success btn-group-vertical">
-                                    <input type="radio" name="option1" value="" @onclick="((MouseEventArgs) =>result23=8.ToString())">8
+                                <label class="btn btn-outline-primary btn-group-vertical">
+                                    <input type="radio" name="option20" value="second" @onclick="(e => Questionnaire.Efficiency =8.ToString())">8
                                 </label>
-                                <label class="btn btn-outline-success btn-group-vertical">
-                                    <input type="radio" name="option1" value="" @onclick="((MouseEventArgs) =>result23=9.ToString())">9
+                                <label class="btn btn-outline-primary btn-group-vertical">
+                                    <input type="radio" name="option20" value="third" @onclick="(e => Questionnaire.Efficiency =9.ToString())">9
                                 </label>
-                                <label class="btn btn-outline-success btn-group-vertical">
-                                    <input type="radio" name="option1" value="" @onclick="((MouseEventArgs) =>result23=10.ToString())">10
+                                <label class="btn btn-outline-primary btn-group-vertical">
+                                    <input type="radio" name="option20" value="third" @onclick="(e => Questionnaire.Efficiency =10.ToString())">10
                                 </label>
                             </div>
-
-                            @*<div class="btn-group" role="group" aria-label="Basic example">
-                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="1" Name="options23" Value="1" @onchange="onChange23" TChecked="string"></SfRadioButton>
-                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="2" Name="options23" Value="2" @onchange="onChange23" TChecked="string"></SfRadioButton>
-                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="3" Name="options23" Value="3" @onchange="onChange23" TChecked="string"></SfRadioButton>
-                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="4" Name="options23" Value="4" @onchange="onChange23" TChecked="string"></SfRadioButton>
-                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="5" Name="options23" Value="5" @onchange="onChange23" TChecked="string"></SfRadioButton>
-                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="6" Name="options23" Value="6" @onchange="onChange23" TChecked="string"></SfRadioButton>
-                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="7" Name="options23" Value="7" @onchange="onChange23" TChecked="string"></SfRadioButton>
-                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="8" Name="options23" Value="8" @onchange="onChange23" TChecked="string"></SfRadioButton>
-                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="9" Name="options23" Value="9" @onchange="onChange23" TChecked="string"></SfRadioButton>
-                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="10" Name="options23" Value="10" @onchange="onChange23" TChecked="string"></SfRadioButton>
-                                </div>*@
                         </div>
                     </div>
                     <div class="question-block">
@@ -342,50 +324,36 @@
                             <p class="subquestion">@SubQuestion21</p>
                             <div class="btn-group" data-toggle="buttons">
                                 <label class="btn btn-outline-success btn-group-vertical">
-                                    <input type="radio" name="option2" @onclick="((MouseEventArgs) =>result24=1.ToString())">1
+                                    <input type="radio" name="option21" @onclick="(e => Questionnaire.Preparedness = 1.ToString())">1
                                 </label>
                                 <label class="btn btn-outline-success btn-group-vertical">
-                                    <input type="radio" name="option2" value="" @onclick="((MouseEventArgs) =>result24=2.ToString())">2
+                                    <input type="radio" name="option21" value="" @onclick="(e => Questionnaire.Preparedness =2.ToString())">2
                                 </label>
-                                <label class="btn btn-outline-success btn-group-vertical">
-                                    <!-- отмеченная radio-кнопка -->
-                                    <input type="radio" name="option2" value="" @onclick="((MouseEventArgs) =>result24=3.ToString())">3
+                                <label class="btn btn-outline-primary btn-group-vertical">
+                                    <input type="radio" name="option21" value="third" @onclick="(e => Questionnaire.Preparedness =3.ToString())">3
                                 </label>
-                                <label class="btn btn-outline-success btn-group-vertical">
-                                    <input type="radio" name="option2" value="" @onclick="((MouseEventArgs) =>result24=4.ToString())">4
+                                <label class="btn btn-outline-primary btn-group-vertical">
+                                    <input type="radio" name="option21" value="first" @onclick="(e => Questionnaire.Preparedness =4.ToString())">4
                                 </label>
-                                <label class="btn btn-outline-success btn-group-vertical">
-                                    <input type="radio" name="option2" value="" @onclick="((MouseEventArgs) =>result24=5.ToString())">5
+                                <label class="btn btn-outline-primary btn-group-vertical">
+                                    <input type="radio" name="option21" value="second" @onclick="(e => Questionnaire.Preparedness =5.ToString())">5
                                 </label>
-                                <label class="btn btn-outline-success btn-group-vertical">
-                                    <input type="radio" name="option2" value="" @onclick="((MouseEventArgs) =>result24=6.ToString())">6
+                                <label class="btn btn-outline-primary btn-group-vertical">
+                                    <input type="radio" name="option21" value="third" @onclick="(e => Questionnaire.Preparedness =6.ToString())">6
                                 </label>
-                                <label class="btn btn-outline-success btn-group-vertical">
-                                    <input type="radio" name="option2" value="" @onclick="((MouseEventArgs) =>result24=7.ToString())">7
+                                <label class="btn btn-outline-primary btn-group-vertical">
+                                    <input type="radio" name="option21" value="first" @onclick="(e => Questionnaire.Preparedness =7.ToString())">7
                                 </label>
-                                <label class="btn btn-outline-success btn-group-vertical">
-                                    <input type="radio" name="option2" value="" @onclick="((MouseEventArgs) =>result24=8.ToString())">8
+                                <label class="btn btn-outline-primary btn-group-vertical">
+                                    <input type="radio" name="option21" value="second" @onclick="(e => Questionnaire.Preparedness =8.ToString())">8
                                 </label>
-                                <label class="btn btn-outline-success btn-group-vertical">
-                                    <input type="radio" name="option2" value="" @onclick="((MouseEventArgs) =>result24=9.ToString())">9
+                                <label class="btn btn-outline-primary btn-group-vertical">
+                                    <input type="radio" name="option21" value="third" @onclick="(e => Questionnaire.Preparedness =9.ToString())">9
                                 </label>
-                                <label class="btn btn-outline-success btn-group-vertical">
-                                    <input type="radio" name="option2" value="" @onclick="((MouseEventArgs) =>result24=10.ToString())">10
+                                <label class="btn btn-outline-primary btn-group-vertical">
+                                    <input type="radio" name="option21" value="third" @onclick="(e => Questionnaire.Preparedness =10.ToString())">10
                                 </label>
                             </div>
-
-                            @*<div class="btn-group" role="group" aria-label="Basic example">
-                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="1" Name="options24" Value="1" @onchange="onChange24" TChecked="string"></SfRadioButton>
-                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="2" Name="options24" Value="2" @onchange="onChange24" TChecked="string"></SfRadioButton>
-                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="3" Name="options24" Value="3" @onchange="onChange24" TChecked="string"></SfRadioButton>
-                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="4" Name="options24" Value="4" @onchange="onChange24" TChecked="string"></SfRadioButton>
-                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="5" Name="options24" Value="5" @onchange="onChange24" TChecked="string"></SfRadioButton>
-                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="6" Name="options24" Value="6" @onchange="onChange24" TChecked="string"></SfRadioButton>
-                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="7" Name="options24" Value="7" @onchange="onChange24" TChecked="string"></SfRadioButton>
-                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="8" Name="options24" Value="8" @onchange="onChange24" TChecked="string"></SfRadioButton>
-                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="9" Name="options24" Value="9" @onchange="onChange24" TChecked="string"></SfRadioButton>
-                                    <SfRadioButton CssClass="btn btn-outline-dark" Label="10" Name="options24" Value="10" @onchange="onChange24" TChecked="string"></SfRadioButton>
-                                </div>*@
                         </div>
                     </div>
                 </ContentTemplate>
