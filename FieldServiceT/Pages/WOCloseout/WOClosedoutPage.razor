@@ -577,7 +577,8 @@
 
     public async Task ButtonSubmitClickHandler(MouseEventArgs args)
     {
-        //var service = workOrderService;
+        workOrderService.Questionnaire.WorkOrderId = "00000";
+        workOrderService.Questionnaire.DateOfCreation = DateTime.Now.ToString();
 
         var statusCode = await workOrderService.SendWORequestPostAsync();
 
