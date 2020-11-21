@@ -393,6 +393,8 @@
                                 <SfTextBox ID="7" @ref="@txtbox7" Enabled="@enabled7" CssClass="e-filled" Placeholder="Deliverable5" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
                             </div>
                         </div>
+                        <div>
+                        </div>
                     </div>
                 </ContentTemplate>
             </TabItem>
@@ -429,17 +431,6 @@
     {
         Questionnaire = workOrderService.Questionnaire;
 
-        DataSource5 = new List<DataModel5>()
-{
-            new DataModel5() { Text = "Yes", Value = "Yes" },
-            new DataModel5() { Text = "No", Value = "No" },
-     };
-        DataSource6 = new List<DataModel6>()
-{
-            new DataModel6() { Text = "Yes", Value = "Yes" },
-            new DataModel6() { Text = "No", Value = "No" },
-         };
-
         names.Enqueue("WorkOrderPhoto");
         names.Enqueue("AreaPhoto");
         names.Enqueue("Deliverable1");
@@ -454,7 +445,6 @@
         IsVisibleTab1 = false;
         IsVisibleTab2 = false;
         IsVisibleTab3 = false;
-
     }
 
     #region RadioButtons
@@ -587,9 +577,9 @@
 
     public async Task ButtonSubmitClickHandler(MouseEventArgs args)
     {
-        var service = workOrderService;
+        //var service = workOrderService;
 
-        var statusCode = await service.SendWORequestPostAsync();
+        var statusCode = await workOrderService.SendWORequestPostAsync();
 
         dialogContent = "StatusCode: " + statusCode.ToString();
         dialogVisibility = true;
@@ -640,34 +630,48 @@
         switch (names.Count)
         {
             case 7:
-                file.FileInfo.Name = GetFullName("WorkOrderPhoto", ext);
+                string name1 = GetFullName("WorkOrderPhoto", ext);
+                file.FileInfo.Name = name1;
+                Questionnaire.FileName1 = name1;
                 break;
             case 6:
-                file.FileInfo.Name = GetFullName("AreaPhoto", ext);
+                string name2 = GetFullName("WorkOrderPhoto", ext);
+                file.FileInfo.Name = name2;
+                Questionnaire.FileName2 = name2;
                 enabled3 = true;
                 break;
             case 5:
-                file.FileInfo.Name = GetFullName(txtbox3.Value, ext);
+                string name3 = GetFullName(txtbox3.Value, ext);
+                file.FileInfo.Name = name3;
+                Questionnaire.FileName3 = name3;
                 enabled3 = false;
                 enabled4 = true;
                 break;
             case 4:
-                file.FileInfo.Name = GetFullName(txtbox4.Value, ext);
+                string name4 = GetFullName(txtbox4.Value, ext);
+                file.FileInfo.Name = name4;
+                Questionnaire.FileName4 = name4;
                 enabled4 = false;
                 enabled5 = true;
                 break;
             case 3:
-                file.FileInfo.Name = GetFullName(txtbox5.Value, ext);
+                string name5 = GetFullName(txtbox5.Value, ext);
+                file.FileInfo.Name = name5;
+                Questionnaire.FileName5 = name5;
                 enabled5 = false;
                 enabled6 = true;
                 break;
             case 2:
-                file.FileInfo.Name = GetFullName(txtbox6.Value, ext);
+                string name6 = GetFullName(txtbox6.Value, ext);
+                file.FileInfo.Name = name6;
+                Questionnaire.FileName6 = name6;
                 enabled6 = false;
                 enabled7 = true;
                 break;
             case 1:
-                file.FileInfo.Name = GetFullName(txtbox7.Value, ext);
+                string name7 = GetFullName(txtbox7.Value, ext);
+                file.FileInfo.Name = name7;
+                Questionnaire.FileName7 = name7;
                 enabled7 = false;
                 loaderEnabled = false;
                 break;
@@ -704,7 +708,9 @@
     {
         DateTime now = DateTime.UtcNow;
         string timePrefix = now.Day.ToString() + "-" + now.Month.ToString() + "-" + now.Year.ToString() + "_" + now.Hour.ToString() + "-" + now.Minute.ToString();
+
         string result = timePrefix + "_" + name + "." + ext;
+
         return result;
     }
 
