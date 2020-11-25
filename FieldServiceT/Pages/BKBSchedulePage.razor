@@ -7,16 +7,20 @@
 @using FieldServiceT.Models
 @using FieldServiceT.Repositories
 @using FieldServiceT.Helpers
+@using Microsoft.Extensions.Configuration
+
 
 @inject BookableResourceBooking<BookedResource> bookableResourceBookingService
+@inject IConfiguration configuration
 @inject TokenService tokenService
+@inject NavigationManager navigationManager
 
-
-<h6>BKBSchedulePage</h6>
+<h6 style="margin:6px;">Schedule</h6>
 
 <div>
     <SfSchedule TValue="Appointment" Readonly="true" Height="650px" SelectedDate="@(new DateTime(2020, 2, 12))">
-        <ScheduleEventSettings DataSource="@DataSource"></ScheduleEventSettings>
+        <ScheduleEventSettings DataSource="@DataSourceList"></ScheduleEventSettings>
+        <ScheduleEvents TValue="Appointment" OnEventClick="OnEventClickHandler"></ScheduleEvents>
         <ScheduleViews>
             <ScheduleView Option="View.Day"></ScheduleView>
             <ScheduleView Option="View.Week"></ScheduleView>
@@ -35,18 +39,63 @@
 
     View CurrentView = View.Agenda;
 
-    List<Appointment> DataSource = new List<Appointment>
-{
-        new Appointment { Id = 1, Subject = "Paris", StartTime = new DateTime(2020, 2, 13, 11, 0, 0) , EndTime = new DateTime(2020, 2, 13, 14, 0, 0) },
-        new Appointment { Id = 2, Subject = "Germany", StartTime = new DateTime(2020, 2, 15, 10, 0, 0) , EndTime = new DateTime(2020, 2, 15, 12, 0, 0) },
-        new Appointment { Id = 1, Subject = "Warshawa", StartTime = new DateTime(2020, 2, 12, 11, 0, 0) , EndTime = new DateTime(2020, 2, 12, 14, 0, 0) },
-        new Appointment { Id = 2, Subject = "London", StartTime = new DateTime(2020, 2, 14, 14, 0, 0) , EndTime = new DateTime(2020, 2, 14, 16, 0, 0) }
+    [CascadingParameter]
+    Task<AuthenticationState> authenticationState { get; set; }
 
-    };
+    private List<Appointment> DataSourceList { get; set; }
 
-    public class Appointment //ta
+    protected override async Task OnInitializedAsync()
     {
-        public int Id { get; set; }
+        DataSourceList = new List<Appointment>();
+
+        string baseUrl = configuration["BaseUrl"];
+        string token = (await tokenService.GetAuthenticationResultAsync()).AccessToken;
+        string userMail = (await authenticationState).User.Identity.Name;
+
+        bookableResourceBookingService.BaseURl = baseUrl;
+        bookableResourceBookingService.AccessToken = token;
+        bookableResourceBookingService.UserMail = userMail;
+
+        var bookings = await bookableResourceBookingService.GetBookedResourceBokings();
+
+        //bookings.Clear();
+
+        DataSourceList = MappedToScreenObject(bookings);
+
+        //if (bookings.Count != 0) DataSourceList = MappedToScreenObject(bookings);
+    }
+
+    public void OnEventClickHandler(EventClickArgs<Appointment> args)
+    {
+        var id = args.Event.Id;
+        var url = "/BookedResourcePage/" + id;// + "/" + "SchedulePage/";
+        navigationManager.NavigateTo(url);
+    }
+
+    //Id = i,
+    //                Subject = item.Name,
+    //                StartTime = item.StartTime,
+    //                EndTime = item.EndTime,
+    //                Location = item.WOAddress1
+
+    private List<Appointment> MappedToScreenObject(List<BookedResource> resourceList)
+    {
+        var list = resourceList.Select(res => new Appointment()
+        {
+            Id = res.BookableResourceBookingId,
+            Subject = res.Name,
+            StartTime = res.StartTime,
+            EndTime = res.EndTime,
+            Location = res.WorkOrder == null ? "" : res.WorkOrder.Address1
+        }
+        );
+        var resultList = list.ToList<Appointment>();
+        return resultList;
+    }
+
+    public class Appointment
+    {
+        public string Id { get; set; }
         public string Subject { get; set; }
         public string Location { get; set; }
         public DateTime StartTime { get; set; }

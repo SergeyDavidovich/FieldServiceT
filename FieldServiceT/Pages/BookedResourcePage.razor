@@ -31,95 +31,23 @@
         </SfDialog>
     </div>
     @*<p style="color:green; padding2px;">@DialogStatus</p>*@
-    <div style="margin-left:10px; margin-top:4px">
-        <SfButton type="button" class="btn btn-success btn-sm button-geo" OnClick="@Button_EnRoute_Handler">En-Route</SfButton>
-        <SfButton type="button" class="btn btn-success btn-sm button-geo" OnClick="@Button_OnSite_Handler">On-Site</SfButton>
-        <SfButton type="button" class="btn btn-success btn-sm button-geo" OnClick="@Button_OffSite_Handler">Off-site</SfButton>
-        <SfButton type="button" class="btn btn-success btn-sm button-geo" OnClick="@Button_WorkComplete_Handler">Complete</SfButton>
+    <div class="btn-group mr-2" role="group" aria-label="Basic example">
+        <SfButton type="button" class="btn btn-success btn-sm button-geo btn-hor" OnClick="@Button_EnRoute_Handler">En-Route</SfButton>
+        <SfButton type="button" class="btn btn-success btn-sm button-geo btn-hor" OnClick="@Button_OnSite_Handler">On-Site</SfButton>
+        <SfButton type="button" class="btn btn-success btn-sm button-geo btn-hor" OnClick="@Button_OffSite_Handler">Off-site</SfButton>
+        <SfButton type="button" class="btn btn-success btn-sm button-geo btn-hor" OnClick="@Button_WorkComplete_Handler">Complete</SfButton>
     </div>
-    <hr />
 
-    @*<p>Id: <b>@Resource.BookableResourceBookingId</b></p>*@
-    <p>Name: <b>@DataObject.Name</b></p>
-    <p>Start time: <b>@DataObject.StartTime</b></p>
-    <p>End time: <b>@DataObject.EndTime</b></p>
-    <p>Work order Name: <b>@DataObject.WOName</b></p>
-    <p>Work order Address1: <b>@DataObject.WOAddress1</b></p>
-    <p>Work order AddressName:<b>@DataObject.WOAddressName</b></p>
-    <p>Work order Summary:<b>@DataObject.WOSummary</b></p>
-    <p>Status:<b>@DataObject.StatusName</b></p>
-    <div>
-        <!--<div id="inner-grid" class="col-lg-12 control-section">
-        <div class="e-sample-resize-container">
-            <SfTab CssClass="default-tab">
-                <TabItems>
-                    <TabItem>
-                        <ChildContent>
-                            <TabHeader Text="RESOURCE DATA" IconCss="e-twitter"></TabHeader>
-                        </ChildContent>
-                        <ContentTemplate>
-                            <p>-->
-        @*Id: @Resource.BookableResourceBookingId*@
-        <!--</p>
-                                <p>Name: <b>@Resource.Name</b></p>
-                                <p>Start time: <b>@Resource.StartTime</b></p>
-                                <p>End time: <b>@Resource.EndTime</b></p>
-                            </ContentTemplate>
-                        </TabItem>
-                        <TabItem>
-                            <ChildContent>
-                                <TabHeader Text="ORDER DATA" IconCss="e-facebook"></TabHeader>
-                            </ChildContent>
-                            <ContentTemplate>
-                                <p>WOName: <b>@Resource.WOName</b></p>
-                                <p>WOAddress1: <b>@Resource.WOAddress1</b></p>
-                                <p>WOAddressName: <b>@Resource.WOAddressName</b></p>
-                            </ContentTemplate>
-                        </TabItem>
-                    </TabItems>
-                </SfTab>
-            </div>
-        </div>-->
-        <!--<div id="sub-grid" style="font-size:smaller">
-        <div>
-            <SfCard>
-                <CardHeader Title="RESOURCE DATA"></CardHeader>-->
-        @*<CardContent>
-                <div id="inner-grid">
-                    <label>Resource id:</label>
-                    <label><b>@Resource.BookableResourceBookingId</b></label>
-                    <label>Created on:</label>
-                    <label><b>@Resource.CreatedOn</b></label>
-                    <label>Duration:</label>
-                    <label><b>@Resource.Duration</b></label>
-                    <label>End time:</label>
-                    <label><b>@Resource.EndTime</b></label>
-                    <label>Name:</label>
-                    <label><b>@Resource.Name</b></label>
-                    <label>Status:</label>
-                    <label><b>@Resource.StatusName</b></label>
-                </div>
-            </CardContent>*@
-        <!--<CardFooter>
-                        <CardFooterContent>
-                        </CardFooterContent>
-                    </CardFooter>
-                </SfCard>
-            </div>
-            <div>
-                <SfCard>
-                    <CardHeader Title="WORK ORDER DATA"></CardHeader>
-                    <CardContent>
-                        <div id="inner-grid">Content</div>
-                    </CardContent>
-                    <CardContent EnableSeperator="true"></CardContent>
-                    <CardFooter>
-                        <CardFooterContent>
-                        </CardFooterContent>
-                    </CardFooter>
-                </SfCard>
-            </div>
-        </div>-->
+    <div style="border:1px solid lightGray; border-radius:4px;">
+        @*<p>Id: <b>@Resource.BookableResourceBookingId</b></p>*@
+        <p>Name: <b>@DataObject.Name</b></p>
+        <p>Start time: <b>@DataObject.StartTime</b></p>
+        <p>End time: <b>@DataObject.EndTime</b></p>
+        <p>Work order Name: <b>@DataObject.WOName</b></p>
+        <p>Work order Address1: <b>@DataObject.WOAddress1</b></p>
+        <p>Work order AddressName:<b>@DataObject.WOAddressName</b></p>
+        <p>Work order Summary:<b>@DataObject.WOSummary</b></p>
+        <p>Status:<b>@DataObject.StatusName</b></p>
     </div>
 </div>
 
@@ -209,7 +137,7 @@
             StartTime = resource.StartTime,
             EndTime = resource.EndTime,
 
-            WOName = resource.WorkOrder == null ? null: resource.WorkOrder.Name,
+            WOName = resource.WorkOrder == null ? null : resource.WorkOrder.Name,
             WOAddressName = resource.WorkOrder == null ? null : resource.WorkOrder.Addressname,
             WOAddress1 = resource.WorkOrder == null ? null : resource.WorkOrder.Address1,
             StatusName = resource.WorkOrder == null ? null : resource.BookingStatus.Name,
@@ -263,8 +191,24 @@
     #endregion
 }
 <style>
+    #grid {
+        display: grid;
+        grid-template-rows: 0 auto auto;
+        grid-row-gap: 6px;
+        margin: 0;
+        background-color: white;
+        height: 100%;
+    }
+
+        #grid > div {
+            margin: 6px;
+        }
+
     p {
         margin-left: 12px;
+    }
+    .btn-hor{
+        margin:12px;
     }
 </style>
 

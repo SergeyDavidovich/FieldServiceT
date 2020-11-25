@@ -27,7 +27,7 @@
 @inject TokenService tokenService;
 
 <div class="content">
-    <SfTextBox Placeholder="Filter: Status" Input="@OnInput"></SfTextBox>
+    @*<SfTextBox Placeholder="Filter: Status" Input="@OnInput"></SfTextBox>*@
     <SfListView DataSource="@resourceList"
                 HeaderTitle="Bookings"
                 ShowHeader="true"
@@ -47,7 +47,6 @@
         </ListViewTemplates>
     </SfListView>
 </div>
-
 @code
 {
     // https://docs.microsoft.com/en-us/dynamics365/customer-engagement/web-api/bookableresourcebooking?view=dynamics-ce-odata-9
@@ -56,11 +55,11 @@
 
     #region Code
 
-    async Task OnInput(InputEventArgs eventArgs)
-    {
-        //ListData = DataSource.FindAll(e => e.Text.ToLower().StartsWith(eventArgs.Value));
-        //resourceList = await GetBookableResourceBookingsAsync();
-    }
+    //async Task OnInput(InputEventArgs eventArgs)
+    //{
+    //    ListData = DataSource.FindAll(e => e.Text.ToLower().StartsWith(eventArgs.Value));
+    //    resourceList = await GetBookableResourceBookingsAsync();
+    //}
 
     void OnSelect(BookedResourceScreen selected)
     {
