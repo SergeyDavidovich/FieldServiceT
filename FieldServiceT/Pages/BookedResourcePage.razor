@@ -42,11 +42,10 @@
         </dl>
     </div>
     <div id="maps" style="position:relative">
-        <SfMaps @ref="MapsElement">
-            @*<MapsEvents OnZoom=""></MapsEvents>*@
-            @*<MapsZoomSettings ZoomFactor="10" EnablePanning="true" ToolBarOrientation="Syncfusion.Blazor.Maps.Orientation.Vertical" Enable="true" HorizontalAlignment="Syncfusion.Blazor.Maps.Alignment.Near" ShouldZoomInitially="true"></MapsZoomSettings>*@
-            <MapsCenterPosition Latitude="@UserLatitude" Longitude="@UserLongitude" />
-            <MapsZoomSettings Enable="true" ZoomFactor="10" />
+        <SfMaps @ref="MapsElement" Background="lightgray" CenterPosition="@CenterPosition">
+            <MapsEvents OnLoad="@OnLoadHandler"></MapsEvents>
+            <MapsZoomSettings ZoomFactor="2" EnablePanning="true" Enable="true" HorizontalAlignment="Syncfusion.Blazor.Maps.Alignment.Near" 
+                              ShouldZoomInitially="true"></MapsZoomSettings>
             <MapsLayers>
                 <MapsLayer LayerType="ShapeLayerType.Bing" BingMapType="BingMapType.Road" ShapeData='new {dataOptions ="https://cdn.syncfusion.com/maps/map-data/world-map.json"}' Key="@BingKey">
                     <MapsMarkerSettings>
@@ -82,6 +81,7 @@
 
     SfMaps MapsElement;
 
+
     public BookedResourceScreen DataObject { get; set; }
 
     private string BingKey { get; set; }
@@ -95,6 +95,7 @@
     string WorkOrderLongitude;
 
     List<Location> Markers;
+    MapsCenterPosition CenterPosition { get; set; }
 
     public bool DialogIsVisible { get; set; }
     private string DialogStatus { get; set; }
@@ -112,9 +113,22 @@
         var resource = await GetBookableResourceBookingsByIdAsync(baseUrl, ResourceId, token.AccessToken);
         var order = resource.WorkOrder;
 
-        if (order != null) Markers = await GetMarkersAsyns(resource);
+        Markers = new List<Location>();
+
+        UserLocation = await locationService.GetLocationAsync();
+        UserLatitude = (double)UserLocation.Latitude;
+        UserLongitude = (double)UserLocation.Longitude;
+
+        Markers.Add(UserLocation);
+
+        if (order != null) Markers.AddRange(GetMarkers(resource));
 
         DataObject = GetMappedToScreenObject(resource);
+    }
+
+    private void OnLoadHandler(ILoadEventArgs args)
+    {
+        CenterPosition = MapsElement.CenterPosition;
     }
 
     #region Private functions
@@ -143,17 +157,17 @@
         }
     }
 
-    private async Task<List<Location>> GetMarkersAsyns(BookedResource resource)
+    private List<Location> GetMarkers(BookedResource resource)
     {
         WorkOrderLocation = new Location() { Latitude = (decimal)resource.WorkOrder.Latitude, Longitude = (decimal)resource.WorkOrder.Longtitude };
         WorkOrderLatitude = WorkOrderLocation.Latitude.ToString();
         WorkOrderLongitude = WorkOrderLocation.Longitude.ToString();
 
-        UserLocation = await locationService.GetLocationAsync();
-        UserLatitude = (double)UserLocation.Latitude;
-        UserLongitude = (double)UserLocation.Longitude;
+        //UserLocation = await locationService.GetLocationAsync();
+        //UserLatitude = (double)UserLocation.Latitude;
+        //UserLongitude = (double)UserLocation.Longitude;
 
-        var markers = new List<Location>() { WorkOrderLocation, UserLocation };
+        List<Location> markers = new List<Location>() { WorkOrderLocation };
         return markers;
     }
 
@@ -175,7 +189,9 @@
 
         return screenResource;
     }
-    
+
+
+
     #endregion
 
     #region Buttons Event handlers
