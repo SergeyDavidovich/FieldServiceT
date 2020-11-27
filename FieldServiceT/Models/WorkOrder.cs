@@ -22,6 +22,12 @@ namespace FieldServiceT.Models
 
         [JsonProperty("msdyn_workordersummary")]
         public string WorkOrderSummary { get; set; }
+       
+        [JsonProperty("msdyn_latitude")]
+        public double Latitude { get; set; }
+        
+        [JsonProperty("msdyn_longitude")]
+        public double Longtitude { get; set; }
     }
 }
 

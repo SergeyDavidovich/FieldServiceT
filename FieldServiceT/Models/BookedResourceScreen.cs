@@ -14,7 +14,7 @@ namespace FieldServiceT.Models
         string woname;
         public string WOName
         {
-            get=>woname;
+            get => woname;
             set
             {
                 woname = value;
@@ -24,7 +24,9 @@ namespace FieldServiceT.Models
         public string WOAddressName { get; set; }
         public string WOSummary { get; set; }
         public string StatusName { get; set; }
-
         public string Avatar { get; set; }
+        public string WOLatitude { get; set; }
+        public string WOLongitude { get; set; }
+
     }
 }
