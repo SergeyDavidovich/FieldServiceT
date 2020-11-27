@@ -70,7 +70,7 @@ namespace FieldServiceT.Repositories
             string query = baseUrl + "bookableresourcebookings";
             query += "?$filter=_resource_value eq '" + bookableResourceId + "'";
             query += "&$select=name,starttime,endtime";
-            query += "&$expand=msdyn_workorder($select = msdyn_name, msdyn_address1,msdyn_addressname,msdyn_workordersummary ),";
+            query += "&$expand=msdyn_workorder($select = msdyn_name, msdyn_address1,msdyn_addressname,msdyn_workordersummary,msdyn_latitude,msdyn_longitude ),";
             query += "BookingStatus($select=name)";
 
             HttpResponseMessage response;

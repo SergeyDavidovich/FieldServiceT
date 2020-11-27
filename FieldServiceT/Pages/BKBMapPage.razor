@@ -7,13 +7,12 @@
 
 @inject LocationService  locationService
 
-<h6 style="padding-left:16px">Map</h6>
-<div style="height:100%">
+<div style="height:100%; position:relative">
     <SfMaps Height="100%">
         <MapsCenterPosition Latitude="40.7209" Longitude="-73.9680" />
         <MapsZoomSettings Enable="true" ZoomFactor="10" />
         <MapsLayers>
-            <MapsLayer LayerType="ShapeLayerType.OSM">
+            <MapsLayer LayerType="ShapeLayerType.Bing" BingMapType="BingMapType.Road" Key="@BingKey">
                 <MapsMarkerSettings>
                     <MapsMarker Visible="true" DataSource="Cities" Shape="MarkerType.Balloon" Height="35" Width="35" AnimationDuration="700">
                         <MapsMarkerTooltipSettings ValuePath="Name" Visible="true">
@@ -27,6 +26,8 @@
 </div>
 
 @code {
+
+    private string BingKey { get; set; } = "At-1BZxXI0CTEChNSVwJCskA5Y4UQC2YyS-8A2Ed4hRCz5s92XQL8MgndhMzqmL3";
 
     private List<City> Cities = new List<City>
 {
