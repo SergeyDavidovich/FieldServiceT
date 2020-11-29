@@ -4,17 +4,27 @@
 @using Syncfusion.Blazor.Buttons
 @using FieldServiceT.Helpers
 @using AspNetMonsters.Blazor.Geolocation
+@using FieldServiceT.Models
+@using FieldServiceT.Repositories
+@using Newtonsoft.Json.Linq
 
 @inject LocationService  locationService
+@inject Microsoft.Extensions.Configuration.IConfiguration configuration
+@inject FieldServiceT.Helpers.TokenService tokenService
+@inject BookableResourceBooking<BookedResource> bookableResourceBookingService
+@inject NavigationManager navigationManager
+
 
 <div style="height:100%; position:relative">
-    <SfMaps Height="100%">
-        <MapsCenterPosition Latitude="40.7209" Longitude="-73.9680" />
-        <MapsZoomSettings Enable="true" ZoomFactor="10" />
+    <SfMaps @ref="@Maps" Height="100%">
+        <MapsCenterPosition Latitude="25.54244147012483" Longitude="-19.62646484375"></MapsCenterPosition>
+        <MapsEvents OnMarkerClick="OnMarkerClickHandler"></MapsEvents>
+        <MapsZoomSettings Enable="true" ZoomFactor="12" ShouldZoomInitially="true" ZoomOnClick="true" />
         <MapsLayers>
-            <MapsLayer LayerType="ShapeLayerType.Bing" BingMapType="BingMapType.Road" Key="@BingKey">
+            <MapsLayer LayerType="ShapeLayerType.Bing" BingMapType="BingMapType.Road" Key="@BingKey"
+                       ShapeData='new {dataOptions ="https://cdn.syncfusion.com/maps/map-data/world-map.json"}'>
                 <MapsMarkerSettings>
-                    <MapsMarker Visible="true" DataSource="Cities" Shape="MarkerType.Balloon" Height="35" Width="35" AnimationDuration="700">
+                    <MapsMarker Visible="true" DataSource="@Markers" Shape="MarkerType.Balloon" Height="35" Width="35" AnimationDuration="700">
                         <MapsMarkerTooltipSettings ValuePath="Name" Visible="true">
                         </MapsMarkerTooltipSettings>
                     </MapsMarker>
@@ -26,30 +36,71 @@
 </div>
 
 @code {
+    #region Code
+    #region Declarations
+    [CascadingParameter]
+    Task<AuthenticationState> authenticationState { get; set; }
+    SfMaps Maps;
 
-    private string BingKey { get; set; } = "At-1BZxXI0CTEChNSVwJCskA5Y4UQC2YyS-8A2Ed4hRCz5s92XQL8MgndhMzqmL3";
+    string baseUrl;
+    string webHookUrl;
 
-    private List<City> Cities = new List<City>
-{
-        new City {Latitude=50.5716595,Longitude=19.3219768, Name= "Żory"}
-        //new City { Latitude=40.724546, Longitude=-73.850344, Name="New York"},
-        //new City {Latitude= 41.657782, Longitude=-91.533857, Name="Iowa"}
-    };
+    private string BingKey { get; set; }
 
-    public class City
+    private List<BookedResource> ResourceList { get; set; }
+
+    List<WOLocation> Markers;
+    #endregion
+    protected override async Task OnInitializedAsync()
     {
-        public double Latitude;
-        public double Longitude;
-        public string Name;
-    };
+        webHookUrl = configuration["WebHookUrl"];
+        BingKey = configuration["BingMapKey"]; // "At-1BZxXI0CTEChNSVwJCskA5Y4UQC2YyS-8A2Ed4hRCz5s92XQL8MgndhMzqmL3";
 
-    public void OnMarkerClick(MouseEventArgs args)
+        string baseUrl = configuration["BaseUrl"];
+        string token = (await tokenService.GetAuthenticationResultAsync()).AccessToken;
+        string userMail = (await authenticationState).User.Identity.Name;
+
+        bookableResourceBookingService.BaseURl = baseUrl;
+        bookableResourceBookingService.AccessToken = token;
+        bookableResourceBookingService.UserMail = userMail;
+
+        ResourceList = (await bookableResourceBookingService.GetBookedResourceBokings()).ToList()
+        .Where(r => r.WorkOrder != null).ToList();
+
+        Markers = GetMappedToWOLokation(ResourceList);
+    }
+    #region Events handlers
+    private void OnMarkerClickHandler(IMarkerClickEventArgs args)
     {
+        WOLocation data = (args.Data as JObject).ToObject(typeof(WOLocation)) as WOLocation;
 
+        var id = data.ResourceId;
+        var url = "/BookedResourcePage/" + id;
+        navigationManager.NavigateTo(url);
+    }
+    #endregion
+
+    private List<WOLocation> GetMappedToWOLokation(List<BookedResource> resources)
+    {
+        var markers = ResourceList.Select(r => new WOLocation()
+        {
+            ResourceId = r.BookableResourceBookingId,
+            Latitude = r.WorkOrder.Latitude,
+            Longitude = r.WorkOrder.Longtitude,
+            Name = r.WorkOrder.Name,
+
+        });
+        return markers.ToList();
     }
 
-    //    Lat: 50.5716595
-    //    Long: 19.3219768
+    public class WOLocation
+    {
+        public string ResourceId { get; set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+        public string Name { get; set; }
+    }
+    #endregion
 }
 
 
