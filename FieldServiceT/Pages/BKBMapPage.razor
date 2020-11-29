@@ -15,7 +15,7 @@
 @inject NavigationManager navigationManager
 
 
-<div style="height:100%; position:relative">
+<div style="height:100%!important; position:relative">
     <SfMaps @ref="@Maps" Height="100%">
         <MapsCenterPosition Latitude="25.54244147012483" Longitude="-19.62646484375"></MapsCenterPosition>
         <MapsEvents OnMarkerClick="OnMarkerClickHandler"></MapsEvents>
@@ -73,7 +73,6 @@
     private void OnMarkerClickHandler(IMarkerClickEventArgs args)
     {
         WOLocation data = (args.Data as JObject).ToObject(typeof(WOLocation)) as WOLocation;
-
         var id = data.ResourceId;
         var url = "/BookedResourcePage/" + id;
         navigationManager.NavigateTo(url);
