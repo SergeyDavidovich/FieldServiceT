@@ -19,6 +19,7 @@
 @using Microsoft.AspNetCore.Authorization
 @using Syncfusion.Blazor.Lists
 @using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Spinner
 
 
 @inject NavigationManager navigationManager
@@ -46,6 +47,10 @@
             </Template>
         </ListViewTemplates>
     </SfListView>
+    <div id="container">
+        <SfSpinner @bind-Visible="@SpinnerVisible" CssClass="e-customClass">
+        </SfSpinner>
+    </div>
 </div>
 @code
 {
@@ -78,6 +83,8 @@
     private string userMail;
     private string systemuserId;
     private string bookableResourceId;
+
+    private bool SpinnerVisible { get; set; } = false;
 
     private List<BookedResourceScreen> resourceList { get; set; }
 
@@ -197,5 +204,8 @@
         .container > div {
             background-color: brown;
         }
+    .e-spinner-pane.e-customClass .e-spinner-inner .e-spin-material {
+        stroke: #808080;
+    }
 </style>
 
