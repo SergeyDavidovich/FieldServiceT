@@ -27,31 +27,40 @@
 @inject BrowserService browserService
 @inject TokenService tokenService;
 
-<div class="content">
-    @*<SfTextBox Placeholder="Filter: Status" Input="@OnInput"></SfTextBox>*@
-    <SfListView DataSource="@resourceList"
-                HeaderTitle="Bookings"
-                ShowHeader="true"
-                CssClass="e-list-template"
-                SortOrder="Syncfusion.Blazor.Lists.SortOrder.Ascending" Height="1000px">
-        <ListViewFieldSettings TValue="BookedResourceScreen" Id="BookableResourceBookingId" Text="StatusName"></ListViewFieldSettings>
-        <ListViewTemplates TValue="BookedResourceScreen">
-            <Template>
-                <div class="e-list-wrapper e-list-multi-line e-list-avatar" style="cursor:pointer" @onclick="(e => OnSelect(context))">
-                    <span class="e-avatar e-avatar-circle">@(context.WOName)</span>
-                    <span class="e-list-item-header">@context.StartTime</span>
-                    <span class="e-list-item-header">@context.StatusName</span>
-                    <span class="e-list-content">@context.WOAddress1</span>
-                    <span class="e-list-content">@context.WOSummary</span>
-                </div>
-            </Template>
-        </ListViewTemplates>
-    </SfListView>
-    <div id="container">
-        <SfSpinner @bind-Visible="@SpinnerVisible" CssClass="e-customClass">
-        </SfSpinner>
+@if (resourceList == null)
+{
+    SpinnerVisible = true;
+}
+else
+{
+    SpinnerVisible = false;
+
+    <div class="content">
+        @*<SfTextBox Placeholder="Filter: Status" Input="@OnInput"></SfTextBox>*@
+        <SfListView DataSource="@resourceList"
+                    HeaderTitle="Bookings"
+                    ShowHeader="true"
+                    CssClass="e-list-template"
+                    SortOrder="Syncfusion.Blazor.Lists.SortOrder.Ascending" Height="1000px">
+            <ListViewFieldSettings TValue="BookedResourceScreen" Id="BookableResourceBookingId" Text="StatusName"></ListViewFieldSettings>
+            <ListViewTemplates TValue="BookedResourceScreen">
+                <Template>
+                    <div class="e-list-wrapper e-list-multi-line e-list-avatar" style="cursor:pointer" @onclick="(e => OnSelect(context))">
+                        <span class="e-avatar e-avatar-circle">@(context.WOName)</span>
+                        <span class="e-list-item-header">@context.StartTime</span>
+                        <span class="e-list-item-header">@context.StatusName</span>
+                        <span class="e-list-content">@context.WOAddress1</span>
+                        <span class="e-list-content">@context.WOSummary</span>
+                    </div>
+                </Template>
+            </ListViewTemplates>
+        </SfListView>
+        <div id="container">
+            <SfSpinner @bind-Visible="@SpinnerVisible" CssClass="e-customClass">
+            </SfSpinner>
+        </div>
     </div>
-</div>
+}
 @code
 {
     // https://docs.microsoft.com/en-us/dynamics365/customer-engagement/web-api/bookableresourcebooking?view=dynamics-ce-odata-9
@@ -204,6 +213,7 @@
         .container > div {
             background-color: brown;
         }
+
     .e-spinner-pane.e-customClass .e-spinner-inner .e-spin-material {
         stroke: #808080;
     }

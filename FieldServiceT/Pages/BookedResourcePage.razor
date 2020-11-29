@@ -44,7 +44,7 @@
     <div id="maps" style="position:relative">
         <SfMaps @ref="MapsElement" Background="lightgray" CenterPosition="@CenterPosition">
             <MapsEvents OnLoad="@OnLoadHandler"></MapsEvents>
-            <MapsZoomSettings ZoomFactor="2" EnablePanning="true" Enable="true" HorizontalAlignment="Syncfusion.Blazor.Maps.Alignment.Near" 
+            <MapsZoomSettings ZoomFactor="0" EnablePanning="true" Enable="true" HorizontalAlignment="Syncfusion.Blazor.Maps.Alignment.Near" PinchZooming="true"
                               ShouldZoomInitially="true"></MapsZoomSettings>
             <MapsLayers>
                 <MapsLayer LayerType="ShapeLayerType.Bing" BingMapType="BingMapType.Road" ShapeData='new {dataOptions ="https://cdn.syncfusion.com/maps/map-data/world-map.json"}' Key="@BingKey">
