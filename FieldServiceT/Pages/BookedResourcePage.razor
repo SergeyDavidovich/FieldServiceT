@@ -1,4 +1,5 @@
 ﻿@page "/BookedResourcePage/{ResourceId}"
+
 @attribute [Authorize]
 
 @inject LocationService  locationService
@@ -21,6 +22,7 @@
 @using System.Net.Http
 @using Syncfusion.Blazor.Popups
 @using Syncfusion.Blazor.Notifications
+@using Syncfusion.Blazor.SplitButtons
 
 @*<p>Id: <b>@Resource.BookableResourceBookingId</b></p>*@
 <div id="grid">
@@ -41,13 +43,28 @@
             <dd>Status:<b>@DataObject.StatusName</b></dd>
         </dl>
     </div>
+    <div id="controls">
+        <SfSplitButton CssClass="split" Content="@StringMapType">
+            <SplitButtonEvents ItemSelected="ItemSelected"></SplitButtonEvents>
+            <DropDownMenuItems>
+                <DropDownMenuItem Text="Arial" IconCss="e-btn-icons e-paste"></DropDownMenuItem>
+                <DropDownMenuItem Text="Road" IconCss="e-btn-icons e-paste-special"></DropDownMenuItem>
+                <DropDownMenuItem Text="Canvas" IconCss="e-btn-icons e-paste-formula"></DropDownMenuItem>
+            </DropDownMenuItems>
+        </SfSplitButton>
+    </div>
     <div id="maps" style="position:relative">
         <SfMaps @ref="MapsElement" Background="lightgray" CenterPosition="@CenterPosition">
             <MapsEvents OnLoad="@OnLoadHandler"></MapsEvents>
-            <MapsZoomSettings ZoomFactor="0" EnablePanning="true" Enable="true" HorizontalAlignment="Syncfusion.Blazor.Maps.Alignment.Near" PinchZooming="true"
-                              ShouldZoomInitially="true"></MapsZoomSettings>
+            <MapsZoomSettings Enable="true" ShouldZoomInitially="true" ZoomFactor="100" MouseWheelZoom="true" MaxZoom="100" Color="Black"
+                              DoubleClickZoom="true"
+                              PinchZooming="true"
+                              EnablePanning="true"
+                              Toolbars="@ZoomToolbar" />
             <MapsLayers>
-                <MapsLayer LayerType="ShapeLayerType.Bing" BingMapType="BingMapType.Road" ShapeData='new {dataOptions ="https://cdn.syncfusion.com/maps/map-data/world-map.json"}' Key="@BingKey">
+                <MapsLayer BingMapType="@BingMapTypeValue" LayerType="ShapeLayerType.Bing" 
+                           ShapeData='new {dataOptions ="https://cdn.syncfusion.com/maps/map-data/world-map.json"}' 
+                           Key="@BingKey">
                     <MapsMarkerSettings>
                         <MapsMarker Visible="true" DataSource="@Markers" Shape="MarkerType.Balloon" Height="35" Width="35" AnimationDuration="700">
                         </MapsMarker>
@@ -80,7 +97,10 @@
     string webHookUrl;
 
     SfMaps MapsElement;
+    public string[] ZoomToolbar = new string[] { "Zoom", "ZoomIn", "ZoomOut", "Pan", "Reset" };
 
+    private BingMapType BingMapTypeValue;
+    private string StringMapType;
 
     public BookedResourceScreen DataObject { get; set; }
 
@@ -113,6 +133,8 @@
         var resource = await GetBookableResourceBookingsByIdAsync(baseUrl, ResourceId, token.AccessToken);
         var order = resource.WorkOrder;
 
+        BingMapTypeValue = BingMapType.Road;
+        StringMapType = "Road";
         Markers = new List<Location>();
 
         UserLocation = await locationService.GetLocationAsync();
@@ -131,6 +153,26 @@
         CenterPosition = MapsElement.CenterPosition;
     }
 
+    private void ItemSelected(MenuEventArgs args)
+    {
+        var value = args.Item.Text;
+
+        switch (value)
+        {
+            case "Arial":
+                BingMapTypeValue = BingMapType.AerialWithLabel;
+                StringMapType = "Arial";
+                break;
+            case "Road":
+                BingMapTypeValue = BingMapType.Road;
+                StringMapType = "Road";
+                break;
+            case "Canvas":
+                BingMapTypeValue = BingMapType.CanvasLight;
+                StringMapType = "Canvas";
+                break;
+        }
+    }
     #region Private functions
 
     private async Task<BookedResource> GetBookableResourceBookingsByIdAsync(string baseUrl, string resourceId, string accessToken)
@@ -190,8 +232,6 @@
         return screenResource;
     }
 
-
-
     #endregion
 
     #region Buttons Event handlers
@@ -243,7 +283,7 @@
 <style>
     #grid {
         display: grid;
-        grid-template-rows: auto auto;
+        grid-template-rows: auto auto auto auto;
         grid-row-gap: 2px;
         margin: 2px;
         background-color: white;
@@ -256,6 +296,12 @@
             border: 1px solid lightGray;
             border-radius: 4px;
         }
+    .split {
+        margin: 10px;
+        width: 120px;
+        height: auto;
+    }
+
 
     p {
         margin-left: 12px;

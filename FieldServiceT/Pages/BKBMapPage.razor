@@ -7,6 +7,7 @@
 @using FieldServiceT.Models
 @using FieldServiceT.Repositories
 @using Newtonsoft.Json.Linq
+@using Syncfusion.Blazor.SplitButtons
 
 @inject LocationService  locationService
 @inject Microsoft.Extensions.Configuration.IConfiguration configuration
@@ -15,27 +16,50 @@
 @inject NavigationManager navigationManager
 
 <div style="height:100%!important; margin:0!important; padding:0!important; position:relative">
-    <SfMaps @ref="@Maps" Height="100%">
-        <MapsCenterPosition Latitude="25.54244147012483" Longitude="-19.62646484375"></MapsCenterPosition>
-        <MapsEvents OnMarkerClick="OnMarkerClickHandler"></MapsEvents>
-        <MapsZoomSettings Enable="true" ZoomFactor="0" ShouldZoomInitially="true" ZoomOnClick="true" PinchZooming="true"/>
-        <MapsLayers>
-            <MapsLayer LayerType="ShapeLayerType.Bing" BingMapType="BingMapType.Road" Key="@BingKey"
-                       ShapeData='new {dataOptions ="https://cdn.syncfusion.com/maps/map-data/world-map.json"}'>
-                <MapsMarkerSettings>
-                    <MapsMarker Visible="true" DataSource="@Markers" Shape="MarkerType.Balloon" Height="35" Width="35" AnimationDuration="700">
-                        <MapsMarkerTooltipSettings ValuePath="Name" Visible="true">
-                        </MapsMarkerTooltipSettings>
-                    </MapsMarker>
-                </MapsMarkerSettings>
-                <MapsShapeSettings Fill="lightgray"></MapsShapeSettings>
-            </MapsLayer>
-        </MapsLayers>
-    </SfMaps>
+    <div id="controls">
+        <SfSplitButton CssClass="split" Content="@BingMapTypeValue.ToString()">
+            <SplitButtonEvents ItemSelected="ItemSelected"></SplitButtonEvents>
+            <DropDownMenuItems>
+                <DropDownMenuItem Text="Arial" IconCss="e-btn-icons e-paste"></DropDownMenuItem>
+                <DropDownMenuItem Text="Road" IconCss="e-btn-icons e-paste-special"></DropDownMenuItem>
+                <DropDownMenuItem Text="Canvas" IconCss="e-btn-icons e-paste-formula"></DropDownMenuItem>
+            </DropDownMenuItems>
+        </SfSplitButton>
+    </div>
+    <div id="mapview" class="map">
+        <SfMaps @ref="@Maps" Height="100%">
+            <MapsBorder Color="gray" Width="1.0"></MapsBorder>
+            <MapsTitleSettings Text="@Title" Description="@Title">
+                <MapsTitleTextStyle Size="16px" />
+            </MapsTitleSettings>
+            @*<MapsCenterPosition Latitude="25.54244147012483" Longitude="-19.62646484375"></MapsCenterPosition>*@
+            <MapsEvents OnMarkerClick="OnMarkerClickHandler"></MapsEvents>
+
+            <MapsZoomSettings Enable="true" ShouldZoomInitially="true" ZoomFactor="100" MouseWheelZoom="true" MaxZoom="100" Color="Black"
+                              DoubleClickZoom="true"
+                              PinchZooming="true"
+                              EnablePanning="true"
+                              Toolbars="@ZoomToolbar" />
+            <MapsLayers>
+                <MapsLayer BingMapType="@BingMapTypeValue" LayerType="ShapeLayerType.Bing"
+                           ShapeData='new {dataOptions ="https://cdn.syncfusion.com/maps/map-data/world-map.json"}' 
+                           Key="@BingKey">
+                    <MapsMarkerSettings>
+                        <MapsMarker Visible="true" DataSource="@Markers" Shape="MarkerType.Balloon" Height="35" Width="35" AnimationDuration="700">
+                            <MapsMarkerTooltipSettings ValuePath="Name" Visible="true">
+                            </MapsMarkerTooltipSettings>
+                        </MapsMarker>
+                    </MapsMarkerSettings>
+                    <MapsShapeSettings Fill="lightgray"></MapsShapeSettings>
+                </MapsLayer>
+            </MapsLayers>
+        </SfMaps>
+    </div>
 </div>
 
 @code {
     #region Code
+
     #region Declarations
     [CascadingParameter]
     Task<AuthenticationState> authenticationState { get; set; }
@@ -45,11 +69,18 @@
     string webHookUrl;
 
     private string BingKey { get; set; }
+    private BingMapType BingMapTypeValue;
+    private string StringMapType;
 
     private List<BookedResource> ResourceList { get; set; }
 
     List<WOLocation> Markers;
+
+    public string Title { get; set; } = "WORK ORDERS LOCATIONS";
+    public string[] ZoomToolbar = new string[] { "Zoom", "ZoomIn", "ZoomOut", "Pan", "Reset" };
+
     #endregion
+
     protected override async Task OnInitializedAsync()
     {
         webHookUrl = configuration["WebHookUrl"];
@@ -66,6 +97,8 @@
         ResourceList = (await bookableResourceBookingService.GetBookedResourceBokings()).ToList()
         .Where(r => r.WorkOrder != null).ToList();
 
+        BingMapTypeValue = BingMapType.Road;
+
         Markers = GetMappedToWOLokation(ResourceList);
     }
     #region Events handlers
@@ -76,6 +109,25 @@
         var url = "/BookedResourcePage/" + id;
         navigationManager.NavigateTo(url);
     }
+
+    private void ItemSelected(MenuEventArgs args)
+    {
+        var value = args.Item.Text;
+
+        switch (value)
+        {
+            case "Arial":
+                BingMapTypeValue = BingMapType.AerialWithLabel;
+                break;
+            case "Road":
+                BingMapTypeValue = BingMapType.Road;
+                break;
+            case "Canvas":
+                BingMapTypeValue = BingMapType.CanvasLight;
+                break;
+        }
+    }
+
     #endregion
 
     private List<WOLocation> GetMappedToWOLokation(List<BookedResource> resources)
@@ -100,5 +152,13 @@
     }
     #endregion
 }
+<style>
+    .split {
+        margin: 10px;
+        width: 120px;
+        height: auto;
+    }
+
+</style>
 
 
