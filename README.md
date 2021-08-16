@@ -1,2 +1,2 @@
 # FieldServiceT
-### Blazor with Dynamics 365 Fiels service integration
+### Blazor with Dynamics 365 Field Service integration
